@@ -1,0 +1,44 @@
+@import 'font';
+
+html, body {
+    height: 100%;
+}
+
+body {
+    //noinspection CssNoGenericFontName
+    font-family: IRANSans !important;
+    font-weight: 300 !important;
+    font-size: 13px !important;
+    direction: rtl !important;
+    //text-align: right !important;
+    margin: 0 !important;
+    //background-color: $body-background-color;
+}
+
+.loader {
+    border-top-color: #3498db;
+    -webkit-animation: spinner 1.5s linear infinite;
+    animation: spinner 1.5s linear infinite;
+}
+
+@-webkit-keyframes spinner {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+.tooltip {
+    height: 40px;
+    background: #000;
+    color: #FFF;
+    text-align: center;
+    padding: 10px 20px 10px 20px;
+    border-radius: 6px;
+    /*margin-bottom: 10px;*/
+    transform: translate-x(-50%);
+}
