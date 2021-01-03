@@ -9,14 +9,17 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
-
+@php
+$microTime=microtime();
+$version=explode(' ',$microTime);
+@endphp
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{$version[1]}}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}?v={{$version[1]}}">
 
     <!-- Scripts -->
     @routes
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}?v={{$version[1]}}" defer></script>
 </head>
 <body class="font-sans antialiased">
 @inertia
