@@ -12,7 +12,7 @@ class Device extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'device_type_id', 'serial',
-        'physical_status', 'transport_status', 'psp_status', 'guarantee_start', 'guarantee_end',
+        'physical_status', 'transport_status', 'psp_status', 'guarantee_start', 'guarantee_end', 'description',
         'status'];
 
     protected $appends = ['physicalStatusText', 'transportStatusText', 'pspStatusText', 'statusText', 'jCreatedAt', 'jUpdatedAt'];

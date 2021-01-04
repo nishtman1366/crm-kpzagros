@@ -6,7 +6,10 @@
                 <div class="md:grid md:grid-cols-3 md:gap-6 bg-gray-300  rounded-lg">
                     <div class="md:col-span-1 m-2">
                         <div class="px-4 sm:px-0 text-justify">
-                            <h3 class="text-lg font-medium leading-6 text-gray-900">اطلاعات دستگاه جدید</h3>
+                            <h3 class="text-lg font-medium leading-6 text-gray-900">اطلاعات دستگاه</h3>
+                            <p v-if="device.description" class="bg-red-300 text-red-700 p-2 rounded text-lg my-2">
+                                {{device.description}}
+                            </p>
                             <p class="mt-1 text-sm text-gray-600">
                                 در این بخش اطلاعات مربوط به دستگاه جدید را وارد نمایید.
                             </p>
@@ -194,7 +197,8 @@
                                         <jet-input-error :message="deviceForm.error('user_id')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'" class="col-2 sm:col-span-2">
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                         class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             وضعیت:
                                         </label>
@@ -206,6 +210,20 @@
                                             <option value="2">تایید شده</option>
                                         </select>
                                         <jet-input-error :message="deviceForm.error('status')"
+                                                         class="mt-2"/>
+                                    </div>
+                                    <div  v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                          class="col-2 sm:col-span-6">
+                                        <label for="description" class="block text-sm font-medium text-gray-700">
+                                            توضیحات:
+                                        </label>
+                                        <textarea id="description"
+                                                  ref="description"
+                                                  name="description"
+                                                  class="form-input block w-full"
+                                                  v-model="deviceForm.description"
+                                        ></textarea>
+                                        <jet-input-error :message="deviceForm.error('description')"
                                                          class="mt-2"/>
                                     </div>
                                     <div class="col-6 sm:col-span-6 text-left">
@@ -250,17 +268,18 @@
                     imageFilePreview: '',
                 },
                 deviceForm: this.$inertia.form({
-                    '_method': 'POST',
-                    device_connection_type_id: '',
-                    device_type_id: '',
-                    serial: '',
-                    physical_status: 1,
-                    transport_status: 1,
-                    psp_status: 1,
-                    guarantee_start: '',
-                    guarantee_end: '',
-                    status: 1,
-                    user_id: this.$page.user.id
+                    '_method': 'PUT',
+                    device_connection_type_id: this.device.device_type.device_connection_type_id,
+                    device_type_id: this.device.device_type_id,
+                    serial: this.device.serial,
+                    physical_status: this.device.physical_status,
+                    transport_status: this.device.transport_status,
+                    psp_status: this.device.psp_status,
+                    guarantee_start: this.device.guarantee_start,
+                    guarantee_end: this.device.guarantee_end,
+                    description: this.device.description,
+                    status: this.device.status,
+                    user_id: this.device.user_id
                 }, {
                     bag: 'deviceForm',
                     resetOnSuccess: false
@@ -268,22 +287,6 @@
             }
         },
         mounted() {
-            this.deviceForm = this.$inertia.form({
-                '_method': 'PUT',
-                device_connection_type_id: this.device.device_type.device_connection_type_id,
-                device_type_id: this.device.device_type_id,
-                serial: this.device.serial,
-                physical_status: this.device.physical_status,
-                transport_status: this.device.transport_status,
-                psp_status: this.device.psp_status,
-                guarantee_start: this.device.guarantee_start,
-                guarantee_end: this.device.guarantee_end,
-                status: this.device.status,
-                user_id: this.device.user_id
-            }, {
-                bag: 'deviceForm',
-                resetOnSuccess: false
-            });
             this.selectDeviceConnection(this.device.device_type.device_connection_type_id);
             this.chooseDeviceType(this.device.device_type_id);
         },
