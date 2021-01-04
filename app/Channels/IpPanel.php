@@ -22,8 +22,8 @@ class IpPanel
      */
     public function __construct($apiKey = 'nu6BzocZfeV8m0j20nMoyKwIS-8BLliWHEi0uhHWQ14=', $originator = '+985000125475')
     {
-        $this->apiKey = $apiKey;
-        $this->originator = $originator;
+        $this->apiKey = systemConfig('SMS_API_TOKEN', $apiKey);
+        $this->originator = systemConfig('SMS_ORIGINATOR', $originator);
     }
 
     public function send($notifiable, Notification $notification)
@@ -63,7 +63,6 @@ class IpPanel
         $bulkId = 0;
         $client = new Client($this->apiKey);
 //        $credit = $client->getCredit();
-
         try {
             $bulkId = $client->sendPattern($patternCode, $this->originator, $mobile, $patternValues);
         } catch (Error $e) {

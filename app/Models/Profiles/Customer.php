@@ -5,11 +5,12 @@ namespace App\Models\Profiles;
 use App\Http\Controllers\Profiles\LicenseController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Morilog\Jalali\Jalalian;
 
 class Customer extends Model
 {
-    use HasFactory;
+    use HasFactory,Notifiable;
 
     protected $fillable = [
         'type', 'user_id', 'profile_id', 'national_code', 'id_code', 'first_name', 'first_name_english',

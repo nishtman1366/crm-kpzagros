@@ -16,5 +16,6 @@ class NotificationException extends Exception
     {
         parent::__construct();
         Log::channel('notifications')->error(!is_null($message) ? $message : 'اطلاعات اعلان یافت نشد.');
+        Log::channel('notifications')->error($this->getFile() . '@' . $this->getLine());
     }
 }

@@ -114,7 +114,9 @@
                                        :value="type.id">{{type.name}}
                             </jet-label>
                         </div>
-                        <div class="col-span-6"><jet-input-error :message="newRepairForm.error('repairTypeList')" class="mt-2"/></div>
+                        <div class="col-span-6">
+                            <jet-input-error :message="newRepairForm.error('repairTypeList')" class="mt-2"/>
+                        </div>
                         <div class="col-span-6">
                             <jet-section-border></jet-section-border>
                         </div>
@@ -190,6 +192,7 @@
                     status: 1,
                 }, {
                     bag: 'newRepairForm',
+                    resetOnSuccess: false
                 })
             }
         },

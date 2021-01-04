@@ -71,6 +71,22 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::delete('{pspId}', 'PspController@destroy')->name('destroy');
         });
 
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::prefix('types')->name('types.')->group(function () {
+                Route::get('', 'NotificationTypeController@index')->name('list');
+                Route::post('', 'NotificationTypeController@store')->name('store');
+                Route::put('{typeId}', 'NotificationTypeController@update')->name('update');
+                Route::delete('{typeId}', 'NotificationTypeController@destroy')->name('destroy');
+            });
+
+            Route::prefix('events')->name('events.')->group(function () {
+                Route::get('', 'NotificationEventController@index')->name('list');
+                Route::post('', 'NotificationEventController@store')->name('store');
+                Route::put('{eventId}', 'NotificationEventController@update')->name('update');
+                Route::delete('{eventId}', 'NotificationEventController@destroy')->name('destroy');
+            });
+        });
+
         Route::prefix('repairTypes')->name('repairTypes.')->group(function () {
             Route::get('', 'RepairTypeController@index')->name('list');
             Route::post('', 'RepairTypeController@store')->name('store');

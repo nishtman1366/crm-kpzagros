@@ -207,6 +207,12 @@ return [
         'repairTypeList' => 'ایراد دستگاه',
 
         'ref_code' => 'کد پیگیری پرداخت',
-        'payment_date' => 'تاریخ پرداخت'
+        'payment_date' => 'تاریخ پرداخت',
+
+
+        'pattern'=>'کد الگو',
+        'notification_type_id'=>'نوع اعلان',
+        'event'=>'نوع رخداد',
+        'level'=>'دریافت کننده',
     ],
 ];

@@ -8,11 +8,12 @@ use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Morilog\Jalali\Jalalian;
 
 class Repair extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
         'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit'];

@@ -1,5 +1,6 @@
 <?php
 
+use App\Libraries\TemplateEngine;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -111,4 +112,3 @@ Artisan::command('sms', function () {
 
     $user->notifyNow(new \App\Notifications\Profiles\AdminNotification(1, ['order_id' => '12334']));
 });
-

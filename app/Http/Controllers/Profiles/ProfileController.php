@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Profiles;
 
+use App\Exceptions\NotificationException;
 use App\Exports\Profiles\ProfileExport;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Notifications\NotificationController;
 use App\Imports\Profiles\ProfileImport;
 use App\Models\Profiles\Profile;
 use App\Models\Profiles\LicenseType;
@@ -124,7 +126,8 @@ class ProfileController extends Controller
             ['id' => 12, 'name' => 'درخواست ابطال'],
             ['id' => 13, 'name' => 'عدم تایید سریال'],
             ['id' => 14, 'name' => 'درخواست جابجایی'],
-            ['id' => 15, 'name' => 'رد درخواست جابجایی'],
+            ['id' => 15, 'name' => 'اختصاص سریال جدید'],
+            ['id' => 16, 'name' => 'رد درخواست جابجایی'],
         ];
 
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
@@ -431,7 +434,7 @@ class ProfileController extends Controller
 
         $user = Auth::user();
         $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
+        $profile = Profile::with('customer')->find($profileId);
         if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
 
         $oldDevice = Device::find($profile->device_id);
@@ -463,10 +466,6 @@ class ProfileController extends Controller
         switch ($status) {
             default:
             case 1:
-//                $user->notifyNow(1, [
-//                    'customer_name' => $profile->customer->fullName,
-//                    'marketer_name' => $user->name,
-//                ]);
                 $title = sprintf('ثبت اطلاعات پرونده توسط %s انجام شد.', $user->name);
                 $type = 'SUCCESS';
                 break;
@@ -548,6 +547,9 @@ class ProfileController extends Controller
             'title' => $title,
             'type' => $type
         ]);
+
+        NotificationController::handleProfileNotifications('PROFILE', $profile, $user);
+
     }
 
     public function downloadExcel(Request $request)

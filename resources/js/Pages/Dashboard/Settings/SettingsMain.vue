@@ -89,9 +89,33 @@
                                            type="text"
                                            class="mt-1 block"
                                            v-model="updateSettings.MAXIMUM_UPLOAD_SIZE"
-                                           ref="COMPANY_NAME"
+                                           ref="MAXIMUM_UPLOAD_SIZE"
                                            autocomplete="MAXIMUM_UPLOAD_SIZE"/>
                                 <jet-input-error :message="updateSettings.error('MAXIMUM_UPLOAD_SIZE')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6 sm:col-span-4">
+                                <jet-label for="SMS_API_TOKEN"
+                                           value="توکن پنل پیامک"/>
+                                <jet-input id="SMS_API_TOKEN"
+                                           type="text"
+                                           class="mt-1 block w-full text-sm"
+                                           style="direction: ltr"
+                                           v-model="updateSettings.SMS_API_TOKEN"
+                                           ref="SMS_API_TOKEN"
+                                           autocomplete="SMS_API_TOKEN"/>
+                                <jet-input-error :message="updateSettings.error('SMS_API_TOKEN')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6 sm:col-span-4">
+                                <jet-label for="SMS_ORIGINATOR"
+                                           value="شماره خط ارسال پیامک"/>
+                                <jet-input id="SMS_ORIGINATOR"
+                                           type="text"
+                                           class="mt-1 block"
+                                           style="direction: ltr"
+                                           v-model="updateSettings.SMS_ORIGINATOR"
+                                           ref="SMS_ORIGINATOR"
+                                           autocomplete="SMS_ORIGINATOR"/>
+                                <jet-input-error :message="updateSettings.error('SMS_ORIGINATOR')" class="mt-2"/>
                             </div>
                         </template>
                         <template #actions>
@@ -152,6 +176,8 @@
                     COMPANY_LOGO: this.$page.configs.companyLogo,
                     STATUS: this.$page.configs.status,
                     MAXIMUM_UPLOAD_SIZE: this.$page.configs.maximumUploadSize,
+                    SMS_API_TOKEN: this.$page.configs.smsApiToken,
+                    SMS_ORIGINATOR: this.$page.configs.smsOriginator,
                     deleteLogo: false,
                 }, {
                     bag: 'updateSettings',
@@ -166,7 +192,7 @@
                 }
 
                 this.updateSettings.post(route('dashboard.settings.update'), {
-                    preserveScroll: true
+
                 }).then(() => {
                     if (!this.updateSettings.hasErrors()) {
                         window.location.reload();

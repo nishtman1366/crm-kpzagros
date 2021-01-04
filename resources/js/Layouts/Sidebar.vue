@@ -14,8 +14,8 @@
                           <span class="user-name">
                             <strong>{{$page.user.name}}</strong>
                           </span></inertia-link>
-                            <span class="user-role">{{$page.user.levelText}}</span>
-                            <span class="user-status">
+                        <span class="user-role">{{$page.user.levelText}}</span>
+                        <span class="user-status">
                             <i class="material-icons">lens</i>
                             <span>Online</span>
                           </span>
@@ -88,7 +88,8 @@
                         <li v-if="$page.user.level!='MARKETER'" class="header-menu">
                             <span>دستگاه ها</span>
                         </li>
-                        <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'" class="sidebar-dropdown">
+                        <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'"
+                            class="sidebar-dropdown">
                             <inertia-link :href="route('dashboard.devices.list')">
                                 <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">dock</i>
                                 لیست دستگاه ها
@@ -100,7 +101,8 @@
                                 تعمیرات
                             </inertia-link>
                         </li>
-                        <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'" class="header-menu">
+                        <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'"
+                            class="header-menu">
                             <span>کاربران</span>
                         </li>
                         <li v-if="$page.user.level=='SUPERUSER'">
@@ -138,7 +140,7 @@
                         </li>
                         <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <inertia-link :href="route('dashboard.settings.devices.list')">
-                                <i  class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">developer_mode</i>
+                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">developer_mode</i>
                                 دستگاه ها
                             </inertia-link>
                         </li>
@@ -170,6 +172,18 @@
                             <inertia-link :href="route('dashboard.settings.licenses.list')">
                                 <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">content_paste</i>
                                 ارسال مدارک
+                            </inertia-link>
+                        </li>
+                        <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                            <inertia-link :href="route('dashboard.settings.notifications.types.list')">
+                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">textsms</i>
+                                انواع اعلان ها
+                            </inertia-link>
+                        </li>
+                        <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                            <inertia-link :href="route('dashboard.settings.notifications.events.list')">
+                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">sms_failed</i>
+                                تنظیمات اعلان ها
                             </inertia-link>
                         </li>
                         <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
@@ -217,7 +231,7 @@
 <script>
     export default {
         name: "Sidebar",
-        props:['user'],
+        props: ['user'],
         data() {
             return {}
         },

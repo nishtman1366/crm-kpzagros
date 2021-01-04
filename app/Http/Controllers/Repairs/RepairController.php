@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Repairs;
 use App\Exports\Profiles\ProfileExport;
 use App\Exports\Repairs\RepairExport;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Controllers\Payments\PaymentController;
 use App\Http\Requests\Repairs\CreateRepair;
 use App\Models\Repairs\Event;
@@ -106,11 +107,14 @@ class RepairController extends Controller
     public function store(CreateRepair $request)
     {
         $request->merge(['tracking_code' => $this->createTrackingCode()]);
+        $user = Auth::user();
+
         $repair = Repair::create($request->all());
         $typeList = $request->get('repairTypeList', []);
         foreach ($typeList as $item) {
             RepairTypesList::create(['repair_id' => $repair->id, 'type_id' => $item]);
         }
+        NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
 
         return redirect()->route('dashboard.repairs.list');
     }
@@ -181,7 +185,7 @@ class RepairController extends Controller
         }
         $repair->save();
 
-        $this->saveEvent($user, $repair->id, $status, $title, $request->get('message', $message));
+        $this->saveEvent($user, $repair, $status, $title, $request->get('message', $message));
 
         return redirect()->route('dashboard.repairs.list');
     }
@@ -196,7 +200,7 @@ class RepairController extends Controller
         return $trackingCode;
     }
 
-    private function saveEvent($user, $repairId, $status, $title = null, $message = null)
+    private function saveEvent($user, $repair, $status, $title = null, $message = null)
     {
         if (is_null($title)) {
             switch ($status) {
@@ -226,11 +230,13 @@ class RepairController extends Controller
         }
         Event::create([
             'user_id' => $user->id,
-            'repair_id' => $repairId,
+            'repair_id' => $repair->id,
             'status' => $status,
             'title' => $title,
             'description' => $message
         ]);
+
+        NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
     }
 
     public function downloadExcel(Request $request)

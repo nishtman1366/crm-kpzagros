@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Notifications\Profiles;
+namespace App\Notifications;
 
 use App\Channels\IpPanel;
-use App\Exceptions\NotificationException;
-use App\Models\Notifications\NotificationType;
+use App\Libraries\TemplateEngine;
+use App\Models\Notifications\Type;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AdminNotification extends Notification
+class ProfileNotification extends Notification
 {
     use Queueable;
 
@@ -21,19 +23,15 @@ class AdminNotification extends Notification
     /**
      * Create a new notification instance.
      *
-     * @param $notificationId
+     * @param Type $type
      * @param array $options
      */
-    public function __construct($notificationId, $options = [])
+    public function __construct(Type $type, $options = [])
     {
-        $this->notificationId = $notificationId;
         $this->options = $options;
-        $notificationType = NotificationType::find($notificationId);
-        if (is_null($notificationType)) throw new NotificationException();
-
-        $this->pattern = $notificationType->pattern;
-        $this->title = $notificationType->title;
-        $this->body = $notificationType->body;
+        $this->pattern = $type->pattern;
+        $this->title = $type->title;
+        $this->body = $type->body;
     }
 
     /**
@@ -49,9 +47,16 @@ class AdminNotification extends Notification
 
     public function toIpPanel($notifiable)
     {
+        $values = [];
+        foreach ($this->options as $key => $value) {
+            $search = strpos($this->body, $key);
+            if ($search) {
+                $values[$key] = $value;
+            }
+        }
         return [
             'patternCode' => $this->pattern,
-            'patternValues' => $this->options,
+            'patternValues' => $values,
             'error' => '',
             'message' => '',
         ];
@@ -65,9 +70,12 @@ class AdminNotification extends Notification
      */
     public function toArray($notifiable)
     {
+        $body = TemplateEngine::getTemplate($this->body)
+            ->setValues($this->options)
+            ->render();
         return [
             'title' => $this->title,
-            'body' => $this->body
+            'body' => $body
         ];
     }
 }
