@@ -54,6 +54,20 @@
                                     </a>
                                 </div>
                                 <div class="col-1 md:col-span-4">
+                                    <select id="psp_id"
+                                            name="psp_id"
+                                            ref="psp_id"
+                                            v-model="psp_id"
+                                            autocomplete="psp_id"
+                                            v-on:change="submitSearchForm"
+                                            title="فیلتر بر اساس سرویس دهنده"
+                                            v-b-tooltip.hover
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option :value="null">سرویس دهنده</option>
+                                        <option v-for="psp in psps" :key="psp.id"
+                                                :value="psp.id">{{psp.name}}
+                                        </option>
+                                    </select>
                                     <select id="status_id"
                                             name="status_id"
                                             ref="status_id"
@@ -858,6 +872,9 @@
 
             profiles: Object,
 
+            psps: Array,
+            pspId: String,
+
             statuses: Array,
             statusId: String,
 
@@ -875,6 +892,7 @@
         data() {
             return {
                 status_id: null,
+                psp_id: null,
                 agent_id: null,
                 marketer_id: null,
                 from_date: null,
@@ -988,6 +1006,7 @@
         },
         mounted() {
             this.query = this.searchQuery;
+            this.psp_id = this.pspId;
             this.status_id = this.statusId;
             this.agent_id = this.agentId;
             this.marketer_id = this.marketerId;
@@ -1219,6 +1238,7 @@
                     method: 'get',
                     data: {
                         query: this.query,
+                        pspId: this.psp_id,
                         statusId: this.status_id,
                         agentId: this.agent_id,
                         marketerId: this.marketer_id,

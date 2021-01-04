@@ -47,6 +47,13 @@ class ProfileController extends Controller
                 }
             });
 
+        $pspId = $request->query('pspId', null);
+        if (!is_null($pspId)) {
+            $profilesQuery->where(function ($query) use ($pspId) {
+                $query->where('psp_id', $pspId);
+            });
+        }
+
         $statusId = $request->query('statusId', null);
         if (!is_null($statusId)) {
             $profilesQuery->where(function ($query) use ($statusId) {
@@ -84,15 +91,17 @@ class ProfileController extends Controller
         $fromDate = str_replace('/', '-', $fromDate);
         $jFromDate = $fromDate;
         $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
-        $profilesQuery->where('created_at', '>=', $fromDate);
+        $profilesQuery->where('updated_at', '>=', $fromDate);
 
         $toDate = $request->query('toDate', Jalalian::now()->format('Y-m-d'));
         $toDate = str_replace('/', '-', $toDate);
         $jToDate = $toDate;
         $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
-        $profilesQuery->where('created_at', '<=', $toDate);
+        $profilesQuery->where('updated_at', '<=', $toDate);
 
-        $profiles = $profilesQuery->orderBy('updated_at', 'DESC')->paginate(30);
+        $profiles = $profilesQuery->orderBy('updated_at', 'DESC')
+            ->paginate(30);
+
         $paginatedLinks = paginationLinks($profiles->appends($request->query->all()));
 
 
@@ -117,6 +126,9 @@ class ProfileController extends Controller
             ['id' => 14, 'name' => 'درخواست جابجایی'],
             ['id' => 15, 'name' => 'رد درخواست جابجایی'],
         ];
+
+        $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
+
         $agents = [];
         if ($user->isAdmin() || $user->isSuperuser()) {
             $agents = User::where('level', 'AGENT')->where(function ($query) use ($user) {
@@ -135,6 +147,9 @@ class ProfileController extends Controller
         return Inertia::render('Dashboard/Profiles/ProfilesList',
             [
                 'profiles' => $profiles,
+
+                'psps' => $psps,
+                'pspId' => $pspId,
 
                 'statusId' => $statusId,
                 'statuses' => $statuses,

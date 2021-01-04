@@ -61,29 +61,31 @@
                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-indigo-600 text-lg m-2">اطلاعات مشتری</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات مشتری</p>
                                         <div v-if="profile.customer.type==='ORGANIZATION'"
                                              class="grid grid-cols-2 md:grid-cols-8 gap-3">
-                                            <div class="col-1 sm:col-span-1">نام شرکت</div>
-                                            <div class="col-1 sm:col-span-2">{{profile.customer.company_name}}</div>
+                                            <div class="col-1 sm:col-span-2">نام شرکت</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.customer.company_name}}
+                                            </div>
                                             <div class="col-1 sm:col-span-2">نام انگلیسی شرکت</div>
-                                            <div class="col-1 sm:col-span-3">
+                                            <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.customer.company_name_english}}
                                             </div>
-                                            <div class="col-1 sm:col-span-1">نام تجاری</div>
-                                            <div class="col-1 sm:col-span-3">
+                                            <div class="col-1 sm:col-span-2">نام تجاری</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.customer.business_name}}
                                             </div>
-                                            <div class="col-1 sm:col-span-1">تاریخ ثبت</div>
-                                            <div class="col-1 sm:col-span-1">
+                                            <div class="col-1 sm:col-span-2">تاریخ ثبت</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.customer.jRegDate}}
                                             </div>
-                                            <div class="col-1 sm:col-span-1">شماره ثبت</div>
-                                            <div class="col-1 sm:col-span-1">
+                                            <div class="col-1 sm:col-span-2">شماره ثبت</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.customer.reg_code}}
                                             </div>
-                                            <div class="col-1 sm:col-span-1">شناسه ملی</div>
-                                            <div class="col-1 sm:col-span-1">
+                                            <div class="col-1 sm:col-span-2">شناسه ملی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.customer.company_national_code}}
                                             </div>
                                             <div class="col-1 text-center text-indigo-600 sm:col-span-2">
@@ -105,137 +107,174 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div v-if="profile.customer.type==='ORGANIZATION'"
-                                             class="col-1 sm:col-span-2 md:col-span-4"
-                                             aria-hidden="true">
-                                            <div class="py-5">
-                                                <div
-                                                    class="border-t border-gray-200"></div>
-                                            </div>
+                                        <div v-if="profile.customer.type==='ORGANIZATION'" class="col-1 sm:col-span-8">
+                                            <jet-section-border></jet-section-border>
                                         </div>
-                                        <div class="grid grid-cols-2 md:grid-cols-8 gap-3">
-                                            <div class="col-1 sm:col-span-1">نام</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.first_name}}</div>
-                                            <div class="col-1 sm:col-span-1">نام انگلیسی</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.first_name_english}}
+                                        <div class="grid grid-cols-2 md:grid-cols-8 gap-y-6">
+                                            <div class="col-1 sm:col-span-2">نام</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.first_name}}</div>
+                                            <div class="col-1 sm:col-span-2">نام انگلیسی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.customer.first_name_english}}
                                             </div>
-                                            <div class="col-1 sm:col-span-1">نام خانوادگی</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.last_name}}</div>
-                                            <div class="col-1 sm:col-span-1">نام خانوادگی انگلیسی</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.last_name_english}}
+                                            <div class="col-1 sm:col-span-2">نام خانوادگی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.last_name}}
                                             </div>
-                                            <div class="col-1 sm:col-span-1">نام پدر</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.father}}</div>
-                                            <div class="col-1 sm:col-span-1">نام پدر انگلیسی</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.father_english}}</div>
-                                            <div class="col-1 sm:col-span-1">کد ملی</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.national_code}}</div>
-                                            <div class="col-1 sm:col-span-1">شماره شناسنامه</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.id_code}}</div>
-                                            <div class="col-1 sm:col-span-1">تاریخ تولد</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.jBirthday}}</div>
-                                            <div class="col-1 sm:col-span-1">جنسیت</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.customer.genderText}}</div>
-                                            <div class="col-1 sm:col-span-8"></div>
-                                            <div class="col-1 text-center text-indigo-600 sm:col-span-2">
+                                            <div class="col-1 sm:col-span-2">نام خانوادگی انگلیسی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.customer.last_name_english}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">نام پدر</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.father}}</div>
+                                            <div class="col-1 sm:col-span-2">نام پدر انگلیسی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.customer.father_english}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">کد ملی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.customer.national_code}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">شماره شناسنامه</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.id_code}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">تاریخ تولد</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.jBirthday}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">جنسیت</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.genderText}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-8">
+                                                <jet-section-border></jet-section-border>
+                                            </div>
+                                            <div
+                                                class="col-1 text-center text-indigo-600 sm:col-span-2 mx-1 hover:text-indigo-400">
                                                 <a target="_blank" :href="profile.customer.nationalCard1Url">
-                                                    <img :src="profile.customer.nationalCard1Url" class="w-full">
+                                                    <img :src="profile.customer.nationalCard1Url"
+                                                         class="w-full rounded border border-indigo-600 hover:border-indigo-400">
                                                     تصویر روی کارت ملی
                                                 </a>
                                             </div>
-                                            <div class="col-1 text-center text-indigo-600  sm:col-span-2">
+                                            <div
+                                                class="col-1 text-center text-indigo-600 sm:col-span-2 mx-1 hover:text-indigo-400">
                                                 <a target="_blank" :href="profile.customer.nationalCard2Url">
-                                                    <img :src="profile.customer.nationalCard2Url" class="w-full">
+                                                    <img :src="profile.customer.nationalCard2Url"
+                                                         class="w-full rounded border border-indigo-600 hover:border-indigo-400">
                                                     تصویر پشت کارت ملی
                                                 </a>
                                             </div>
-                                            <div class="col-1 text-center text-indigo-600  sm:col-span-2">
+                                            <div
+                                                class="col-1 text-center text-indigo-600 sm:col-span-2 mx-1 hover:text-indigo-400">
                                                 <a target="_blank" :href="profile.customer.idCardUrl">
-                                                    <img :src="profile.customer.idCardUrl" class="w-full">
+                                                    <img :src="profile.customer.idCardUrl"
+                                                         class="w-full rounded border border-indigo-600 hover:border-indigo-400">
                                                     تصویر شناسنامه
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
-                            <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-indigo-600 text-ld m-2">اطلاعات کسب و کار</p>
-                                        <div class="grid  grid-cols-2 md:grid-cols-8 gap-3">
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات کسب و کار</p>
+                                        <div class="grid  grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-1">استان</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.ostan}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.ostan}}</div>
                                             <div class="col-1 sm:col-span-1">شهرستان</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.shahrestan}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.shahrestan}}
+                                            </div>
                                             <div class="col-1 sm:col-span-1">بخش</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.bakhsh}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.bakhsh}}</div>
                                             <div class="col-1 sm:col-span-1">شهر</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.shahr}}</div>
-                                            <div class="col-1 sm:col-span-1">نام</div>
-                                            <div class="col-2 sm:col-span-2">{{profile.business.name}}</div>
-                                            <div class="col-1 sm:col-span-1">نام انگلیسی</div>
-                                            <div class="col-2 sm:col-span-2">{{profile.business.name_english}}</div>
-                                            <div class="col-1 sm:col-span-1">صنف مرتبط</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.senf}}</div>
-                                            <div class="col-1 sm:col-span-1">تلفن تماس</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.fullPhone}}</div>
-                                            <div class="col-1 sm:col-span-1">آدرس</div>
-                                            <div class="col-5 sm:col-span-5">{{profile.business.address}}</div>
-                                            <div class="col-1 sm:col-span-1">کد پستی</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.postal_code}}</div>
-                                            <div class="col-1 sm:col-span-1">جواز کسب</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.has_license}}</div>
-                                            <div class="col-1 sm:col-span-1">شماره جواز</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.license_code}}</div>
-                                            <div class="col-1 sm:col-span-1">تاریخ جواز</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.business.jLicenseDate}}</div>
-                                            <div class="col-1 sm:col-span-8"></div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.shahr}}</div>
+                                            <div class="col-1 sm:col-span-2">نام</div>
+                                            <div class="col-2 sm:col-span-2 font-bold">{{profile.business.name}}</div>
+                                            <div class="col-1 sm:col-span-2">نام انگلیسی</div>
+                                            <div class="col-2 sm:col-span-2 font-bold">
+                                                {{profile.business.name_english}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">صنف مرتبط</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business.senf}}</div>
+                                            <div class="col-1 sm:col-span-2">تلفن تماس</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business.fullPhone}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">آدرس</div>
+                                            <div class="col-5 sm:col-span-6 font-bold">{{profile.business.address}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">کد پستی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.business.postal_code}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">جواز کسب</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.business.has_license=='YES' ? 'دارد' : 'ندارد'}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">شماره جواز</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.business.license_code}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">تاریخ جواز</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.business.jLicenseDate}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-8">
+                                                <jet-section-border></jet-section-border>
+                                            </div>
                                             <div v-if="profile.business.has_license==='YES'"
-                                                 class="col-1 text-center text-indigo-600 sm:col-span-2">
+                                                 class="col-1 text-center text-indigo-600 sm:col-span-2 hover:text-indigo-400">
                                                 <a target="_blank" :href="profile.business.licenseFile">
-                                                    <img :src="profile.business.licenseFile" class="w-full">
+                                                    <img :src="profile.business.licenseFile"
+                                                         class="w-full rounded border border-indigo-600 hover:border-indigo-400">
                                                     تصویر جواز کسب
                                                 </a>
                                             </div>
-                                            <div v-else class="col-1 text-center text-indigo-600  sm:col-span-2">
+                                            <div v-else
+                                                 class="col-1 text-center text-indigo-600  sm:col-span-2 hover:text-indigo-400">
                                                 <a target="_blank" :href="profile.business.esteshhadFile">
-                                                    <img :src="profile.business.esteshhadFile" class="w-full">
+                                                    <img :src="profile.business.esteshhadFile"
+                                                         class="w-full rounded border-indigo-600 hover:border-indigo-400">
                                                     تصویر استشهادنامه
                                                 </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
-                            <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+
+
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-indigo-600 text-lg m-2">اطلاعات حساب های بانکی</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات حساب های بانکی</p>
                                         <div v-for="account in profile.accounts"
-                                             class="grid grid-cols-2 md:grid-cols-8 gap-3">
-                                            <div class="col-1 sm:col-span-1">بانک</div>
-                                            <div class="col-1 sm:col-span-1">{{account.account.bank.name}}</div>
-                                            <div class="col-1 sm:col-span-1">کد شعبه</div>
-                                            <div class="col-1 sm:col-span-1">{{account.account.branch}}</div>
-                                            <div class="col-1 sm:col-span-1">شماره حساب</div>
-                                            <div class="col-3 sm:col-span-3">{{account.account.account_number}}</div>
-                                            <div class="col-span-2 sm:col-span-1">شماره شبا</div>
-                                            <div class="col-span-2 sm:col-span-7">{{account.account.shebaText}}</div>
-                                            <div class="col-1 sm:col-span-1">صاحب حساب</div>
-                                            <div class="col-2 sm:col-span-2">{{account.account.fullName}}</div>
-                                            <div class="col-1 sm:col-span-1">کدملی</div>
-                                            <div class="col-1 sm:col-span-1">{{account.account.national_code}}</div>
-                                            <div class="col-1 sm:col-span-1">تاریخ تولد</div>
-                                            <div class="col-2 sm:col-span-2">{{account.account.jBirthday}}</div>
-                                            <div class="col-1 sm:col-span-1">شماره موبایل</div>
-                                            <div class="col-1 sm:col-span-1">{{account.account.mobile}}</div>
-                                            <div class="col-1 sm:col-span-8"></div>
-                                            <div class="col-1 text-center text-indigo-600 sm:col-span-2">
+                                             class="grid grid-cols-2 md:grid-cols-8 gap-y-6">
+                                            <div class="col-1 sm:col-span-2">بانک</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{account.account.bank.name}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">کد شعبه</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{account.account.branch}}</div>
+                                            <div class="col-1 sm:col-span-2">شماره حساب</div>
+                                            <div class="col-3 sm:col-span-6 font-bold">
+                                                {{account.account.account_number}}
+                                            </div>
+                                            <div class="col-span-2 sm:col-span-2">شماره شبا</div>
+                                            <div class="col-span-2 sm:col-span-6 font-bold">
+                                                {{account.account.shebaText}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">صاحب حساب</div>
+                                            <div class="col-2 sm:col-span-2 font-bold">{{account.account.fullName}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">کدملی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{account.account.national_code}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">تاریخ تولد</div>
+                                            <div class="col-2 sm:col-span-2 font-bold">{{account.account.jBirthday}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">شماره موبایل</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{account.account.mobile}}</div>
+                                            <div class="col-1 sm:col-span-8">
+                                                <jet-section-border></jet-section-border>
+                                            </div>
+                                        </div>
+                                        <div v-for="account in profile.accounts"
+                                             class="grid grid-cols-2 md:grid-cols-8 gap-y-6">
+                                            <div class="col-1 sm:col-span-2 text-center text-indigo-600">
                                                 <a target="_blank" :href="account.account.shebaFile">
                                                     <img :src="account.account.shebaFile" class="w-full">
                                                     تصویر تاییدیه شبا
@@ -244,89 +283,55 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
-                            <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
+
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-indigo-600 text-lg m-2">اطلاعات دستگاه</p>
-                                        <div class="grid  grid-cols-2 md:grid-cols-8 gap-3">
-                                            <div class="col-1 sm:col-span-1">نوع ارتباط</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.device_type.type.name}}</div>
-                                            <div class="col-1 sm:col-span-1">مدل دستگاه</div>
-                                            <div class="col-1 sm:col-span-1">{{profile.device_type.name}}</div>
-                                            <div class="col-1 sm:col-span-1">سریال دستگاه</div>
-                                            <div class="col-1 sm:col-span-3">
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات دستگاه</p>
+                                        <div class="grid  grid-cols-2 md:grid-cols-8 gap-y-6">
+                                            <div class="col-1 sm:col-span-2">نوع ارتباط</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.device_type.type.name}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">مدل دستگاه</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.device_type.name}}
+                                            </div>
+                                            <div class="col-1 sm:col-span-2">سریال دستگاه</div>
+                                            <div class="col-1 sm:col-span-6 font-bold">
                                                 {{profile.device ? profile.device.serial : 'تخصیص نیافته'}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">تاریخ شروع گارانتی</div>
-                                            <div class="col-1 sm:col-span-2">{{profile.device ?
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.device ?
                                                 profile.device.guarantee_start : 'ثبت نشده'}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">تاریخ پایان گارانتی</div>
-                                            <div class="col-1 sm:col-span-2">{{profile.device ?
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.device ?
                                                 profile.device.guarantee_end : 'ثبت نشده'}}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
-                            <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-indigo-600 text-lg m-2">اطلاعات شاپرک</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات شاپرک</p>
                                         <div class="grid grid-cols-2 md:grid-cols-8 gap-3">
                                             <div class="col-1 self-center sm:col-span-2">شرکت ارائه دهنده (PSP)</div>
-                                            <div class="col-1 sm:col-span-6">{{profile.psp ? profile.psp.name :
-                                                'نامشخص'}}
+                                            <div class="col-1 sm:col-span-6 font-bold">
+                                                {{profile.psp ? profile.psp.name : 'نامشخص'}}
                                             </div>
-                                            <div class="col-1 self-center sm:col-span-1">شماره پایانه</div>
-                                            <div
-                                                v-if="profile.status===6 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='AGENT')"
-                                                class="col-1 sm:col-span-2">
-                                                <input type="text"
-                                                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
-                                                       placeholder="شماره ترمینال"
-                                                       ref="terminal_id"
-                                                       id="terminal_id"
-                                                       v-model="profileForm.terminal_id"/>
-                                                <jet-input-error :message="profileForm.error('terminal_id')"
-                                                                 class="mt-2"/>
+                                            <div class="col-1 self-center sm:col-span-2">شماره پایانه</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.terminal_id ? profile.terminal_id : 'تخصیص نیافته'}}
                                             </div>
-                                            <div v-else class="col-1 sm:col-span-2">{{profile.terminal_id ?
-                                                profile.terminal_id
-                                                : 'تخصیص نیافته'}}
-                                            </div>
-                                            <div class="col-1 self-center sm:col-span-1">شماره پذیرنده</div>
-                                            <div
-                                                v-if="profile.status===6 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='AGENT')"
-                                                class="col-1 sm:col-span-2">
-                                                <input type="text"
-                                                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
-                                                       placeholder="شماره پذیرنده"
-                                                       ref="merchant_id"
-                                                       id="merchant_id"
-                                                       v-model="profileForm.merchant_id"/>
-                                                <jet-input-error :message="profileForm.error('merchant_id')"
-                                                                 class="mt-2"/>
-                                            </div>
-                                            <div v-else class="col-1 sm:col-span-2">{{profile.merchant_id ?
-                                                profile.merchant_id
-                                                : 'تخصیص نیافته'}}
+                                            <div class="col-1 self-center sm:col-span-2">شماره پذیرنده</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.merchant_id ? profile.merchant_id : 'تخصیص نیافته'}}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
-                            <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div class="grid grid-cols-2 md:grid-cols-8 gap-2">
                                     <div class="col-span-2 sm:col-span-8">
-                                        <p class="text-indigo-600 text-lg m-2">مدارک پرونده</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">مدارک پرونده</p>
                                     </div>
                                     <div v-for="license in profile.licenses" :key="license.id"
                                          class="text-center text-indigo-600 sm:col-span-2">
@@ -341,15 +346,16 @@
                                             class="block text-red-600 hover:text-red-400">حذف این تصویر
                                         </InertiaLink>
                                     </div>
-                                    <div class="col-span-2 sm:col-span-8">
-                                        <jet-section-border/>
-                                    </div>
-                                    <div v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false" class="col-span-2 sm:col-span-8">
-                                        <p class="text-indigo-600 text-lg m-2">
+                                    <div
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        class="col-span-2 sm:col-span-8">
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
                                             ارسال مدارک
                                         </p>
                                     </div>
-                                    <div v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false" class="col-span-2 sm:col-span-5">
+                                    <div
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        class="col-span-2 sm:col-span-5">
                                         <div>
                                             <label for="license_type_id">نوع مدرک</label>
                                             <select name="license_type_id"
@@ -385,7 +391,9 @@
                                                 class="mt-2"/>
                                         </div>
                                     </div>
-                                    <div v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false" class="col-span-2 sm:col-span-3">
+                                    <div
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        class="col-span-2 sm:col-span-3">
                                         <div
                                             class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
                                             <div class="space-y-1 text-center">
@@ -423,7 +431,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false" class="col-span-2 sm:col-span-8 text-left">
+                                    <div
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        class="col-span-2 sm:col-span-8 text-left">
                                         <jet-button @click.native="submitLicenseFile">ارسال فایل</jet-button>
                                     </div>
                                 </div>
