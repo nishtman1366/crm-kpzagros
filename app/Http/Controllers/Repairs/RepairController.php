@@ -127,7 +127,8 @@ class RepairController extends Controller
         foreach ($typeList as $item) {
             RepairTypesList::create(['repair_id' => $repair->id, 'type_id' => $item]);
         }
-        NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
+        $this->saveEvent($user, $repair, 1, null, null);
+
 
         return redirect()->route('dashboard.repairs.list');
     }

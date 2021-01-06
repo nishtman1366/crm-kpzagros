@@ -13,6 +13,8 @@ class NotificationController extends Controller
 {
     public static function handleProfileNotifications($type, $container, $user)
     {
+        Log::channel('notifications')->info('test 1');
+        Log::channel('daily')->info('test 1');
         $events = Event::with('type')
             ->where('event_type', $type)
             ->where('status', 1)
@@ -20,6 +22,8 @@ class NotificationController extends Controller
             ->get();
         $users = [];
         foreach ($events as $event) {
+            Log::channel('notifications')->info('test 2');
+            Log::channel('daily')->info('test 2');
             $notifiableUser = null;
             if ($event->level == 'SUPERUSER') {
                 $notifiableUser = User::find(1);
@@ -44,7 +48,6 @@ class NotificationController extends Controller
 
             if (!is_null($notifiableUser) && $notifiableUser->id !== $user->id && !in_array($notifiableUser->id, $users)) {
                 $options = static::getContainerOptions($container, $type);
-                Log::channel('notifications')->info(json_encode($notifiableUser));
                 $notifiableUser->notifyNow(new ProfileNotification($event->type, $options));
                 $users[] = $notifiableUser->id;
             }
