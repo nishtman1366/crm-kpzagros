@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DeviceController extends Controller
 {
@@ -187,7 +188,17 @@ class DeviceController extends Controller
     public function destroy(Request $request)
     {
         $deviceId = $request->route('id');
-        Device::destroy($deviceId);
+        $device = Device::find($deviceId);
+        if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
+        $user = Auth::user();
+        if ($user->isAgent()) {
+            if ($device->status == 2) throw new NotFoundHttpException('شما اجازه حذف این دستگاه را ندارید.');
+        }
+        if ($device->transport_status == 2) throw new NotFoundHttpException('دستگاه مورد نظر در انتظار نصب می باشد و شما نمیتوانید آنرا حذف کنید.');
+        if ($device->transport_status == 3) throw new NotFoundHttpException('دستگاه مورد نظر در محل پذیرنده نصب می باشد و شما نمیتوانید آنرا حذف کنید.');
+        if ($device->psp_status == 2) throw new NotFoundHttpException('دستگاه مورد نظر به پذیرنده اختصاص یافته است و شما نمیتوانید آنرا حذف کنید.');
+
+        $device->delete();
 
         return redirect()->route('dashboard.devices.list');
     }
