@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class ProfileNotification extends Notification
 {
@@ -32,6 +33,8 @@ class ProfileNotification extends Notification
         $this->pattern = $type->pattern;
         $this->title = $type->title;
         $this->body = $type->body;
+        Log::channel('notifications')->info('Sent');
+
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Models\Notifications\Event;
 use App\Models\User;
 use App\Notifications\ProfileNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -43,6 +44,7 @@ class NotificationController extends Controller
 
             if (!is_null($notifiableUser) && $notifiableUser->id !== $user->id && !in_array($notifiableUser->id, $users)) {
                 $options = static::getContainerOptions($container, $type);
+                Log::channel('notifications')->info(json_encode($notifiableUser));
                 $notifiableUser->notifyNow(new ProfileNotification($event->type, $options));
                 $users[] = $notifiableUser->id;
             }
