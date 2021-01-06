@@ -94,7 +94,7 @@ class LicenseController extends Controller
         if (!$user->isAdmin() && !$user->isSuperuser()) {
             if ($profile->user_id !== $user->id) throw new UnauthorizedHttpException('', 'شما اجازه دسترسی به این پرونده را ندارید.');
 
-            if ($profile->status !== 0 && $profile->status !== 10) throw new UnauthorizedHttpException('', 'در این مرحله امکان بارگزاری مدارک وجود ندارد.');
+            if ($profile->status !== 0 && $profile->status !== 10 && $profile->status !== 11) throw new UnauthorizedHttpException('', 'در این مرحله امکان بارگزاری مدارک وجود ندارد.');
         }
 
 
@@ -144,7 +144,7 @@ class LicenseController extends Controller
         if (!$user->isAdmin() && !$user->isSuperuser()) {
             if ($profile->user_id !== $user->id) throw new UnauthorizedHttpException('', 'شما اجازه دسترسی به این پرونده را ندارید.');
 
-            if ($profile->status !== 0 && $profile->status !== 10) throw new UnauthorizedHttpException('', 'در این مرحله امکان حذف مدارک وجود ندارد.');
+            if ($profile->status !== 0 && $profile->status !== 10 && $profile->status !== 11) throw new UnauthorizedHttpException('', 'در این مرحله امکان حذف مدارک وجود ندارد.');
         }
 
         $license = License::find($licenseId);
