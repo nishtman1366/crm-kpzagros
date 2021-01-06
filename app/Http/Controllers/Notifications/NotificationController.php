@@ -13,8 +13,6 @@ class NotificationController extends Controller
 {
     public static function handleProfileNotifications($type, $container, $user)
     {
-        Log::channel('notifications')->info('test 1');
-        Log::channel('daily')->info('test 1');
         $events = Event::with('type')
             ->where('event_type', $type)
             ->where('status', 1)
@@ -22,13 +20,13 @@ class NotificationController extends Controller
             ->get();
         $users = [];
         foreach ($events as $event) {
-            Log::channel('notifications')->info('test 2');
-            Log::channel('daily')->info('test 2');
             $notifiableUser = null;
             if ($event->level == 'SUPERUSER') {
                 $notifiableUser = User::find(1);
+                Log::channel('notifications')->info('SUPERUSER');
             } elseif ($event->level == 'ADMIN') {
                 $notifiableUser = User::where('level', 'ADMIN')->get()->first();
+                Log::channel('notifications')->info('ADMIN');
             } elseif ($event->level == 'AGENT') {
                 $profileUser = $container->user;
                 if ($profileUser->isSuperuser() || $profileUser->isAdmin() || $profileUser->isAgent()) {
@@ -36,14 +34,21 @@ class NotificationController extends Controller
                 } elseif ($profileUser->isMarketer()) {
                     $notifiableUser = $profileUser->parent;
                 }
+                Log::channel('notifications')->info('AGENT');
+
             } elseif ($event->level == 'MARKETER') {
                 $notifiableUser = $container->user;
+                Log::channel('notifications')->info('MARKETER');
             } elseif ($event->level == 'CUSTOMER') {
+                Log::channel('notifications')->info('CUSTOMER');
                 if ($type == 'PROFILES') {
                     $notifiableUser = $container->customer;
                 } elseif ($type == 'REPAIRS') {
                     $notifiableUser = $container;
+                    Log::channel('notifications')->info($notifiableUser->mobile);
+
                 }
+
             }
 
             if (!is_null($notifiableUser) && $notifiableUser->id !== $user->id && !in_array($notifiableUser->id, $users)) {
