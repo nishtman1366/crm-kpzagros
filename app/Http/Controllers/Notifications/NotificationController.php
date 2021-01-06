@@ -43,7 +43,7 @@ class NotificationController extends Controller
 
             }
 
-            if (!is_null($notifiableUser) && $notifiableUser->id !== $user->id && !in_array($notifiableUser->id, $users)) {
+            if (!is_null($notifiableUser)  && !in_array($notifiableUser->id, $users)) {
                 $options = static::getContainerOptions($container, $type);
                 $notifiableUser->notifyNow(new ProfileNotification($event->type, $options));
                 $users[] = $notifiableUser->id;
