@@ -490,7 +490,6 @@
                 message: '',
                 updateRepairForm: this.$inertia.form({
                     '_method': 'PUT',
-                    user_id: this.repair.user_id,
                     device_type_id: this.repair.device_type_id,
                     psp_id: this.repair.psp_id,
                     serial: this.repair.serial,
@@ -512,7 +511,6 @@
                 }),
                 updateRepairStatusForm: this.$inertia.form({
                     '_method': 'PUT',
-                    user_id: this.repair.user_id,
                     status: '',
                     message: ''
                 }, {

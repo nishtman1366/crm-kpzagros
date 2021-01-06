@@ -106,8 +106,21 @@ class RepairController extends Controller
 
     public function store(CreateRepair $request)
     {
-        $request->merge(['tracking_code' => $this->createTrackingCode()]);
+        $request->validateWithBag('newRepairForm', [
+            'device_type_id' => 'required',
+            'psp_id' => 'required',
+            'serial' => 'required',
+            'name' => 'required',
+            'mobile' => 'required',
+            'national_code' => 'required',
+            'repairTypeList' => 'required|array',
+        ]);
         $user = Auth::user();
+
+        $request->merge([
+            'user_id' => $user->id,
+            'tracking_code' => $this->createTrackingCode()
+        ]);
 
         $repair = Repair::create($request->all());
         $typeList = $request->get('repairTypeList', []);

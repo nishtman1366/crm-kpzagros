@@ -180,7 +180,6 @@
             return {
                 newRepairForm: this.$inertia.form({
                     '_method': 'POST',
-                    user_id: this.$page.user.id,
                     device_type_id: '',
                     psp_id: '',
                     serial: '',

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ProfileController extends Controller
 {
@@ -243,14 +244,15 @@ class ProfileController extends Controller
             ]);
         }
 
+        if ($status === 8) {
+            $device = Device::find($profile->device_id);
+            if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
+            $device->update(['transport_status' => 3]);
+        }
+
         $profile->fill($request->all());
         $profile->save();
 
-        if ($status === 8) {
-            Device::find($profile->device_id)->update([
-                'transport_status' => 3
-            ]);
-        }
         $this->setProfileMessage($status, $user, $profile, $request->get('message', null));
 
         if ($status == 2 || $status == 4) return back()->with(['message' => 'پرونده در لیست در حال بررسی قرار گرفت']);
@@ -292,17 +294,18 @@ class ProfileController extends Controller
 
         $user = Auth::user();
         $profileId = $request->route('profileId');
+
         $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
+
+        $device = Device::find($profile->device_id);
+        if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
+        $device->update(['psp_status' => 2]);
 
         $request->merge(['status' => 7]);
         $profile->fill($request->all());
 
         $profile->save();
-
-        Device::find($profile->device_id)->update([
-            'psp_status' => 2
-        ]);
 
         $this->setProfileMessage(7, $user, $profile, null);
 
