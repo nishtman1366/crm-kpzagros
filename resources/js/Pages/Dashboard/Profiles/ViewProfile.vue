@@ -477,11 +477,7 @@
                                             </JetButton>
                                             <!-- تغییر وضعیت پرونده توسط بازاریاب جهت بررسی مجدد -->
                                             <JetButton @click.native="updateProfileInfo(1)"
-                                                       v-if="profile.status===10"
-                                                       class="bg-yellow-600 hover:bg-yellow-800">ارسال جهت بررسی مجدد
-                                            </JetButton>
-                                            <JetButton @click.native="updateProfileInfo(4)"
-                                                       v-if="profile.status===11"
+                                                       v-if="profile.status===10 || profile.status===11"
                                                        class="bg-yellow-600 hover:bg-yellow-800">ارسال جهت بررسی مجدد
                                             </JetButton>
                                         </div>
