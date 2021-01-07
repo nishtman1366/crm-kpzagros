@@ -61,7 +61,8 @@
                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات مشتری</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
+                                            اطلاعات مشتری</p>
                                         <div v-if="profile.customer.type==='ORGANIZATION'"
                                              class="grid grid-cols-2 md:grid-cols-8 gap-3">
                                             <div class="col-1 sm:col-span-2">نام شرکت</div>
@@ -112,7 +113,8 @@
                                         </div>
                                         <div class="grid grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-2">نام</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.first_name}}</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.customer.first_name}}
+                                            </div>
                                             <div class="col-1 sm:col-span-2">نام انگلیسی</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.customer.first_name_english}}
@@ -173,7 +175,8 @@
                                         </div>
                                     </div>
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات کسب و کار</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
+                                            اطلاعات کسب و کار</p>
                                         <div class="grid  grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-1">استان</div>
                                             <div class="col-1 sm:col-span-1 font-bold">{{profile.business.ostan}}</div>
@@ -240,7 +243,8 @@
 
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات حساب های بانکی</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
+                                            اطلاعات حساب های بانکی</p>
                                         <div v-for="account in profile.accounts"
                                              class="grid grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-2">بانک</div>
@@ -286,7 +290,8 @@
 
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات دستگاه</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
+                                            اطلاعات دستگاه</p>
                                         <div class="grid  grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-2">نوع ارتباط</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
@@ -312,7 +317,8 @@
                                 </div>
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
-                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">اطلاعات شاپرک</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
+                                            اطلاعات شاپرک</p>
                                         <div class="grid grid-cols-2 md:grid-cols-8 gap-3">
                                             <div class="col-1 self-center sm:col-span-2">شرکت ارائه دهنده (PSP)</div>
                                             <div class="col-1 sm:col-span-6 font-bold">
@@ -331,7 +337,8 @@
                                 </div>
                                 <div class="grid grid-cols-2 md:grid-cols-8 gap-2">
                                     <div class="col-span-2 sm:col-span-8">
-                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">مدارک پرونده</p>
+                                        <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
+                                            مدارک پرونده</p>
                                     </div>
                                     <div v-for="license in profile.licenses" :key="license.id"
                                          class="text-center text-indigo-600 sm:col-span-2">
@@ -345,6 +352,14 @@
                                             method="DELETE"
                                             class="block text-red-600 hover:text-red-400">حذف این تصویر
                                         </InertiaLink>
+                                    </div>
+                                    <div v-if="$page.user.level=='ADMIN' || $page.user.level=='SUPERUSER'"
+                                         class="sm:col-span-8 text-left my-2">
+                                        <a :href="route('dashboard.profiles.licenses.downloadZipArchive',{profileId:profile.id})" target="_blank">
+                                            <jet-button class="bg-red-500 hover:bg-red-400">دریافت همه مدارک به صورت
+                                                یکجا
+                                            </jet-button>
+                                        </a>
                                     </div>
                                     <div
                                         v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
