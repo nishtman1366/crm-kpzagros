@@ -179,6 +179,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::prefix('licenses')->name('licenses.')->group(function () {
                 Route::post('', 'LicenseController@store')->name('store');
                 Route::delete('{licenseId}', 'LicenseController@destroy')->name('destroy');
+                Route::get('downloadZipArchive','LicenseController@downloadZipArchive')->name('downloadZipArchive');
             });
         });
     });

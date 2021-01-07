@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Profiles\License;
 use App\Models\Profiles\LicenseType;
 use App\Models\Profiles\Profile;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use ZipArchive;
 
 /**
  * Class LicenseController
@@ -155,5 +157,40 @@ class LicenseController extends Controller
         }
 
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+    }
+
+    public function downloadZipArchive(Request $request)
+    {
+        $profileId = $request->route('profileId');
+        $profile = Profile::with('customer')->find($profileId);
+        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
+
+        $licenses = License::where('profile_id', $profileId)->get();
+        $files = [];
+        foreach ($licenses as $license) {
+            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
+        }
+
+        if (count($files) > 0) {
+            $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $profile->customer->national_code));
+            $archive = new ZipArchive();
+            if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+                throw new Exception("Zip file could not be created: " . $archive->getStatusString());
+            }
+
+            foreach ($files as $file) {
+                if (! $archive->addFile($file, basename($file))) {
+                    throw new Exception("File [`{$file}`] could not be added to the zip file: ".$archive->getStatusString());
+                }
+            }
+
+            if (! $archive->close()) {
+                throw new Exception("Could not close zip file: ".$archive->getStatusString());
+            }
+
+            return response()->download($archiveFile, basename($archiveFile),['Content-Type' => 'application/octet-stream'])->deleteFileAfterSend(true);
+        }
+
+        throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");
     }
 }
