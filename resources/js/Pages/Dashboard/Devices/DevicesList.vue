@@ -233,6 +233,7 @@
                             </table>
                             <pagination
                                 :urlsArray="paginatedLinks"
+                                :total-rows="devices.total"
                                 :previousPageUrl="devices.prev_page_url"
                                 :nextPageUrl="devices.next_page_url"
                             >

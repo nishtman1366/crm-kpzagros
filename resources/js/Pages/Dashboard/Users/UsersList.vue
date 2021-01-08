@@ -77,6 +77,7 @@
                             <pagination
                                 :urlsArray="paginatedLinks"
                                 :previousPageUrl="users.prev_page_url"
+                                :total-rows="users.total"
                                 :nextPageUrl="users.next_page_url"
                             >
                             </pagination>

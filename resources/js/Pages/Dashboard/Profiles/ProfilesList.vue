@@ -285,6 +285,7 @@
                             </table>
                             <pagination
                                 :urlsArray="paginatedLinks"
+                                :totalRows="profiles.total"
                                 :previousPageUrl="profiles.prev_page_url"
                                 :nextPageUrl="profiles.next_page_url"
                             >

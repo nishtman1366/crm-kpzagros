@@ -2,8 +2,8 @@
     <div>
         <ul class="flex justify-self-center justify-center pl-0 list-none rounded my-2">
             <InertiaLink v-if="nextPageUrl"
-                :href="nextPageUrl"
-                class="page-link">
+                         :href="nextPageUrl"
+                         class="page-link">
                 <li
                     class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-blue-700 rounded-r hover:bg-gray-200"
                 >
@@ -20,7 +20,7 @@
                 </li>
             </InertiaLink>
             <InertiaLink v-if="previousPageUrl"
-                :href="previousPageUrl">
+                         :href="previousPageUrl">
                 <li
                     class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-blue-700 ml-0 rounded-l hover:bg-gray-200"
                 >
@@ -28,13 +28,18 @@
                 </li>
             </InertiaLink>
         </ul>
+        <div class="text-left my-1">
+          <span class="bg-gray-200 m-3 p-3 rounded">
+                تعداد پرونده ها: {{totalRows}}
+          </span>
+        </div>
     </div>
 </template>
 
 <script>
     export default {
         name: "Pagination",
-        props: ['urlsArray', 'previousPageUrl', 'nextPageUrl'],
+        props: ['urlsArray', 'previousPageUrl', 'nextPageUrl', 'totalRows'],
     }
 </script>
 
