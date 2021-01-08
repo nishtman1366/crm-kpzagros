@@ -80,6 +80,25 @@
                                 </select>
                                 <jet-input-error :message="updateRepairForm.error('psp_id')" class="mt-2"/>
                             </div>
+                            <div class="col-span-6 sm:col-span-2">
+                                <jet-label for="guarantee_end" value="تاریخ پایان گارانتی"/>
+                                <date-picker
+                                    ref="guarantee_cal"
+                                    input-format="YYYY-MM-DD"
+                                    format="jYYYY/jMM/jDD"
+                                    @change="selectGuaranteeEnd"
+                                    element="guarantee_end"
+                                    v-model="guarantee_end">
+                                </date-picker>
+                                <jet-input id="guarantee_end"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="guarantee_end"
+                                           ref="guarantee_end"
+                                           autocomplete="guarantee_end"
+                                           readonly="true"/>
+                                <jet-input-error :message="updateRepairForm.error('guarantee_end')" class="mt-2"/>
+                            </div>
                             <div class="col-span-6">
                                 <jet-section-border></jet-section-border>
                             </div>
@@ -148,7 +167,7 @@
                                 تعمیرات
                             </div>
                             <div
-                                v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL'"
+                                v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL'"
                                 class="col-span-6 sm:col-span-2">
                                 <jet-label for="location_id" value="محل تعمیرات"/>
                                 <select id="location_id" name="location_id" ref="location_id"
@@ -169,7 +188,7 @@
                                            class="mt-1 block w-full"
                                            v-model="updateRepairForm.price"
                                            ref="price"
-                                           :disabled="$page.user.level=='AGENT' || $page.user.level=='MARKETER'"
+                                           :disabled="$page.user.level==='AGENT' || $page.user.level==='MARKETER'"
                                            autocomplete="price"/>
                                 <jet-input-error :message="updateRepairForm.error('price')" class="mt-2"/>
                             </div>
@@ -232,7 +251,7 @@
                                            class="mt-1 block w-full"
                                            v-model="updateRepairForm.deposit"
                                            ref="deposit"
-                                           :disabled="$page.user.level=='AGENT' || $page.user.level=='MARKETER'"
+                                           :disabled="$page.user.level==='AGENT' || $page.user.level==='MARKETER'"
                                            autocomplete="deposit"/>
                                 <jet-input-error :message="updateRepairForm.error('deposit')" class="mt-2"/>
                             </div>
@@ -292,7 +311,7 @@
                                         </td>
                                         <td class="py-4 text-center text-gray-900">
                                             <InertiaLink
-                                                v-if="payment.status==1 && $page.user.level=='ADMIN' || $page.user.level=='SUPERUSER'"
+                                                v-if="payment.status==1 && $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                                 :href="route('dashboard.payments.confirm',{paymentId: payment.id})"
                                                 class="tooltip-box text-indigo-600 hover:text-indigo-900">
                                                 <button title="تایید پرداخت"
@@ -316,7 +335,8 @@
                                           v-model="updateRepairForm.technical_description"
                                           ref="technical_description"
                                           autocomplete="technical_description" rows="3" cols="60"></textarea>
-                                <jet-input-error :message="updateRepairStatusForm.error('technical_description')" class="mt-2"/>
+                                <jet-input-error :message="updateRepairStatusForm.error('technical_description')"
+                                                 class="mt-2"/>
                             </div>
                         </template>
                         <template #actions>
@@ -330,7 +350,7 @@
                                 ویرایش اطلاعات پرونده / ثبت گزارش
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==1 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL')"
+                                v-if="repair.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(2)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -339,7 +359,7 @@
                                 دریافت توسط واحد فنی
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==2 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL')"
+                                v-if="repair.status==2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(3)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -348,7 +368,7 @@
                                 در صف تعمیر
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==3 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL')"
+                                v-if="repair.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(4)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -357,7 +377,7 @@
                                 تعمیر شده
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==4 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL')"
+                                v-if="repair.status==4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(5)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -366,7 +386,7 @@
                                 در انتظار پرداخت
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==5 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL')"
+                                v-if="repair.status==5 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="showPaymentModal"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -375,7 +395,7 @@
                                 پرداخت هزینه
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==6 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='TECHNICAL')"
+                                v-if="repair.status==6 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(7)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -488,11 +508,13 @@
                 viewPaymentModal: false,
                 paymentDate: '',
                 message: '',
+                guarantee_end: this.repair.jGuaranteeEnd,
                 updateRepairForm: this.$inertia.form({
                     '_method': 'PUT',
                     device_type_id: this.repair.device_type_id,
                     psp_id: this.repair.psp_id,
                     serial: this.repair.serial,
+                    guarantee_end: this.repair.guarantee_end,
                     name: this.repair.name,
                     mobile: this.repair.mobile,
                     national_code: this.repair.national_code,
@@ -566,6 +588,9 @@
                     case 2:
                         return 'bg-green-100 text-green-800';
                 }
+            },
+            selectGuaranteeEnd(e) {
+                this.updateRepairForm.guarantee_end = e.format('YYYY/MM/DD');
             }
         }
     }

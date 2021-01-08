@@ -18,7 +18,7 @@ class Repair extends Model
     protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
         'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit'];
 
-    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt'];
+    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'jGuaranteeEnd'];
 
     public function getStatusTextAttribute()
     {
@@ -48,6 +48,12 @@ class Repair extends Model
                 return 'ثبت موقت';
                 break;
         }
+    }
+
+    public function getJGuaranteeEndAttribute()
+    {
+        if (is_null($this->attributes['guarantee_end'])) return '';
+        return Jalalian::forge($this->attributes['guarantee_end'])->format('Y/m/d');
     }
 
     public function getJCreatedAtAttribute()

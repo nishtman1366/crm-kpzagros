@@ -166,6 +166,7 @@ class RepairController extends Controller
         $user = Auth::user();
         $title = null;
         $message = null;
+        $notification = true;
         if ($request->has('status') && $request->get('status') > 1) {
             $status = $request->get('status');
             $repair->status = $status;
@@ -196,10 +197,11 @@ class RepairController extends Controller
             $title = 'اطلاعات پرونده بروزرسانی شد.';
             $status = $repair->status;
             $repair->fill($request->all());
+            $notification = false;
         }
         $repair->save();
 
-        $this->saveEvent($user, $repair, $status, $title, $request->get('message', $message));
+        $this->saveEvent($user, $repair, $status, $title, $request->get('message', $message), $notification);
 
         return redirect()->route('dashboard.repairs.list');
     }
@@ -214,7 +216,7 @@ class RepairController extends Controller
         return $trackingCode;
     }
 
-    private function saveEvent($user, $repair, $status, $title = null, $message = null)
+    private function saveEvent($user, $repair, $status, $title = null, $message = null, $notification = true)
     {
         if (is_null($title)) {
             switch ($status) {
@@ -249,8 +251,9 @@ class RepairController extends Controller
             'title' => $title,
             'description' => $message
         ]);
-
-        NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
+        if ($notification) {
+            NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
+        }
     }
 
     public function downloadExcel(Request $request)

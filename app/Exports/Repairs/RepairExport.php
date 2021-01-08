@@ -40,7 +40,7 @@ class RepairExport implements FromCollection, WithHeadings
                 'serial' => $item->serial,
                 'types' => implode(', ', $repairTypes->toArray()),
                 'psp_name' => is_null($item->psp) ? '' : $item->psp->name,
-                'guarantee_name' => $item->guarantee_end,
+                'guarantee_name' => $item->jGuaranteeEnd,
                 'new_serial' => $item->new_serial,
                 'loan_serial' => $item->loan_serial,
                 'national_code' => $item->national_code,
