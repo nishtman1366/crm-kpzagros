@@ -37,10 +37,6 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        موجودی
-                                    </th>
-                                    <th scope="col"
-                                        class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         وضعیت
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50">عملیات</th>
@@ -53,14 +49,6 @@
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         {{device.type.name}}
-                                    </td>
-                                    <td class="px-6 py-4 text-center text-gray-900">
-                                        <div class="text-sm text-green-900">سالم {{device.physicalStatus1Count |
-                                            persianDigit}}
-                                        </div>
-                                        <div class="text-sm text-red-900">خراب {{device.physicalStatus2Count |
-                                            persianDigit}}
-                                        </div>
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         <span

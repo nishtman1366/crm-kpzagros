@@ -9,7 +9,7 @@
                           :accounts-info="profile.accounts.length > 0"
                           :device-info="!!profile.device_type"
                           :profile-id="profile.id"
-                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
             ></ProfileSteps>
             <div>
                 <div class="md:grid md:grid-cols-3 md:gap-6 bg-gray-300  rounded-lg">

@@ -21,7 +21,7 @@
                                 چنانچه مدل مورد نظر شما در لیست موجود نیست، باید از مدیر خود بخواهید که مدل مورد نظر شما
                                 را ثبت نماید.
                             </p>
-                            <p v-else-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                            <p v-else-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                class="mt-5 p-3 text-sm text-white bg-yellow-500 rounded">
                                 چنانچه مدل مورد نظر شما در لیست موجود نیست، باید از طریق بخش «تنظیمات >> دستگاه ها» مدل
                                 مورد نظر خود را ثبت نماید.
@@ -173,7 +173,7 @@
                                         <jet-input-error :message="deviceForm.error('psp_status')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                          class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             مالک:
@@ -191,7 +191,7 @@
                                         <jet-input-error :message="deviceForm.error('user_id')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'" class="col-2 sm:col-span-2">
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'" class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             وضعیت:
                                         </label>

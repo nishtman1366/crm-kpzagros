@@ -4,7 +4,7 @@
         <template #dashboardContent>
             <ProfileSteps :step="1"
                           :profile-id="profile.id"
-                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
             >
             </ProfileSteps>
             <div>

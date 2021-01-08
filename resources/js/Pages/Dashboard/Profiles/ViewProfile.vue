@@ -9,7 +9,7 @@
                           :accounts-info="profile.accounts.length > 0"
                           :device-info="!!profile.device_type"
                           :profile-id="profile.id"
-                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
             ></ProfileSteps>
             <div>
                 <div class="md:grid md:grid-cols-3 md:gap-6 bg-gray-300  rounded-lg">
@@ -217,6 +217,10 @@
                                             <div class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.business.jLicenseDate}}
                                             </div>
+                                            <div class="col-1 sm:col-span-2">کد مالیاتی</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                {{profile.business.tax_code}}
+                                            </div>
                                             <div class="col-1 sm:col-span-8">
                                                 <jet-section-border></jet-section-border>
                                             </div>
@@ -347,13 +351,13 @@
                                             {{license.type.name}}
                                         </a>
                                         <InertiaLink
-                                            v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                            v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
                                             :href="route('dashboard.profiles.licenses.destroy',{profileId:profile.id,licenseId:license.id})"
                                             method="DELETE"
                                             class="block text-red-600 hover:text-red-400">حذف این تصویر
                                         </InertiaLink>
                                     </div>
-                                    <div v-if="$page.user.level=='ADMIN' || $page.user.level=='SUPERUSER'"
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                          class="sm:col-span-8 text-left my-2">
                                         <a :href="route('dashboard.profiles.licenses.downloadZipArchive',{profileId:profile.id})" target="_blank">
                                             <jet-button class="bg-red-500 hover:bg-red-400">دریافت همه مدارک به صورت
@@ -362,14 +366,14 @@
                                         </a>
                                     </div>
                                     <div
-                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
                                         class="col-span-2 sm:col-span-8">
                                         <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
                                             ارسال مدارک
                                         </p>
                                     </div>
                                     <div
-                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
                                         class="col-span-2 sm:col-span-5">
                                         <div>
                                             <label for="license_type_id">نوع مدرک</label>
@@ -407,7 +411,7 @@
                                         </div>
                                     </div>
                                     <div
-                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
                                         class="col-span-2 sm:col-span-3">
                                         <div
                                             class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -447,7 +451,7 @@
                                         </div>
                                     </div>
                                     <div
-                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                                        v-if="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
                                         class="col-span-2 sm:col-span-8 text-left">
                                         <jet-button @click.native="submitLicenseFile">ارسال فایل</jet-button>
                                     </div>
@@ -470,23 +474,23 @@
                                             </JetButton>
                                             <!-- تغییر وضعیت پرونده توسط مدیر به تایید شده یا برگشت پرونده -->
                                             <JetButton @click.native="openErrorModal(10)"
-                                                       v-if="profile.status===2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN')"
+                                                       v-if="profile.status===2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                                        class="bg-red-600 hover:bg-red-800">
                                                 عدم تایید به علت نقص مدارک
                                             </JetButton>
                                             <JetButton @click.native="updateProfileInfo(3)"
-                                                       v-if="profile.status===2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN')"
+                                                       v-if="profile.status===2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                                        class="bg-green-600 hover:bg-green-800">
                                                 تایید مدارک
                                             </JetButton>
                                             <!-- تغییر وضعیت پرونده توسط مدیر به تایید شده توسط شاپرک یا ردشده توسط شاپرک -->
                                             <JetButton @click.native="openErrorModal(11)"
-                                                       v-if="profile.status===4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN')"
+                                                       v-if="profile.status===4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                                        class="bg-red-600 hover:bg-red-800">
                                                 عدم تایید شاپرک
                                             </JetButton>
                                             <JetButton @click.native="updateProfileInfo(5)"
-                                                       v-if="profile.status===4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN')"
+                                                       v-if="profile.status===4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                                        class="bg-indigo-600 hover:bg-indigo-800">
                                                 تایید توسط شاپرک
                                             </JetButton>

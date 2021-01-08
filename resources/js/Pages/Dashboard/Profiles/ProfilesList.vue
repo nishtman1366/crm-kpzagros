@@ -27,7 +27,7 @@
                                             ثبت پذیرنده جدید
                                         </jet-button>
                                     </InertiaLink>
-                                    <jet-button v-show="$page.user.level=='ADMIN' || $page.user.level=='SUPERUSER'"
+                                    <jet-button v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                                 @click.native="uploadExcel"
                                                 class="my-5 mx-1 bg-green-600 hover:bg-green-500 sm:float-left">
                                         <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
                                         </svg>
                                         ورود اطلاعات
                                     </jet-button>
-                                    <a v-show="$page.user.level=='ADMIN' || $page.user.level=='SUPERUSER'"
+                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                        target="_blank"
                                        :href="route('dashboard.profiles.downloadExcel',{
                                                 query: query,
@@ -82,7 +82,7 @@
                                                 :value="statusItem.id">{{statusItem.name}}
                                         </option>
                                     </select>
-                                    <select v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                    <select v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                             id="agent_id"
                                             name="agent_id"
                                             ref="agent_id"
@@ -204,7 +204,7 @@
                                             </button>
                                         </InertiaLink>
                                         <button
-                                            v-if="profile.status==1 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT')"
+                                            v-if="profile.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
                                             v-on:click="updateProfileStatus(profile.id,2)"
                                             class="text-green-400 hover:text-green-500"
                                             title="دردست بررسی"
@@ -212,7 +212,7 @@
                                             <i class="material-icons">check_circle</i>
                                         </button>
                                         <button
-                                            v-if="profile.status==3 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN')"
+                                            v-if="profile.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                             v-on:click="updateProfileStatus(profile.id,4)"
                                             class="text-green-400 hover:text-green-500"
                                             title="ثبت در psp"
@@ -220,7 +220,7 @@
                                             <i class="material-icons">assignment_turned_in</i>
                                         </button>
                                         <button
-                                            v-if="profile.status==5 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT')"
+                                            v-if="profile.status==5 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
                                             v-on:click="viewDevicesModal(profile.id)"
                                             class="text-green-400 hover:text-green-500"
                                             title="انتخاب دستگاه"
@@ -228,7 +228,7 @@
                                             <i class="material-icons">keyboard_hide</i>
                                         </button>
                                         <button
-                                            v-if="profile.status==6 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN')"
+                                            v-if="profile.status==6 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                             v-on:click="selectTerminal(profile.id)"
                                             class="text-blue-600 hover:text-blue-700"
                                             title="تخصیص"
@@ -250,7 +250,7 @@
                                             <i class="material-icons">undo</i>
                                         </button>
                                         <button
-                                            v-if="profile.status == 14 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT')"
+                                            v-if="profile.status == 14 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
                                             v-on:click="selectNewSerial(profile.id,profile.change_reason)"
                                             class="text-blue-600 hover:text-blue-700"
                                             title="تخصیص سریال جدید"
@@ -258,7 +258,7 @@
                                             <i class="material-icons">change_circle</i>
                                         </button>
                                         <button
-                                            v-if="profile.status == 15 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN')"
+                                            v-if="profile.status == 15 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                             v-on:click="confirmChangeSerial(profile.id,profile.change_reason)"
                                             class="text-blue-600 hover:text-blue-700"
                                             title="تایید جابجایی"

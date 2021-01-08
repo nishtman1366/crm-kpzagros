@@ -24,7 +24,7 @@
                                 چنانچه مدل مورد نظر شما در لیست موجود نیست، باید از مدیر خود بخواهید که مدل مورد نظر شما
                                 را ثبت نماید.
                             </p>
-                            <p v-else-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                            <p v-else-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                class="mt-5 p-3 text-sm text-white bg-yellow-500 rounded">
                                 چنانچه مدل مورد نظر شما در لیست موجود نیست، باید از طریق بخش «تنظیمات >> دستگاه ها» مدل
                                 مورد نظر خود را ثبت نماید.
@@ -42,7 +42,8 @@
                                         <label for="device_type_id" class="block text-sm font-medium text-gray-700">
                                             نوع ارتباط دستگاه:
                                         </label>
-                                        <button v-for="connectionType in deviceConnectionTypes" :key="connectionType.id"
+                                        <button :disabled="$page.user.level==='AGENT' && device.status===2"
+                                                v-for="connectionType in deviceConnectionTypes" :key="connectionType.id"
                                                 v-on:click="selectDeviceConnection(connectionType.id)"
                                                 class="mx-2 sm:col-span-2 inline-flex justify-center py-2 px-4 border border-green-700 shadow-sm text-sm font-medium rounded-md bg-white hover:bg-green-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                                 :class="chosenConnectionType===connectionType.id ? 'bg-green-700 text-white' : ' text-green-600'">
@@ -69,7 +70,8 @@
                                                         stroke-linejoin="round"/>
                                                 </svg>
                                                 <h1 class="text-lg">{{deviceType.name}}</h1>
-                                                <button type="submit"
+                                                <button :disabled="$page.user.level==='AGENT' && device.status===2"
+                                                        type="submit"
                                                         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                                         v-on:click="chooseDeviceType(deviceType.id)">
                                                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -95,6 +97,7 @@
                                                placeholder="شماره سریال دستگاه"
                                                ref="serial"
                                                id="serial"
+                                               :disabled="$page.user.level==='AGENT' && device.status===2"
                                                v-model="deviceForm.serial"/>
                                         <jet-input-error :message="deviceForm.error('serial')"
                                                          class="mt-2"/>
@@ -112,6 +115,7 @@
                                                ref="guarantee_start"
                                                id="guarantee_start"
                                                v-model="deviceForm.guarantee_start"
+                                               :disabled="$page.user.level==='AGENT' && device.status===2"
                                                readonly/>
                                         <jet-input-error :message="deviceForm.error('guarantee_start')"
                                                          class="mt-2"/>
@@ -129,6 +133,7 @@
                                                ref="guarantee_end"
                                                id="guarantee_end"
                                                v-model="deviceForm.guarantee_end"
+                                               :disabled="$page.user.level==='AGENT' && device.status===2"
                                                readonly/>
                                         <jet-input-error :message="deviceForm.error('guarantee_end')"
                                                          class="mt-2"/>
@@ -141,7 +146,8 @@
                                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                 id="physical_status"
                                                 v-model="deviceForm.physical_status"
-                                                ref="physical_status">
+                                                ref="physical_status"
+                                                :disabled="$page.user.level==='AGENT' && device.status===2">
                                             <option value="1">سالم</option>
                                             <option value="2">خراب</option>
                                         </select>
@@ -156,7 +162,8 @@
                                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                 id="transport_status"
                                                 v-model="deviceForm.transport_status"
-                                                ref="transport_status">
+                                                ref="transport_status"
+                                                :disabled="$page.user.level==='AGENT' && device.status===2">
                                             <option value="1">در انبار</option>
                                             <option value="2">در انتظار نصب</option>
                                             <option value="3">نصب شده</option>
@@ -172,14 +179,15 @@
                                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                 id="psp_status"
                                                 v-model="deviceForm.psp_status"
-                                                ref="psp_status">
+                                                ref="psp_status"
+                                                :disabled="$page.user.level==='AGENT' && device.status===2">
                                             <option value="1"> انتظار تخصیص</option>
                                             <option value="2">تخصیص داده شده</option>
                                         </select>
                                         <jet-input-error :message="deviceForm.error('psp_status')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                          class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             مالک:
@@ -197,7 +205,7 @@
                                         <jet-input-error :message="deviceForm.error('user_id')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                          class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             وضعیت:
@@ -212,8 +220,7 @@
                                         <jet-input-error :message="deviceForm.error('status')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div  v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
-                                          class="col-2 sm:col-span-6">
+                                    <div class="col-2 sm:col-span-6">
                                         <label for="description" class="block text-sm font-medium text-gray-700">
                                             توضیحات:
                                         </label>
@@ -222,6 +229,7 @@
                                                   name="description"
                                                   class="form-input block w-full"
                                                   v-model="deviceForm.description"
+                                                  :disabled="$page.user.level!=='ADMIN' || $page.user.level!=='SUPERUSER'"
                                         ></textarea>
                                         <jet-input-error :message="deviceForm.error('description')"
                                                          class="mt-2"/>

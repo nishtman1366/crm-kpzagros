@@ -91,6 +91,8 @@ class User extends Authenticatable
                 return 'بازاریاب';
             case 'TECHNICAL':
                 return 'کارشناس فنی';
+            case 'OFFICE':
+                return 'کارمند اداری';
         }
     }
 
@@ -132,8 +134,16 @@ class User extends Authenticatable
         return false;
     }
 
+
+    public function isOffice()
+    {
+        if ($this->attributes['level'] == 'OFFICE') return true;
+
+        return false;
+    }
+
     protected function defaultProfilePhotoUrl()
     {
-        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&color=7F9CF5&background=EBF4FF';
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
     }
 }

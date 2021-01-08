@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Profiles;
 
-use App\Exceptions\NotificationException;
 use App\Exports\Profiles\ProfileExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notifications\NotificationController;
@@ -16,6 +15,7 @@ use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
@@ -26,6 +26,33 @@ class ProfileController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
+        $userIdList = collect([]);
+        if ($user->isAdmin() || $user->isAgent() || $user->isMarketer() || $user->isOffice()) {
+            $userIdList->push($user->id);
+        }
+
+        if ($user->isAdmin() || $user->isAgent() || $user->isOffice()) {
+            if ($user->isOffice()) {
+                $userIdList->push($user->parent_id);
+                $childrenId = User::where('parent_id', $user->parent_id)->pluck('id');
+            } else {
+                $childrenId = User::where('parent_id', $user->id)->pluck('id');
+            }
+            $userIdList = $userIdList->merge($childrenId);
+        }
+
+        if ($user->isAdmin() || $user->isOffice()) {
+            if ($user->isOffice()) {
+                $parentsLis = User::where('parent_id', $user->parent_id)->pluck('id');
+            } else {
+                $parentsLis = User::where('parent_id', $user->id)->pluck('id');
+            }
+            $childrenId = User::whereIn('parent_id', $parentsLis)->pluck('id');
+            $userIdList = $userIdList->merge($childrenId);
+        }
+
+//        DB::enableQueryLog();
         $profilesQuery = Profile::with('customer')
             ->with('psp')
             ->with('user')
@@ -36,19 +63,27 @@ class ProfileController extends Controller
                 if (!$user->isSuperuser()) {
                     $query->where('user_id', $user->id);
 
-                    if ($user->isAgent() || $user->isAdmin()) {
-                        $query->orWhereHas('user', function ($query) use ($user) {
-                            $query->where('parent_id', $user->id);
+                    if ($user->isAgent() || $user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
                         });
                     }
 
-                    if ($user->isAdmin()) {
-                        $query->orWhereHas('user.parent', function ($query) use ($user) {
-                            $query->where('parent_id', $user->id);
+                    if ($user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user.parent', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
                         });
+                    }
+
+                    if ($user->isOffice()) {
+                        $query->orWhere('user_id', $user->parent_id);
                     }
                 }
             });
+//        dd(DB::getQueryLog());
+
 
         $pspId = $request->query('pspId', null);
         if (!is_null($pspId)) {
@@ -174,7 +209,8 @@ class ProfileController extends Controller
         );
     }
 
-    public function create(Request $request)
+    public
+    function create(Request $request)
     {
         $user = Auth::user();
         $profile = Profile::create(['user_id' => $user->id]);
@@ -182,7 +218,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.customers.create', ['profileId' => $profile->id]);
     }
 
-    public function view(Request $request)
+    public
+    function view(Request $request)
     {
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -216,7 +253,8 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public
+    function update(Request $request)
     {
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -260,7 +298,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
     }
 
-    public function updateSerial(Request $request)
+    public
+    function updateSerial(Request $request)
     {
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -285,7 +324,8 @@ class ProfileController extends Controller
 
     }
 
-    public function updateTerminal(Request $request)
+    public
+    function updateTerminal(Request $request)
     {
         $request->validateWithBag('terminalForm', [
             'terminal_id' => 'required',
@@ -313,7 +353,8 @@ class ProfileController extends Controller
 
     }
 
-    public function cancelRequest(Request $request)
+    public
+    function cancelRequest(Request $request)
     {
         $request->validateWithBag('cancelRequestForm', [
             'cancel_reason' => 'required',
@@ -334,7 +375,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست فسخ پرونده با موفقیت ثبت شد.']);
     }
 
-    public function cancelConfirm(Request $request)
+    public
+    function cancelConfirm(Request $request)
     {
         $cancelType = $request->get('confirmCancelMessage');
         $status = 9;
@@ -359,7 +401,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه فسخ پرونده با موفقیت ثبت شد.']);
     }
 
-    public function changeRequest(Request $request)
+    public
+    function changeRequest(Request $request)
     {
         $request->validateWithBag('changeSerialRequestForm', [
             'change_reason' => 'required',
@@ -381,7 +424,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست جابجایی سریال با موفقیت ثبت شد.']);
     }
 
-    public function getNewDeviceByAjax(Request $request)
+    public
+    function getNewDeviceByAjax(Request $request)
     {
         $profileId = $request->route('profileId');
         $profile = Profile::find($profileId);
@@ -394,7 +438,8 @@ class ProfileController extends Controller
         return response()->json($device);
     }
 
-    public function getNewDeviceTypeByAjax(Request $request)
+    public
+    function getNewDeviceTypeByAjax(Request $request)
     {
         $profileId = $request->route('profileId');
         $profile = Profile::find($profileId);
@@ -404,7 +449,8 @@ class ProfileController extends Controller
         return response()->json($deviceType);
     }
 
-    public function newSerial(Request $request)
+    public
+    function newSerial(Request $request)
     {
         $request->validateWithBag('selectNewSerialForm', [
             'new_device_id' => 'required',
@@ -424,7 +470,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'سریال جدید با موفقیت ثبت شد.']);
     }
 
-    public function changeConfirm(Request $request)
+    public
+    function changeConfirm(Request $request)
     {
         $cancelType = $request->get('confirmChangeMessage');
         $status = 7;
@@ -464,7 +511,8 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه جابجایی سریال با موفقیت ثبت شد.']);
     }
 
-    private function setProfileMessage($status, $user, $profile, $message = null)
+    private
+    function setProfileMessage($status, $user, $profile, $message = null)
     {
         switch ($status) {
             default:
@@ -555,7 +603,8 @@ class ProfileController extends Controller
 
     }
 
-    public function downloadExcel(Request $request)
+    public
+    function downloadExcel(Request $request)
     {
         $user = Auth::user();
         $profilesQuery = Profile::with('customer')
@@ -611,7 +660,8 @@ class ProfileController extends Controller
         return Excel::download(new ProfileExport($profiles), 'profiles.' . $jDate . '.xlsx');
     }
 
-    public function uploadExcel(Request $request)
+    public
+    function uploadExcel(Request $request)
     {
         $user = Auth::user();
         $request->validateWithBag('uploadExcelForm', [

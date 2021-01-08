@@ -85,7 +85,7 @@
                                         <jet-input-error :message="userForm.error('password')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' && type==='marketer'"
+                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' && type==='marketer'"
                                          class="col-2 sm:col-span-2">
                                         <label for="parent_id" class="block text-sm font-medium text-gray-700">
                                             نماینده:
