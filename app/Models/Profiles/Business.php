@@ -15,7 +15,7 @@ class Business extends Model
     protected $fillable = ['profile_id',
         'ostan_id', 'shahrestan_id', 'bakhsh_id', 'shahr_id',
         'dehestan_id', 'abadi_id', 'phone_code', 'senf', 'name', 'name_english',
-        'address', 'postal_code', 'phone', 'has_license', 'license_code', 'license_date'];
+        'address', 'postal_code', 'phone','tax_code', 'has_license', 'license_code', 'license_date'];
 
     protected $appends = ['ostan', 'shahrestan', 'bakhsh', 'shahr', 'fullPhone', 'jLicenseDate', 'licenseFile', 'esteshhadFile'];
 

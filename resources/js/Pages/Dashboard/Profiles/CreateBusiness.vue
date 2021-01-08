@@ -5,7 +5,7 @@
             <ProfileSteps :step="2"
                           :customer-info="!!profile.customer"
                           :profile-id="profile.id"
-                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' ? true : false"
+                          :edit="(profile.status==0 || profile.status==10 || profile.status==11) || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER' ? true : false"
             ></ProfileSteps>
             <div>
                 <div class="md:grid md:grid-cols-3 md:gap-6 bg-gray-300  rounded-lg">
@@ -245,6 +245,18 @@
                                                readonly="true"/>
                                         <jet-input-error :message="businessForm.error('license_date')" class="mt-2"/>
                                     </div>
+                                    <div class="col-3 sm:col-span-3">
+                                        <label for="tax_code" class="block text-sm font-medium text-gray-700">
+                                            کد مالیاتی:
+                                        </label>
+                                        <input type="text"
+                                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                               placeholder="کد مالیاتی"
+                                               ref="tax_code"
+                                               id="tax_code"
+                                               v-model="businessForm.tax_code"/>
+                                        <jet-input-error :message="businessForm.error('tax_code')" class="mt-2"/>
+                                    </div>
                                     <div v-if="hasLicense==='YES'" class="col-6 sm:col-span-6">
                                         <div
                                             class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
@@ -387,6 +399,7 @@
                     address: '',
                     postal_code: '',
                     phone: '',
+                    tax_code: '',
                     has_license: '',
                     license_code: '',
                     license_date: '',

@@ -29,6 +29,7 @@ class CreateBusinessesTable extends Migration
             $table->string('address');
             $table->string('postal_code');
             $table->string('phone');
+            $table->string('tax_code')->nullable();
             $table->enum('has_license', ['YES', 'NO']);
             $table->string('license_code')->nullable();
             $table->date('license_date')->nullable();
