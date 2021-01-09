@@ -205,6 +205,20 @@
                                         <jet-input-error :message="deviceForm.error('status')"
                                                          class="mt-2"/>
                                     </div>
+                                    <div v-if="$page.user.level!=='ADMIN' || $page.user.level!=='OFFICE' || $page.user.level!=='SUPERUSER'" class="col-2 sm:col-span-6">
+                                        <label for="description" class="block text-sm font-medium text-gray-700">
+                                            توضیحات:
+                                        </label>
+                                        <textarea id="description"
+                                                  ref="description"
+                                                  name="description"
+                                                  class="form-input block w-full"
+                                                  v-model="deviceForm.description"
+                                                  :disabled="$page.user.level!=='ADMIN' && $page.user.level!=='OFFICE' && $page.user.level!=='SUPERUSER'"
+                                        ></textarea>
+                                        <jet-input-error :message="deviceForm.error('description')"
+                                                         class="mt-2"/>
+                                    </div>
                                     <div class="col-6 sm:col-span-6 text-left">
                                         <button type="submit"
                                                 class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -257,6 +271,7 @@
                     guarantee_start: '',
                     guarantee_end: '',
                     status: 1,
+                    description: '',
                     user_id: this.$page.user.id
                 }, {
                     bag: 'deviceForm',

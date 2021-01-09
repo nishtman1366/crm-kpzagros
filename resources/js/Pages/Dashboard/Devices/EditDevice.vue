@@ -229,7 +229,7 @@
                                                   name="description"
                                                   class="form-input block w-full"
                                                   v-model="deviceForm.description"
-                                                  :disabled="$page.user.level!=='ADMIN' || $page.user.level!=='SUPERUSER'"
+                                                  :disabled="$page.user.level!=='ADMIN' && $page.user.level!=='OFFICE' && $page.user.level!=='SUPERUSER'"
                                         ></textarea>
                                         <jet-input-error :message="deviceForm.error('description')"
                                                          class="mt-2"/>
