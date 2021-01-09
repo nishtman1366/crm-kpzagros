@@ -113,8 +113,9 @@ class DeviceController extends Controller
         $connectionTypes = DeviceConnectionType::orderBy('name', 'ASC')->get();
         $deviceTypes = DeviceType::where('status', 1)->orderBy('id', 'ASC')->get();
         $marketers = [];
-        if ($user->isAdmin() || $user->isSuperuser()) {
-            $marketers = User::where('level', 'AGENT')->where('parent_id', $user->id)->get();
+        if ($user->isAdmin() || $user->isSuperuser() || $user->isOffice()) {
+            $id = $user->isOffice() ? $user->parent_id : $user->id;
+            $marketers = User::where('level', 'AGENT')->where('parent_id', $id)->get();
         }
         return Inertia::render('Dashboard/Devices/CreateDevice', [
             'deviceConnectionTypes' => $connectionTypes,
@@ -151,8 +152,9 @@ class DeviceController extends Controller
         $connectionTypes = DeviceConnectionType::orderBy('name', 'ASC')->get();
         $deviceTypes = DeviceType::where('status', 1)->orderBy('id', 'ASC')->get();
         $marketers = [];
-        if ($user->isAdmin() || $user->isSuperuser()) {
-            $marketers = User::where('level', 'AGENT')->where('parent_id', $user->id)->get();
+        if ($user->isAdmin() || $user->isSuperuser() || $user->isOffice()) {
+            $id = $user->isOffice() ? $user->parent_id : $user->id;
+            $marketers = User::where('level', 'AGENT')->where('parent_id', $id)->get();
         }
         return Inertia::render('Dashboard/Devices/EditDevice', [
             'device' => $device,
