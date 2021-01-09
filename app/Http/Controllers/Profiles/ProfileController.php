@@ -169,17 +169,28 @@ class ProfileController extends Controller
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
 
         $agents = [];
-        if ($user->isAdmin() || $user->isSuperuser()) {
-            $agents = User::where('level', 'AGENT')->where(function ($query) use ($user) {
-                if ($user->isAdmin()) {
-                    $query->where('parent_id', $user->id);
+        if ($user->isAdmin() || $user->isSuperuser() || $user->isOffice()) {
+            $id = $user->isOffice() ? $user->parent_id : $user->id;
+            $agents = User::where('level', 'AGENT')->where(function ($query) use ($user, $id) {
+                if ($user->isAdmin() || $user->isOffice()) {
+                    $query->where('parent_id', $id);
                 }
             })->get();
         }
 
-        if ($user->isAgent()) {
-            $marketers = User::where('level', 'MARKETER')->where('parent_id', $user->id)->get();
-        }
+        $marketers = User::where('level', 'MARKETER')
+            ->where(function ($query) use ($agentId, $user) {
+                if ($user->isAgent()) {
+                    $query->where('parent_id', $user->id);
+                } elseif ($user->isAdmin() || $user->isSuperuser() || $user->isOffice()) {
+                    $id = $user->isOffice() ? $user->parent_id : $user->id;
+                    $query->where('parent_id', $id);
+                    if (!is_null($agentId)) {
+                        $query->orWhere('parent_id', $agentId);
+                    }
+                }
+            })
+            ->get();
 
 
 //        dd([$fromDate, $toDate]);
