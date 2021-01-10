@@ -220,8 +220,7 @@ class ProfileController extends Controller
         );
     }
 
-    public
-    function create(Request $request)
+    public function create(Request $request)
     {
         $user = Auth::user();
         $profile = Profile::create(['user_id' => $user->id]);
@@ -229,8 +228,7 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.customers.create', ['profileId' => $profile->id]);
     }
 
-    public
-    function view(Request $request)
+    public function view(Request $request)
     {
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -254,18 +252,36 @@ class ProfileController extends Controller
         if (count($profile->accounts) == 0) return redirect()->route('dashboard.profiles.accounts.create', ['profileId' => $profileId]);
         if (is_null($profile->deviceType)) return redirect()->route('dashboard.profiles.devices.create', ['profileId' => $profileId]);
 
-
+        $statuses = [
+            ['id' => 0, 'name' => 'ثبت موقت'],
+            ['id' => 1, 'name' => 'ثبت شده'],
+            ['id' => 2, 'name' => 'در انتظار بررسی مدارک'],
+            ['id' => 3, 'name' => 'تایید مدارک'],
+            ['id' => 4, 'name' => 'ثبت در PSP'],
+            ['id' => 5, 'name' => 'تایید شاپرک'],
+            ['id' => 6, 'name' => 'در انتظار تخصیص'],
+            ['id' => 7, 'name' => 'تخصیص داده شده'],
+            ['id' => 8, 'name' => 'نصب شده'],
+            ['id' => 9, 'name' => 'ابطال'],
+            ['id' => 10, 'name' => 'عدم تایید مدارک'],
+            ['id' => 11, 'name' => 'عدم تایید شاپرک'],
+            ['id' => 12, 'name' => 'درخواست ابطال'],
+            ['id' => 13, 'name' => 'عدم تایید سریال'],
+            ['id' => 14, 'name' => 'درخواست جابجایی'],
+            ['id' => 15, 'name' => 'اختصاص سریال جدید'],
+            ['id' => 16, 'name' => 'رد درخواست جابجایی'],
+        ];
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
         $licenseTypes = LicenseType::where('status', 1)->orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/ViewProfile', [
             'profile' => $profile,
             'psps' => $psps,
+            'statuses' => $statuses,
             'licenseTypes' => $licenseTypes,
         ]);
     }
 
-    public
-    function update(Request $request)
+    public function update(Request $request)
     {
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -309,8 +325,23 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
     }
 
-    public
-    function updateSerial(Request $request)
+    public function updateStatus(Request $request)
+    {
+        $user = Auth::user();
+        $profileId = $request->route('profileId');
+        $profile = Profile::find($profileId);
+        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+        $newStatus = $request->get('newStatus');
+        $profile->status = $newStatus;
+        $profile->save();
+
+        $this->setProfileMessage($newStatus, $user, $profile, 'تغییر وضعیت پرونده به صورت دستی');
+
+        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'تغییر وضعیت پرونده صورت گرفت.']);
+
+    }
+
+    public function updateSerial(Request $request)
     {
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -335,8 +366,7 @@ class ProfileController extends Controller
 
     }
 
-    public
-    function updateTerminal(Request $request)
+    public function updateTerminal(Request $request)
     {
         $request->validateWithBag('terminalForm', [
             'terminal_id' => 'required',
@@ -364,8 +394,7 @@ class ProfileController extends Controller
 
     }
 
-    public
-    function cancelRequest(Request $request)
+    public function cancelRequest(Request $request)
     {
         $request->validateWithBag('cancelRequestForm', [
             'cancel_reason' => 'required',
@@ -386,8 +415,7 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست فسخ پرونده با موفقیت ثبت شد.']);
     }
 
-    public
-    function cancelConfirm(Request $request)
+    public function cancelConfirm(Request $request)
     {
         $cancelType = $request->get('confirmCancelMessage');
         $status = 9;
@@ -412,8 +440,7 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه فسخ پرونده با موفقیت ثبت شد.']);
     }
 
-    public
-    function changeRequest(Request $request)
+    public function changeRequest(Request $request)
     {
         $request->validateWithBag('changeSerialRequestForm', [
             'change_reason' => 'required',
@@ -435,8 +462,7 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست جابجایی سریال با موفقیت ثبت شد.']);
     }
 
-    public
-    function getNewDeviceByAjax(Request $request)
+    public function getNewDeviceByAjax(Request $request)
     {
         $profileId = $request->route('profileId');
         $profile = Profile::find($profileId);
@@ -449,8 +475,7 @@ class ProfileController extends Controller
         return response()->json($device);
     }
 
-    public
-    function getNewDeviceTypeByAjax(Request $request)
+    public function getNewDeviceTypeByAjax(Request $request)
     {
         $profileId = $request->route('profileId');
         $profile = Profile::find($profileId);
@@ -460,8 +485,7 @@ class ProfileController extends Controller
         return response()->json($deviceType);
     }
 
-    public
-    function newSerial(Request $request)
+    public function newSerial(Request $request)
     {
         $request->validateWithBag('selectNewSerialForm', [
             'new_device_id' => 'required',
@@ -481,8 +505,7 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'سریال جدید با موفقیت ثبت شد.']);
     }
 
-    public
-    function changeConfirm(Request $request)
+    public function changeConfirm(Request $request)
     {
         $cancelType = $request->get('confirmChangeMessage');
         $status = 7;
@@ -522,8 +545,7 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه جابجایی سریال با موفقیت ثبت شد.']);
     }
 
-    private
-    function setProfileMessage($status, $user, $profile, $message = null)
+    private function setProfileMessage($status, $user, $profile, $message = null)
     {
         switch ($status) {
             default:
@@ -614,8 +636,7 @@ class ProfileController extends Controller
 
     }
 
-    public
-    function downloadExcel(Request $request)
+    public function downloadExcel(Request $request)
     {
         $user = Auth::user();
         $profilesQuery = Profile::with('customer')
@@ -671,8 +692,7 @@ class ProfileController extends Controller
         return Excel::download(new ProfileExport($profiles), 'profiles.' . $jDate . '.xlsx');
     }
 
-    public
-    function uploadExcel(Request $request)
+    public function uploadExcel(Request $request)
     {
         $user = Auth::user();
         $request->validateWithBag('uploadExcelForm', [

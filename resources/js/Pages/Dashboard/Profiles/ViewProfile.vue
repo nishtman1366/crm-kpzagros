@@ -357,9 +357,11 @@
                                             class="block text-red-600 hover:text-red-400">حذف این تصویر
                                         </InertiaLink>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                         class="sm:col-span-8 text-left my-2">
-                                        <a :href="route('dashboard.profiles.licenses.downloadZipArchive',{profileId:profile.id})" target="_blank">
+                                    <div
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        class="sm:col-span-8 text-left my-2">
+                                        <a :href="route('dashboard.profiles.licenses.downloadZipArchive',{profileId:profile.id})"
+                                           target="_blank">
                                             <jet-button class="bg-red-500 hover:bg-red-400">دریافت همه مدارک به صورت
                                                 یکجا
                                             </jet-button>
@@ -463,6 +465,22 @@
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
                                         <div class="col-6 sm:col-span-6 text-left">
+                                            <template
+                                                v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                                <label for="change_status">تغییر وضعیت پرونده</label>
+                                                <select name="change_status"
+                                                        class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 inline-block sm:text-sm border-gray-300 rounded-md border"
+                                                        id="change_status"
+                                                        rel="change_status"
+                                                        v-model="newProfileStatus">
+                                                    <option v-for="status in statuses" :key="status.id"
+                                                            :value="status.id">
+                                                        {{status.name}}
+                                                    </option>
+                                                </select>
+                                                <JetButton @click.native="changeProfileStatus">تغییر</JetButton>
+                                                <JetSectionBorder></JetSectionBorder>
+                                            </template>
                                             <!-- ثبت پرونده توسط بازاریاب -->
                                             <JetButton @click.native="updateProfileInfo(1)"
                                                        v-if="profile.status===0"
@@ -547,6 +565,7 @@
     import JetDangerButton from '@/Jetstream/DangerButton';
     import JetSecondaryButton from '@/Jetstream/SecondaryButton';
     import JetSectionBorder from '@/Jetstream/SectionBorder'
+    import {Inertia} from "@inertiajs/inertia";
 
     export default {
         name: "CreateProfile",
@@ -564,10 +583,12 @@
             errors: Object,
             profile: Object,
             psps: Array,
+            statuses: Array,
             licenseTypes: Array,
         },
         data() {
             return {
+                newProfileStatus: this.profile.status,
                 search: {
                     serial: '',
                     results: []
@@ -614,6 +635,14 @@
             openErrorModal(status) {
                 this.viewErrorModal = true;
                 this.temporaryStatus = status
+            },
+            changeProfileStatus() {
+                Inertia.visit(route('dashboard.profiles.update.status', {profileId: this.profile.id}), {
+                    method: 'put',
+                    data: {
+                        newStatus: this.newProfileStatus,
+                    },
+                })
             },
             updateProfileInfo(status) {
                 this.submitProfileFormLoading = true;
