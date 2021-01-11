@@ -39,6 +39,7 @@ class CreateBusiness extends FormRequest
             'phone_code' => 'required',
             'phone' => 'required',
             'has_license' => 'required|in:YES,NO',
+            'tax_code' => 'required'
         ];
         $hasLicense = $this->input('has_license');
 
@@ -59,6 +60,7 @@ class CreateBusiness extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
+            'tax_code' => toEnglishNumbers($this->input('tax_code')),
             'postal_code' => toEnglishNumbers($this->input('postal_code')),
             'phone_code' => toEnglishNumbers($this->input('phone_code')),
             'phone' => toEnglishNumbers($this->input('phone')),
