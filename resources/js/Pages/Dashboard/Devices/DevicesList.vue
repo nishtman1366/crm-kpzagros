@@ -120,6 +120,7 @@
                                         <option value="">وضعیت</option>
                                         <option value="1">ثبت شده</option>
                                         <option value="2">تایید شده</option>
+                                        <option value="3">رد شده</option>
                                     </select>
                                 </div>
                             </div>

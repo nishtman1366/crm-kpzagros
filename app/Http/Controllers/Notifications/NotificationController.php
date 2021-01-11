@@ -39,8 +39,9 @@ class NotificationController extends Controller
                     $notifiableUser = $container->customer;
                 } elseif ($type == 'REPAIRS') {
                     $notifiableUser = $container;
+                }elseif($type=='DEVICES'){
+                    $notifiableUser = $container->user;
                 }
-
             }
 
             if (!is_null($notifiableUser) && $notifiableUser->id !== $user->id && !in_array($notifiableUser->id, $users)) {
@@ -70,7 +71,6 @@ class NotificationController extends Controller
         } elseif ($type == 'REPAIRS') {
             $options = [
                 'customer_name' => (string)$container->name,
-                'marketer_name' => 'تقی پرنده',
                 'customer_mobile' => (string)$container->mobile,
                 'serial' => (string)$container->serial,
                 'device_type' => is_null($container->deviceType) ? '' : (string)$container->deviceType->name,
@@ -79,6 +79,13 @@ class NotificationController extends Controller
                 'price' => (string)$container->price,
                 'tracking_code' => (string)$container->tracking_code,
                 'status' => (string)$container->statusText,
+            ];
+        } elseif ($type == 'DEVICES') {
+            $options = [
+                'marketer_name' => $container->user->name,
+                'marketer_mobile' => (string)$container->user->mobile,
+                'serial' => (string)$container->serial,
+                'device_type' => is_null($container->deviceType) ? '' : (string)$container->deviceType->name,
             ];
         }
 

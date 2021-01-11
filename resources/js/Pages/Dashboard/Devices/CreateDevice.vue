@@ -88,6 +88,7 @@
                                             شماره سریال دستگاه:
                                         </label>
                                         <jet-input type="text"
+                                                   class="w-full"
                                                    placeholder="شماره سریال دستگاه"
                                                    ref="serial"
                                                    id="serial"
@@ -103,6 +104,7 @@
                                             v-model="deviceForm.guarantee_start" ref="guarantee_start_cal"
                                             element="guarantee_start"></date-picker>
                                         <jet-input type="text"
+                                                   class="w-full"
                                                    placeholder="تاریخ شروع گارانتی"
                                                    ref="guarantee_start"
                                                    id="guarantee_start"
@@ -119,6 +121,7 @@
                                             v-model="deviceForm.guarantee_end" ref="guarantee_end_cal"
                                             element="guarantee_end"></date-picker>
                                         <jet-input type="text"
+                                                   class="w-full"
                                                    placeholder="تاریخ پایان گارانتی"
                                                    ref="guarantee_end"
                                                    id="guarantee_end"
@@ -201,6 +204,7 @@
                                                 class="mt-1 block w-full py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                             <option value="1">ثبت شده</option>
                                             <option value="2">تایید شده</option>
+                                            <option value="3">رد شده</option>
                                         </select>
                                         <jet-input-error :message="deviceForm.error('status')"
                                                          class="mt-2"/>

@@ -23,7 +23,6 @@ class NotificationEventController extends Controller
         })->orderBy('id', 'DESC')->get();
 
         $levels = [
-            ['id' => 'SUPERUSER', 'name' => 'مدیرکل'],
             ['id' => 'ADMIN', 'name' => 'مدیر سیستم'],
             ['id' => 'AGENT', 'name' => 'نمایندگان'],
             ['id' => 'MARKETER', 'name' => 'بازاریابان'],
@@ -60,6 +59,9 @@ class NotificationEventController extends Controller
             ['id' => 5, 'type' => 'REPAIRS', 'name' => 'در انتظار پرداخت'],
             ['id' => 6, 'type' => 'REPAIRS', 'name' => 'پرداخت شده'],
             ['id' => 7, 'type' => 'REPAIRS', 'name' => 'عودت شده'],
+            ['id' => 1, 'type' => 'DEVICES', 'name' => 'ثبت سریال جدید'],
+            ['id' => 2, 'type' => 'DEVICES', 'name' => 'تایید سریال جدید'],
+            ['id' => 3, 'type' => 'DEVICES', 'name' => 'عدم تایید سریال جدید'],
         ];
         $notificationTypes = Type::orderBy('id', 'DESC')->get();
         return Inertia::render('Dashboard/Settings/NotificationEvents', [

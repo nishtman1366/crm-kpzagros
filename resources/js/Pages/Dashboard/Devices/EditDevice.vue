@@ -216,6 +216,7 @@
                                                 class="mt-1 block w-full py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                             <option value="1">ثبت شده</option>
                                             <option value="2">تایید شده</option>
+                                            <option value="3">رد شده</option>
                                         </select>
                                         <jet-input-error :message="deviceForm.error('status')"
                                                          class="mt-2"/>

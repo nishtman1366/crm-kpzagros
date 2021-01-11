@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\Devices\DeviceExport;
+use App\Http\Controllers\Notifications\NotificationController;
 use App\Imports\Devices\DeviceImport;
 use App\Models\Profiles\Profile;
 use App\Models\User;
@@ -136,8 +137,9 @@ class DeviceController extends Controller
             'transport_status' => 'required',
             'psp_status' => 'required',
         ]);
-
-        Device::create($request->all());
+        $user = Auth::user();
+        $device = Device::create($request->all());
+        NotificationController::handleProfileNotifications('DEVICES', $device, $user);
 
         return redirect()->route('dashboard.devices.list');
     }
@@ -181,8 +183,14 @@ class DeviceController extends Controller
             'psp_status' => 'required',
         ]);
 
+        $user = Auth::user();
+        $requestStatus = $request->get('status');
+        $oldStatus = $device->status;
         $device->fill($request->all());
         $device->save();
+        if ($requestStatus != $oldStatus) {
+            NotificationController::handleProfileNotifications('DEVICES', $device, $user);
+        }
 
         return redirect()->route('dashboard.devices.list');
     }

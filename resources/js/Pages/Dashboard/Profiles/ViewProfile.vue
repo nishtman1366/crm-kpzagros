@@ -243,8 +243,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
                                         <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
@@ -291,7 +289,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="grid md:grid-cols-6 gap-6">
                                     <div class="col-6 sm:col-span-6">
                                         <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
