@@ -30,7 +30,8 @@
         "sass-loader": "^8.0.2",
         "tailwindcss": "^1.8.0",
         "vue": "^2.5.17",
-        "vue-template-compiler": "^2.6.10"
+        "vue-template-compiler": "^2.6.10",
+        "@tinymce/tinymce-vue": "^3.2.2"
     },
     "dependencies": {
         "chart.js": "^2.9.4",

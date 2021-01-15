@@ -124,7 +124,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>

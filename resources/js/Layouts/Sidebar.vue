@@ -85,6 +85,17 @@
                                 </inertia-link>
                             </li>
                         </template>
+                        <template>
+                            <li class="header-menu">
+                                <span>اخبار  و اطلاعیه ها</span>
+                            </li>
+                            <li v-if="$page.user.level=='SUPERUSER'">
+                                <inertia-link :href="route('dashboard.posts.list')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">newspaper</i>
+                                    لیست اخبار
+                                </inertia-link>
+                            </li>
+                        </template>
                         <template v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
                             <li class="header-menu">
                                 <span>کاربران</span>

@@ -92,63 +92,74 @@
                                     <!--                                    </div>-->
                                     <div class="col-1 sm:col-span-2">
                                         <div>
-                                            <div class="bg-pink-600 text-white p-1 text-lg">جدیدترین رخدادها</div>
-                                            <div class="h-80 overflow-y-auto">
-                                                <div v-for="event in events"
-                                                     :class="'border-'+event.color+'-600 bg-'+event.color+'-100'"
-                                                     class="my-1 p-3 border-r-4 col-2 sm:col-span-8">
-                                                    <inertia-link
-                                                        :href="route('dashboard.profiles.view',{id:event.profile_id})">
-                                                        <p :class="'text-'+event.color+'-900'">{{event.title}}<span
-                                                            class="text-xs text-gray-600">{{event.jDate | persianDigit}} - {{event.profile ? event.profile.customer.fullName : ''}}</span>
-                                                        </p>
+                                            <div class="bg-blue-600 text-white p-1 text-lg">اخبار و اطلاعیه ها</div>
+                                            <div v-for="post in posts" :key="post.id" class="my-2 mx-3">
+                                                <p>
+                                                    <inertia-link :href="route('dashboard.viewPost',{postId:post.id})">
+                                                        <span class="text-base">{{post.title}}</span>
+                                                        <span class="text-xs text-gray-500"> - {{post.category ? post.category.name : ''}}</span>
+                                                        <span class="text-xs text-gray-500"> - {{post.date}}</span>
                                                     </inertia-link>
-                                                </div>
+                                                </p>
                                             </div>
                                         </div>
-                                        <div v-if="$page.user.level!=='MARKETER'" class="my-1">
-                                            <div class="bg-green-300 text-gray-900 p-1 text-lg">وضعیت انبار</div>
-                                            <div class="grid grid-cols-6 gap-2 p-1 text-md md:text-lg">
-                                                <div
-                                                    class="col-span-3 bg-gradient-to-r from-green-300 to-green-900 text-white text-center py-3">
-                                                    سالم: {{devicesStatus.physicalStatus1 | persianDigit}}
-                                                </div>
-                                                <div
-                                                    class="col-span-3 bg-gradient-to-l from-red-200 to-red-600 text-white text-center py-3">
-                                                    خراب: {{devicesStatus.physicalStatus2 | persianDigit}}
-                                                </div>
-                                                <div
-                                                    class="col-span-2 bg-gradient-to-r from-green-300 to-green-900 text-white text-center py-3">
-                                                    آزاد: {{devicesStatus.transportStatus1 | persianDigit}}
-                                                </div>
-                                                <div
-                                                    class="col-span-2 bg-gradient-to-r from-orange-400 to-yellow-500 text-white text-center py-3">
-                                                    در انتظار نصب: {{devicesStatus.transportStatus2 | persianDigit}}
-                                                </div>
-                                                <div
-                                                    class="col-span-2 bg-gradient-to-l from-teal-400 to-blue-600 text-white text-center py-3">
-                                                    نصب شده: {{devicesStatus.transportStatus3 | persianDigit}}
-                                                </div>
-                                                <div class="col-span-3 bg-green-600 text-white text-center py-3">در
-                                                    انتظار تخصیص: {{devicesStatus.pspStatus1 | persianDigit}}
-                                                </div>
-                                                <div
-                                                    class="col-span-3 bg-gradient-to-l from-teal-400 to-blue-600 text-white text-center py-3">
-                                                    تخصیص
-                                                    داده شده: {{devicesStatus.pspStatus2 | persianDigit}}
-                                                </div>
+                                    </div>
+                                    <div class="col-1 sm:col-span-2">
+                                        <div class="bg-pink-600 text-white p-1 text-lg">جدیدترین رخدادها</div>
+                                        <div class="h-80 overflow-y-auto">
+                                            <div v-for="event in events"
+                                                 :class="'border-'+event.color+'-600 bg-'+event.color+'-100'"
+                                                 class="my-1 p-3 border-r-4 col-2 sm:col-span-8">
+                                                <inertia-link
+                                                    :href="route('dashboard.profiles.view',{id:event.profile_id})">
+                                                    <p :class="'text-'+event.color+'-900'">{{event.title}}<span
+                                                        class="text-xs text-gray-600">{{event.jDate | persianDigit}} - {{event.profile ? event.profile.customer.fullName : ''}}</span>
+                                                    </p>
+                                                </inertia-link>
                                             </div>
                                         </div>
                                     </div>
                                     <div v-if="$page.user.level!=='MARKETER'" class="col-1 sm:col-span-2">
-                                        <div>
-                                            <div class="bg-green-600 text-white p-1 text-lg">بازاریابان فعال</div>
-                                            <bar-chart :chartData="topMarketersChartData"
-                                                       :chartOptions="chartOptions"></bar-chart>
-                                        </div>
-                                        <div>
-                                            <div class="bg-purple-600 text-white p-1 text-lg">دستگاه های نصب شده</div>
-                                            <pie-chart :chartData="devicesChartData" :chartOptions="chartOptions"></pie-chart>
+                                        <div class="bg-green-600 text-white p-1 text-lg">بازاریابان فعال</div>
+                                        <bar-chart :chartData="topMarketersChartData"
+                                                   :chartOptions="chartOptions"></bar-chart>
+                                    </div>
+                                    <div v-if="$page.user.level!=='MARKETER'" class="col-1 sm:col-span-2">
+                                        <div class="bg-purple-600 text-white p-1 text-lg">دستگاه های نصب شده</div>
+                                        <pie-chart :chartData="devicesChartData"
+                                                   :chartOptions="chartOptions"></pie-chart>
+                                    </div>
+                                    <div v-if="$page.user.level!=='MARKETER'" class="col-1 sm:col-span-2">
+                                        <div class="bg-green-300 text-gray-900 p-1 text-lg">وضعیت انبار</div>
+                                        <div class="grid grid-cols-6 gap-2 p-1 text-md md:text-lg">
+                                            <div
+                                                class="col-span-3 bg-gradient-to-r from-green-300 to-green-900 text-white text-center py-3">
+                                                سالم: {{devicesStatus.physicalStatus1 | persianDigit}}
+                                            </div>
+                                            <div
+                                                class="col-span-3 bg-gradient-to-l from-red-200 to-red-600 text-white text-center py-3">
+                                                خراب: {{devicesStatus.physicalStatus2 | persianDigit}}
+                                            </div>
+                                            <div
+                                                class="col-span-2 bg-gradient-to-r from-green-300 to-green-900 text-white text-center py-3">
+                                                آزاد: {{devicesStatus.transportStatus1 | persianDigit}}
+                                            </div>
+                                            <div
+                                                class="col-span-2 bg-gradient-to-r from-orange-400 to-yellow-500 text-white text-center py-3">
+                                                در انتظار نصب: {{devicesStatus.transportStatus2 | persianDigit}}
+                                            </div>
+                                            <div
+                                                class="col-span-2 bg-gradient-to-l from-teal-400 to-blue-600 text-white text-center py-3">
+                                                نصب شده: {{devicesStatus.transportStatus3 | persianDigit}}
+                                            </div>
+                                            <div class="col-span-3 bg-green-600 text-white text-center py-3">در
+                                                انتظار تخصیص: {{devicesStatus.pspStatus1 | persianDigit}}
+                                            </div>
+                                            <div
+                                                class="col-span-3 bg-gradient-to-l from-teal-400 to-blue-600 text-white text-center py-3">
+                                                تخصیص
+                                                داده شده: {{devicesStatus.pspStatus2 | persianDigit}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -183,6 +194,8 @@
             topMarketersChartLabels: Array,
 
             events: Array,
+
+            posts: Array,
 
             devicesStatus: Object,
 

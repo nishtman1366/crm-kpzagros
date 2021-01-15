@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Posts\Level;
+use App\Models\Posts\Post;
 use App\Models\Profiles\Profile;
 use App\Models\Profiles\ProfileMessage;
 use App\Models\User;
@@ -27,6 +29,8 @@ class DashboardController extends Controller
             'status11' => $this->getProfileStatusForDashboard($user, 11),
         ];
 
+        $news = $this->getLatestNewsForDashboard($user);
+
         $events = $this->getEventsForDashboard($user);
 
         $topMarketersChart = $this->getTopMarketersChartForDashboard($user);
@@ -34,7 +38,7 @@ class DashboardController extends Controller
         $devicesStatus = $this->getDevicesStatusForDashboard($user);
 
         $devicesChartData = $this->getDevicesChartData($user);
-        
+
         return Inertia::render('Dashboard', [
             'profileStatus' => $profileStatus,
             'events' => $events,
@@ -43,6 +47,7 @@ class DashboardController extends Controller
             'devicesStatus' => $devicesStatus,
             'devicesChartDatasets' => $devicesChartData['data'],
             'devicesChartLabels' => $devicesChartData['labels'],
+            'posts' => $news,
         ]);
     }
 
@@ -247,5 +252,14 @@ class DashboardController extends Controller
             ],
             'labels' => $devicesChartLabels
         ];
+    }
+
+    private function getLatestNewsForDashboard($user)
+    {
+        if ($user->isAdmin() || $user->isSuperuser()) {
+            return Post::with('category')->limit(15)->get();
+        }
+        $userPosts = Level::where('level', $user->level)->pluck('post_id');
+        return Post::with('category')->whereIn('id', $userPosts)->limit(15)->get();
     }
 }

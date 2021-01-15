@@ -180,8 +180,19 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::prefix('licenses')->name('licenses.')->group(function () {
                 Route::post('', 'LicenseController@store')->name('store');
                 Route::delete('{licenseId}', 'LicenseController@destroy')->name('destroy');
-                Route::get('downloadZipArchive','LicenseController@downloadZipArchive')->name('downloadZipArchive');
+                Route::get('downloadZipArchive', 'LicenseController@downloadZipArchive')->name('downloadZipArchive');
             });
         });
     });
+
+    Route::prefix('posts')->name('posts.')->namespace('Posts')->group(function () {
+        Route::get('', 'PostController@index')->name('list');
+        Route::get('create', 'PostController@create')->name('create');
+        Route::post('', 'PostController@store')->name('store');
+        Route::get('{postId}', 'PostController@edit')->name('edit');
+        Route::put('{postId}', 'PostController@update')->name('update');
+        Route::delete('{postId}', 'PostController@destroy')->name('destroy');
+    });
+
+    Route::get('viewPost/{postId}', 'Posts\\PostController@view')->name('viewPost');
 });
