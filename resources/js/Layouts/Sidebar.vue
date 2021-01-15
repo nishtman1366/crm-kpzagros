@@ -85,11 +85,11 @@
                                 </inertia-link>
                             </li>
                         </template>
-                        <template>
+                        <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <li class="header-menu">
                                 <span>اخبار  و اطلاعیه ها</span>
                             </li>
-                            <li v-if="$page.user.level=='SUPERUSER'">
+                            <li>
                                 <inertia-link :href="route('dashboard.posts.list')">
                                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">newspaper</i>
                                     لیست اخبار

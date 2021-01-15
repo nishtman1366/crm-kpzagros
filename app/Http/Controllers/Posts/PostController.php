@@ -40,7 +40,6 @@ class PostController extends Controller
         $request->validateWithBag('postForm', [
             'title' => 'required',
             'body' => 'required',
-            'levels' => 'required|array'
         ]);
 
         $post = Post::create($request->all());
@@ -54,7 +53,7 @@ class PostController extends Controller
         }
 
         $uploadedFiles = $request->file('uploadFiles', []);
-        if (count($uploadedFiles) > 0) {
+        if (!is_null($uploadedFiles) && count($uploadedFiles) > 0) {
             foreach ($uploadedFiles as $file) {
                 $fileName = $file->getClientOriginalName();
                 $file->storeAs('posts/' . $post->id . '/files', $fileName, 'public');
@@ -66,7 +65,7 @@ class PostController extends Controller
         }
 
         $uploadedVideos = $request->file('uploadVideos', []);
-        if (count($uploadedVideos) > 0) {
+        if (!is_null($uploadedVideos) && count($uploadedVideos) > 0) {
             foreach ($uploadedVideos as $video) {
                 $fileName = Str::uuid() . '.' . $video->getClientOriginalExtension();
                 $video->storeAs('posts/' . $post->id . '/videos', $fileName, 'public');
@@ -116,7 +115,6 @@ class PostController extends Controller
         $request->validateWithBag('postForm', [
             'title' => 'required',
             'body' => 'required',
-            'levels' => 'required|array'
         ]);
 
         $post->fill($request->all());

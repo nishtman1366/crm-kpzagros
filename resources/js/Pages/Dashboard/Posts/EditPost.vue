@@ -1,6 +1,6 @@
 <template>
     <Dashboard>
-        <template #breadcrumb> / ثبت دستگاه جدید</template>
+        <template #breadcrumb> / ویرایش خبر / {{post.title}}</template>
         <template #dashboardContent>
             <div>
                 <div class="bg-gray-300  rounded-lg">

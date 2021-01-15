@@ -1,6 +1,6 @@
 <template>
     <Dashboard>
-        <template #breadcrumb> / ثبت دستگاه جدید</template>
+        <template #breadcrumb> / ثبت خبر جدید</template>
         <template #dashboardContent>
             <div>
                 <div class="bg-gray-300  rounded-lg">
@@ -74,6 +74,20 @@
                                             <i class="material-icons text-red-500 cursor-pointer"
                                                v-on:click="removeUploadFile(file)">remove_circle</i></p>
                                     </div>
+                                    <div class="md:col-span-2">
+                                        <jet-label for="body" value="ارسال ویدیو"/>
+                                        <input type="file" multiple class="hidden" ref="uploadVideosInput"
+                                               @change="onUploadVideosChange">
+                                        <jet-button type="button" class="mt-3" @click.native="selectVideos">انتخاب ویدیو ها</jet-button>
+                                    </div>
+                                    <div class="md:col-span-4">
+                                        <p class="block border-gray-300 border-b py-1 text-left"
+                                           v-for="(video,index) in selectedVideos"
+                                           :key="index">
+                                            {{video.name}} - {{Math.round(video.size / 1024)}} KB -
+                                            <i class="material-icons text-red-500 cursor-pointer"
+                                               v-on:click="removeUploadVideo(video)">remove_circle</i></p>
+                                    </div>
                                     <div class="md:col-span-6 text-left">
                                         <jet-button @click.native="submitPost">ارسال</jet-button>
                                     </div>
@@ -117,7 +131,7 @@
         data() {
             return {
                 selectedFiles: [],
-                uploadFilesLabel: [],
+                selectedVideos: [],
                 postForm: this.$inertia.form({
                     '_method': 'POST',
                     post_category_id: '',
@@ -126,7 +140,7 @@
                     levels: [],
                     status: 1,
                     uploadFiles: [],
-                    videoFiles: [],
+                    uploadVideos: [],
                     user_id: this.$page.user.id
                 }, {
                     bag: 'postForm',
@@ -183,8 +197,23 @@
                     return f !== file;
                 });
             },
+            selectVideos() {
+                this.$refs.uploadVideosInput.click();
+            },
+            onUploadVideosChange(e) {
+                const videos = e.target.files;
+                for (let i = 0; i < videos.length; i++) {
+                    this.selectedVideos.push(videos[i]);
+                }
+            },
+            removeUploadVideo(file) {
+                this.selectedVideos = this.selectedVideos.filter(f => {
+                    return f !== file;
+                });
+            },
             submitPost() {
                 this.postForm.uploadFiles = this.selectedFiles;
+                this.postForm.uploadVideos = this.selectedVideos;
                 this.postForm.post(route('dashboard.posts.store')).then(response => {
 
                 })
