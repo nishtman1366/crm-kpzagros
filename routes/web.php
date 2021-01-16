@@ -17,6 +17,7 @@ Route::pattern('id', '[0-9]+');
 Route::pattern('profileId', '[0-9]+');
 Route::pattern('customerId', '[0-9]+');
 Route::pattern('repairId', '[0-9]+');
+Route::pattern('postId', '[0-9]+');
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -192,7 +193,16 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('{postId}', 'PostController@edit')->name('edit');
         Route::put('{postId}', 'PostController@update')->name('update');
         Route::delete('{postId}', 'PostController@destroy')->name('destroy');
-    });
 
-    Route::get('viewPost/{postId}', 'Posts\\PostController@view')->name('viewPost');
+        Route::get('archive', 'PostController@archive')->name('archive');
+        Route::get('{postId}/view', 'PostController@view')->name('view');
+
+        Route::prefix('categories')->name('categories.')->group(function () {
+            Route::get('', 'CategoryController@index')->name('list');
+            Route::get('{categoryId}', 'CategoryController@view')->name('view');
+            Route::post('', 'CategoryController@store')->name('store');
+            Route::put('{categoryId}', 'CategoryController@update')->name('update');
+            Route::delete('{categoryId}', 'CategoryController@destroy')->name('destroy');
+        });
+    });
 });

@@ -95,13 +95,18 @@
                                             <div class="bg-blue-600 text-white p-1 text-lg">اخبار و اطلاعیه ها</div>
                                             <div v-for="post in posts" :key="post.id" class="my-2 mx-3">
                                                 <p>
-                                                    <inertia-link :href="route('dashboard.viewPost',{postId:post.id})">
+                                                    <inertia-link :href="route('dashboard.posts.view',{postId:post.id})">
                                                         <span class="text-base">{{post.title}}</span>
                                                         <span class="text-xs text-gray-500"> - {{post.category ? post.category.name : ''}}</span>
                                                         <span class="text-xs text-gray-500"> - {{post.date}}</span>
                                                     </inertia-link>
                                                 </p>
                                             </div>
+                                            <p class="text-left">
+                                                <inertia-link :href="route('dashboard.posts.archive')">
+                                                    <jet-button>آرشیو اخبار</jet-button>
+                                                </inertia-link>
+                                            </p>
                                         </div>
                                     </div>
                                     <div class="col-1 sm:col-span-2">
@@ -175,6 +180,7 @@
 <script>
     import AppLayout from '@/Layouts/AppLayout'
     import Welcome from '@/Jetstream/Welcome'
+    import JetButton from '@/Jetstream/Button'
     import BarChart from "@/Pages/Dashboard/Components/Charts/BarChart";
     import PieChart from "@/Pages/Dashboard/Components/Charts/PieChart";
     import VuePersianDigit from 'vue-persian-digit';
@@ -183,6 +189,7 @@
         components: {
             AppLayout,
             Welcome,
+            JetButton,
             BarChart,
             PieChart,
             VuePersianDigit,

@@ -30,7 +30,7 @@
         </ul>
         <div class="text-left my-1">
           <span class="bg-gray-200 m-3 p-3 rounded">
-                تعداد پرونده ها: {{totalRows}}
+                تعداد: {{totalRows}}
           </span>
         </div>
     </div>

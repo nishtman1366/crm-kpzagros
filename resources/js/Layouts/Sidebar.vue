@@ -91,12 +91,19 @@
                             </li>
                             <li>
                                 <inertia-link :href="route('dashboard.posts.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">newspaper</i>
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">article</i>
                                     لیست اخبار
                                 </inertia-link>
                             </li>
+                            <li>
+                                <inertia-link :href="route('dashboard.posts.categories.list')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">list</i>
+                                    دسته بندی ها
+                                </inertia-link>
+                            </li>
                         </template>
-                        <template v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
+                        <template
+                            v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
                             <li class="header-menu">
                                 <span>کاربران</span>
                             </li>

@@ -9,6 +9,7 @@ use App\Models\Posts\Level;
 use App\Models\Posts\Post;
 use App\Models\Posts\Video;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -190,5 +191,36 @@ class PostController extends Controller
         $post->delete();
 
         return redirect()->route('dashboard.posts.list');
+    }
+
+    public function archive(Request $request)
+    {
+        $user = Auth::user();
+        $categories = Category::withCount('posts')->orderBy('id', 'ASC')->get();
+
+        $categoryId = (int)$request->query('category', null);
+        $searchQuery = $request->query('query', null);
+
+        if ($user->isAdmin() || $user->isSuperuser()) {
+            $posts = Post::with('category')->where(function ($query) use ($categoryId, $searchQuery) {
+                if ($categoryId !== 0) {
+                    $query->where('post_category_id', $categoryId);
+                }
+                $query->where('title', 'LIKE', '%' . $searchQuery . '%');
+            })->paginate(30);
+            $paginatedLinks = paginationLinks($posts);
+
+            return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery', 'paginatedLinks', 'categoryId', 'posts', 'categories'));
+        }
+        $userPosts = Level::where('level', $user->level)->pluck('post_id');
+        $posts = Post::with('category')->where(function ($query) use ($categoryId, $searchQuery) {
+            if ($categoryId !== 0) {
+                $query->where('post_category_id', $categoryId);
+            }
+            $query->where('title', 'LIKE', '%' . $searchQuery . '%');
+        })->whereIn('id', $userPosts)->paginate(30);
+        $paginatedLinks = paginationLinks($posts);
+
+        return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery','paginatedLinks', 'categoryId', 'posts', 'categories'));
     }
 }
