@@ -33,7 +33,7 @@
                     <inertia-link :href="route('dashboard.posts.view',{postId:post.id})">
                         <p class="text-lg">{{post.title}}</p>
                     </inertia-link>
-                    <p class="text-md" v-html="post.body"></p>
+                    <p class="text-md h-10" v-html="post.body"></p>
                     <jet-section-border></jet-section-border>
                     <p class="text-left">
                         <inertia-link :href="route('dashboard.posts.view',{postId:post.id})">

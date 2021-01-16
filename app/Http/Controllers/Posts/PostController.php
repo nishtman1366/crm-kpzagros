@@ -200,27 +200,25 @@ class PostController extends Controller
 
         $categoryId = (int)$request->query('category', null);
         $searchQuery = $request->query('query', null);
-
-        if ($user->isAdmin() || $user->isSuperuser()) {
-            $posts = Post::with('category')->where(function ($query) use ($categoryId, $searchQuery) {
-                if ($categoryId !== 0) {
-                    $query->where('post_category_id', $categoryId);
-                }
-                $query->where('title', 'LIKE', '%' . $searchQuery . '%');
-            })->paginate(30);
-            $paginatedLinks = paginationLinks($posts);
-
-            return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery', 'paginatedLinks', 'categoryId', 'posts', 'categories'));
-        }
-        $userPosts = Level::where('level', $user->level)->pluck('post_id');
-        $posts = Post::with('category')->where(function ($query) use ($categoryId, $searchQuery) {
+        $postsQuery = Post::with('category')->where(function ($query) use ($categoryId, $searchQuery) {
             if ($categoryId !== 0) {
                 $query->where('post_category_id', $categoryId);
             }
             $query->where('title', 'LIKE', '%' . $searchQuery . '%');
-        })->whereIn('id', $userPosts)->paginate(30);
+        });
+
+        if (!$user->isAdmin() && !$user->isSuperuser()) {
+            $userPosts = Level::where('level', $user->level)->pluck('post_id');
+            $postsQuery->whereIn('id', $userPosts);
+        }
+
+        $posts = $postsQuery->paginate(12);
         $paginatedLinks = paginationLinks($posts);
 
-        return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery','paginatedLinks', 'categoryId', 'posts', 'categories'));
+        $posts->each(function ($post) {
+            $post->body = substr($post->body, 0, 250).'...';
+        });
+
+        return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery', 'paginatedLinks', 'categoryId', 'posts', 'categories'));
     }
 }
