@@ -130,6 +130,17 @@ class LicenseController extends Controller
         return $license->url;
     }
 
+    public static function has($key, $profileId, $accountId = null)
+    {
+        $type = LicenseType::where('key', $key)->get()->first();
+        if (is_null($type)) return false;
+
+        return License::where('license_type_id', $type->id)->where(function ($query) use ($profileId, $accountId) {
+            $query->where('profile_id', $profileId);
+            if (!is_null($accountId)) $query->where('account_Id', $accountId);
+        })->exists();
+    }
+
     /**
      * @param Request $request
      * This function delete the license file with the @param $licneseId in route
@@ -179,16 +190,16 @@ class LicenseController extends Controller
             }
 
             foreach ($files as $file) {
-                if (! $archive->addFile($file, basename($file))) {
-                    throw new Exception("File [`{$file}`] could not be added to the zip file: ".$archive->getStatusString());
+                if (!$archive->addFile($file, basename($file))) {
+                    throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
                 }
             }
 
-            if (! $archive->close()) {
-                throw new Exception("Could not close zip file: ".$archive->getStatusString());
+            if (!$archive->close()) {
+                throw new Exception("Could not close zip file: " . $archive->getStatusString());
             }
 
-            return response()->download($archiveFile, basename($archiveFile),['Content-Type' => 'application/octet-stream'])->deleteFileAfterSend(true);
+            return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])->deleteFileAfterSend(true);
         }
 
         throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");

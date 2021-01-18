@@ -27,9 +27,10 @@
                                             ثبت پذیرنده جدید
                                         </jet-button>
                                     </InertiaLink>
-                                    <jet-button v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                                @click.native="uploadExcel"
-                                                class="my-5 mx-1 bg-green-600 hover:bg-green-500 sm:float-left">
+                                    <jet-button
+                                        v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        @click.native="uploadExcel"
+                                        class="my-5 mx-1 bg-green-600 hover:bg-green-500 sm:float-left">
                                         <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
                                             <path fill="currentColor"
                                                   d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
@@ -82,16 +83,17 @@
                                                 :value="statusItem.id">{{statusItem.name}}
                                         </option>
                                     </select>
-                                    <select v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                            id="agent_id"
-                                            name="agent_id"
-                                            ref="agent_id"
-                                            v-model="agent_id"
-                                            autocomplete="agent_id"
-                                            v-on:change="submitSearchForm"
-                                            title="فیلتر بر اساس نماینده"
-                                            v-b-tooltip.hover
-                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <select
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        id="agent_id"
+                                        name="agent_id"
+                                        ref="agent_id"
+                                        v-model="agent_id"
+                                        autocomplete="agent_id"
+                                        v-on:change="submitSearchForm"
+                                        title="فیلتر بر اساس نماینده"
+                                        v-b-tooltip.hover
+                                        class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option :value="null">نماینده</option>
                                         <option v-for="agent in agents" :key="agent.id"
                                                 :value="agent.id">{{agent.name}}
@@ -110,6 +112,19 @@
                                         <option v-for="marketer in marketers" :key="marketer.id"
                                                 :value="marketer.id">{{marketer.name}}
                                         </option>
+                                    </select>
+                                    <select id="profile_type"
+                                            name="profile_type"
+                                            ref="profile_type"
+                                            v-model="profile_type"
+                                            autocomplete="profile_type"
+                                            v-on:change="submitSearchForm"
+                                            title="فیلتر بر اساس نوع پرونده"
+                                            v-b-tooltip.hover
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option :value="null">نوع پرونده</option>
+                                        <option value="REGISTER">پرونده جدید</option>
+                                        <option value="TRANSFER">انتقال مالکیت</option>
                                     </select>
                                 </div>
                                 <div class="col-1 md:col-span-4">
@@ -146,6 +161,10 @@
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        نوع پرونده
+                                    </th>
+                                    <th scope="col"
+                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         نوع خدمات
                                     </th>
                                     <th scope="col"
@@ -173,6 +192,9 @@
                                         {{profile.customer.fullName}}
                                         <p
                                             class="text-indigo-600">({{profile.customer.national_code}})</p>
+                                    </td>
+                                    <td class="py-4 text-center text-gray-900">
+                                        {{profile.typeText}}
                                     </td>
                                     <td class="py-4 text-center text-gray-900">
                                         دستگاه کارتخوان
@@ -885,6 +907,8 @@
             marketers: Array,
             marketerId: String,
 
+            profileType: String,
+
             fromDate: String,
             toDate: String,
 
@@ -896,6 +920,7 @@
                 psp_id: null,
                 agent_id: null,
                 marketer_id: null,
+                profile_type: null,
                 from_date: null,
                 to_date: null,
                 query: null,
@@ -1011,6 +1036,7 @@
             this.status_id = this.statusId;
             this.agent_id = this.agentId;
             this.marketer_id = this.marketerId;
+            this.profile_type = this.profileType;
             this.from_date = this.fromDate;
             this.to_date = this.toDate;
         },
@@ -1183,7 +1209,7 @@
                 this.changeReason = changeReason;
                 this.viewSelectNewSerialModal = true;
             },
-            submitSelectNewSerial(){
+            submitSelectNewSerial() {
                 this.selectNewSerialForm.post(route('dashboard.profiles.update.newSerial', {profileId: this.profileId})).then(response => {
                     if (!this.selectNewSerialForm.hasErrors()) {
                         this.viewSelectNewSerialModal = false;
@@ -1243,6 +1269,7 @@
                         statusId: this.status_id,
                         agentId: this.agent_id,
                         marketerId: this.marketer_id,
+                        profileType: this.profile_type,
                         fromDate: this.from_date,
                         toDate: this.to_date,
                     },

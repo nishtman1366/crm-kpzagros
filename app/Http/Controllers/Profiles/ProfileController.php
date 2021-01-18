@@ -116,6 +116,13 @@ class ProfileController extends Controller
             });
         }
 
+        $profileType = $request->query('profileType', null);
+        if (!is_null($profileType)) {
+            $profilesQuery->where(function ($query) use ($profileType) {
+                $query->where('type', $profileType);
+            });
+        }
+
         $searchQuery = $request->query('query', null);
         if (!is_null($searchQuery)) {
             $profilesQuery->whereHas('customer', function ($query) use ($searchQuery) {
@@ -209,6 +216,8 @@ class ProfileController extends Controller
 
                 'marketers' => $marketers,
                 'marketerId' => $marketerId,
+
+                'profileType' => $profileType,
 
                 'searchQuery' => $searchQuery,
 
@@ -338,6 +347,46 @@ class ProfileController extends Controller
         $this->setProfileMessage($newStatus, $user, $profile, 'تغییر وضعیت پرونده به صورت دستی');
 
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'تغییر وضعیت پرونده صورت گرفت.']);
+
+    }
+
+    public function setType(Request $request)
+    {
+        $user = Auth::user();
+        $profileId = $request->route('profileId');
+        $profile = Profile::find($profileId);
+        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+
+        $type = $request->get('type');
+        if ($type == 'TRANSFER') {
+            $request->validateWithBag('profileTypeForm', [
+                'type' => 'required',
+                'previous_name' => 'required',
+                'previous_national_code' => 'required|numeric|digits:10',
+                'previous_mobile' => 'required|numeric|digits:11',
+            ]);
+            if (!LicenseController::has('transfer_file', $profileId)) {
+                $request->validateWithBag('profileTypeForm', [
+                    'transfer_file' => 'required|image',
+                ]);
+            }
+        } else {
+            $request->merge([
+                'previous_name' => null,
+                'previous_national_code' => null,
+                'previous_mobile' => null,
+            ]);
+        }
+
+        $profile->fill($request->all());
+
+        $profile->save();
+
+        if ($request->hasFile('transfer_file') && $type == 'TRANSFER') {
+            LicenseController::upload($request->file('transfer_file'), 'transfer_file', $profileId);
+        }
+
+        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'درخواست انتقال مالکیت با موفقیت ثبت شد.']);
 
     }
 

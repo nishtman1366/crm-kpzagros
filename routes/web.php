@@ -137,6 +137,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::get('view', 'ProfileController@view')->name('view');
             Route::put('', 'ProfileController@update')->name('update');
             Route::put('updateStatus', 'ProfileController@updateStatus')->name('update.status');
+            Route::put('setType', 'ProfileController@setType')->name('update.type');
             Route::put('serial', 'ProfileController@updateSerial')->name('update.serial');
             Route::put('terminal', 'ProfileController@updateTerminal')->name('update.terminal');
             Route::put('cancelRequest', 'ProfileController@cancelRequest')->name('update.cancelRequest');

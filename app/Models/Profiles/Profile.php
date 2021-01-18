@@ -2,6 +2,7 @@
 
 namespace App\Models\Profiles;
 
+use App\Http\Controllers\Profiles\LicenseController;
 use App\Models\Profiles\Customer;
 use App\Models\User;
 use App\Models\Variables\Device;
@@ -15,10 +16,12 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'psp_id', 'device_type_id', 'device_id',
-        'multi_account', 'terminal_id', 'merchant_id', 'cancel_reason', 'change_reason', 'new_device_type_id', 'new_device_id', 'status'];
+    protected $fillable = ['type', 'user_id', 'psp_id', 'device_type_id', 'device_id',
+        'multi_account', 'terminal_id', 'merchant_id', 'cancel_reason', 'change_reason',
+        'previous_name', 'previous_national_code', 'previous_mobile', 'new_device_type_id',
+        'new_device_id', 'status'];
 
-    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt'];
+    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl', 'typeText'];
 
     public function getStatusTextAttribute()
     {
@@ -87,6 +90,17 @@ class Profile extends Model
     {
         if (is_null($this->attributes['updated_at'])) return '';
         return Jalalian::forge($this->attributes['updated_at'])->format('Y/m/d H:i:s');
+    }
+
+    public function getTransferFileUrlAttribute()
+    {
+        return LicenseController::view('transfer_file', $this->attributes['id']);
+    }
+
+    public function getTypeTextAttribute()
+    {
+        if($this->attributes['type']==='TRANSFER') return 'انتقال مالکیت';
+        else return 'پرونده جدید';
     }
 
     public function customer()

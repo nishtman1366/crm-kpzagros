@@ -214,5 +214,10 @@ return [
         'notification_type_id'=>'نوع اعلان',
         'event'=>'نوع رخداد',
         'level'=>'دریافت کننده',
+
+        'previous_name' => 'نام پذیرنده قبلی',
+        'previous_national_code' => 'کدملی پذیرنده قبلی',
+        'previous_mobile' => 'تلفن همراه پذیرنده قبلی',
+        'transfer_file' => 'تصویر فرم انتقال مالکیت',
     ],
 ];

@@ -94,9 +94,6 @@
                                                         <jet-input-error
                                                             :message="accountForm.error('accounts.'+index+'.sheba_code')"
                                                             class="mt-2"/>
-                                                        <jet-input-error
-                                                            :message="fileUploadErrors[index].sheba_file"
-                                                            class="mt-2"/>
                                                     </div>
                                                 </div>
                                             </div>
