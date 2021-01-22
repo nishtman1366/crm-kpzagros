@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Profiles\Business;
 
 use App\Models\Profiles\Business;
+use App\Rules\UniquePostalCode;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBusiness extends FormRequest
@@ -37,7 +38,7 @@ class UpdateBusiness extends FormRequest
             'name' => 'required',
             'name_english' => 'required',
             'senf' => 'required',
-            'postal_code' => 'required|unique:businesses,postal_code,' . $business->id,
+            'postal_code' => ['required', new UniquePostalCode((int)$this->get('profile_id'))],
             'address' => 'required',
             'phone_code' => 'required',
             'phone' => 'required',

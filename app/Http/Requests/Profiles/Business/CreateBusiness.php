@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Profiles\Business;
 
+use App\Rules\UniquePostalCode;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateBusiness extends FormRequest
 {
@@ -34,7 +36,7 @@ class CreateBusiness extends FormRequest
             'name' => 'required',
             'name_english' => 'required',
             'senf' => 'required',
-            'postal_code' => 'required|unique:businesses,postal_code',
+            'postal_code' => ['required', new UniquePostalCode((int)$this->get('profile_id'))],
             'address' => 'required',
             'phone_code' => 'required',
             'phone' => 'required',
