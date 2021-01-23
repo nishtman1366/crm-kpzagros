@@ -51,11 +51,11 @@ class UpdateBusiness extends FormRequest
             $validationArray = array_merge($validationArray, [
                 'license_code' => 'required',
                 'license_date' => 'required|date',
-                'license_file' => 'nullable|image',
+                'license_file' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
             ]);
         } else {
             $validationArray = array_merge($validationArray, [
-                'esteshhad_file' => 'nullable|image',
+                'esteshhad_file' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
             ]);
         }
         $profileId = $this->route('profileId');
@@ -63,11 +63,11 @@ class UpdateBusiness extends FormRequest
         if (!is_null($business)) {
             if ($business->has_license == 'NO' && $hasLicense == 'YES') {
                 $validationArray = array_merge($validationArray, [
-                    'license_file' => 'required|image',
+                    'license_file' => 'required|image|mimetypes:image/jpg,image/jpeg',
                 ]);
             } elseif ($business->has_license == 'YES' && $hasLicense == 'NO') {
                 $validationArray = array_merge($validationArray, [
-                    'esteshhad_file' => 'required|image',
+                    'esteshhad_file' => 'required|image|mimetypes:image/jpg,image/jpeg',
                 ]);
             }
         }

@@ -30,7 +30,7 @@ class CreateAccount extends FormRequest
             'accounts.*.branch' => 'required|numeric',
             'accounts.*.account_number' => 'required|numeric',
             'accounts.*.sheba_code' => 'required|digits:24|numeric',
-            'accounts.*.sheba_file' => 'required|image',
+            'accounts.*.sheba_file' => 'required|image|mimetypes:image/jpg,image/jpeg',
             'accounts.*.first_name' => 'required',
             'accounts.*.last_name' => 'required',
             'accounts.*.national_code' => 'required|digits:10|numeric',

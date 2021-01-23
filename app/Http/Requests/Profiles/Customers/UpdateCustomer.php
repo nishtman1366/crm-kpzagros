@@ -38,9 +38,9 @@ class UpdateCustomer extends FormRequest
             'birthday' => 'required|date',
             'gender' => ['required', Rule::in(['male', 'female']),],
             'mobile' => 'required|numeric|digits:11|starts_with:09',
-            'national_card_file_1' => 'nullable|image',
-            'national_card_file_2' => 'nullable|image',
-            'id_file' => 'nullable|image',
+            'national_card_file_1' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
+            'national_card_file_2' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
+            'id_file' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
         ];
         $type = $this->input('type');
 
@@ -52,9 +52,9 @@ class UpdateCustomer extends FormRequest
                 'reg_date' => 'required|date',
                 'reg_code' => 'required',
                 'company_national_code' => 'required|digits:11',
-                'asasname_file' => 'nullable|image',
-                'agahi_file_1' => 'nullable|image',
-                'agahi_file_2' => 'nullable|image',
+                'asasname_file' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
+                'agahi_file_1' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
+                'agahi_file_2' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
             ]);
         }
 

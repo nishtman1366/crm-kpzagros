@@ -49,11 +49,11 @@ class CreateBusiness extends FormRequest
             $validationArray = array_merge($validationArray, [
                 'license_code' => 'required',
                 'license_date' => 'required|date',
-                'license_file' => 'required|image',
+                'license_file' => 'required|image|mimetypes:image/jpg,image/jpeg',
             ]);
         } elseif ($hasLicense == 'NO') {
             $validationArray = array_merge($validationArray, [
-                'esteshhad_file' => 'required|image',
+                'esteshhad_file' => 'required|mimetypes:image/jpg,image/jpeg',
             ]);
         }
         return $validationArray;
