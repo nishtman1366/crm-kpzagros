@@ -132,7 +132,7 @@ class ProfileController extends Controller
             });
         }
 
-        $fromDate = $request->query('fromDate', Jalalian::now()->subDays(7)->format('Y-m-d'));
+        $fromDate = $request->query('fromDate', Jalalian::now()->subMonths()->format('Y-m-d'));
         $fromDate = str_replace('/', '-', $fromDate);
         $jFromDate = $fromDate;
         $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
