@@ -28,7 +28,7 @@
                                         </jet-button>
                                     </InertiaLink>
                                     <jet-button
-                                        v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
                                         @click.native="uploadExcel"
                                         class="my-5 mx-1 bg-green-600 hover:bg-green-500 sm:float-left">
                                         <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
@@ -37,7 +37,7 @@
                                         </svg>
                                         ورود اطلاعات
                                     </jet-button>
-                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
                                        target="_blank"
                                        :href="route('dashboard.profiles.downloadExcel',{
                                                 query: query,

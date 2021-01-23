@@ -71,6 +71,12 @@
                                             ثبت پرونده
                                             جدید
                                         </jet-button>
+                                        <jet-button :class="{'bg-blue-600':profileTypeForm.type==='EDIT'}"
+                                                    @click.native="profileTypeForm.type='EDIT'"
+                                                    class="bg-blue-300 hover:bg-blue-400 active:bg-blue-800"
+                                                    :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0">
+                                            تغییر مشخصات پرونده
+                                        </jet-button>
                                         <jet-button :class="{'bg-green-600':profileTypeForm.type==='TRANSFER'}"
                                                     @click.native="profileTypeForm.type='TRANSFER'"
                                                     class="bg-green-300 hover:bg-green-400 active:bg-green-800"
