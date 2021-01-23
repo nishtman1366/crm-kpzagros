@@ -398,8 +398,10 @@ class ProfileController extends Controller
         $profile = Profile::find($profileId);
         if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
         $deviceId = $request->get('device_id');
+        $deviceTypeId = $request->get('device_type_id');
 
         $profile->fill([
+            'device_type_id' => $deviceTypeId,
             'device_id' => $deviceId,
             'status' => 6
         ]);

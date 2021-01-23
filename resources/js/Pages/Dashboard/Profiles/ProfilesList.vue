@@ -336,13 +336,17 @@
                                 جستجو
                             </button>
 
-                            <div class="mt-2">
+                            <div class="mt-2 h-48 overflow-y-auto">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead>
                                     <tr>
                                         <th scope="col"
                                             class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             شماره سریال
+                                        </th>
+                                        <th scope="col"
+                                            class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            مدل دستگاه
                                         </th>
                                         <th scope="col"
                                             class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -360,7 +364,10 @@
                                             {{device.serial}}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
-                                            {{device.status2Text}}
+                                            {{device.device_type.name}}
+                                        </td>
+                                        <td class="px-6 py-4 text-center text-gray-900">
+                                            {{device.physicalStatusText}}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
                                             <button type="button"
@@ -391,7 +398,12 @@
                     آیا از انتخاب این سریال مطمئن هستید؟
 
                     <div class="mt-4">
-                        {{selectedSerial}}
+                        <p class="float-left">
+                            مدل دستگاه: <span class="text-red-400 font-bold mx-3">{{selectedDevice.device_type.name}}</span>
+                        </p>
+                        <p class="float-right">
+                            سریال دستگاه: <span class="text-green-400 font-bold mx-3">{{selectedDevice.serial}}</span>
+                        </p>
                     </div>
                 </template>
                 <template #footer>
@@ -939,12 +951,13 @@
                     results: []
                 },
                 devices: [],
-                selectedSerial: '',
+                selectedDevice: '',
                 confirmSerial: false,
                 profileId: '',
                 serialForm: this.$inertia.form({
                     '_method': 'PUT',
                     device_id: '',
+                    device_type_id: '',
                 }, {
                     bag: 'serialForm',
                     resetOnSuccess: true
@@ -1087,6 +1100,8 @@
                     })
             },
             viewDevicesModal(profileId) {
+                this.search.results = [];
+                this.devices = [];
                 this.viewSearchModal = true;
                 this.profileId = profileId;
                 axios.get('dashboard/devices/' + profileId)
@@ -1106,8 +1121,9 @@
                 this.search.results = selected;
             },
             selectDevice(device) {
+                this.serialForm.device_type_id = device.device_type_id;
                 this.serialForm.device_id = device.id;
-                this.selectedSerial = device.serial;
+                this.selectedDevice = device;
                 this.confirmSerial = true;
             },
             submitSerial() {

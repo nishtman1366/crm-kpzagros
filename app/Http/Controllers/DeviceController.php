@@ -328,7 +328,7 @@ class DeviceController extends Controller
 
     private function getDeviceListByType(int $typeId, $user)
     {
-        $devices = Device::where('device_type_id', $typeId)
+        $devices = Device::with('deviceType')
             ->where(function ($query) use ($user) {
                 if ($user->isAdmin()) {
                     $query->where('user_id', $user->id);
