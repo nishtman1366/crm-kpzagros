@@ -133,17 +133,17 @@ class ProfileController extends Controller
             });
         }
 
-        $fromDate = $request->query('fromDate', Jalalian::now()->subMonths()->format('Y-m-d'));
-        $fromDate = str_replace('/', '-', $fromDate);
-        $jFromDate = $fromDate;
-        $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
-        $profilesQuery->where('updated_at', '>=', $fromDate);
-
-        $toDate = $request->query('toDate', Jalalian::now()->format('Y-m-d'));
-        $toDate = str_replace('/', '-', $toDate);
-        $jToDate = $toDate;
-        $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
-        $profilesQuery->where('updated_at', '<=', $toDate);
+//        $fromDate = $request->query('fromDate', Jalalian::now()->subMonths()->format('Y-m-d'));
+//        $fromDate = str_replace('/', '-', $fromDate);
+//        $jFromDate = $fromDate;
+//        $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
+//        $profilesQuery->where('updated_at', '>=', $fromDate);
+//
+//        $toDate = $request->query('toDate', Jalalian::now()->format('Y-m-d'));
+//        $toDate = str_replace('/', '-', $toDate);
+//        $jToDate = $toDate;
+//        $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
+//        $profilesQuery->where('updated_at', '<=', $toDate);
 
         $profiles = $profilesQuery->orderBy('updated_at', 'DESC')
             ->paginate(30);
@@ -222,8 +222,8 @@ class ProfileController extends Controller
 
                 'searchQuery' => $searchQuery,
 
-                'fromDate' => $jFromDate,
-                'toDate' => $jToDate,
+//                'fromDate' => $jFromDate,
+//                'toDate' => $jToDate,
 
                 'paginatedLinks' => $paginatedLinks,
             ]

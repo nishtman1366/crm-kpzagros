@@ -17,6 +17,7 @@ if (!function_exists('paginationLinks')) {
             is_array($window['last']) ? '...' : null,
             $window['last'],
         ]);
+
         $i = 1;
         foreach ($array as $index => $urlsArray) {
 

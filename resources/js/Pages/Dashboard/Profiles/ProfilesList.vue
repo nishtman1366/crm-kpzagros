@@ -10,7 +10,7 @@
                                 <div class="col-1 md:col-span-2">
                                     <input type="text"
                                            v-model="query"
-                                           placeholder="جستجو در کدملی مشتری"
+                                           placeholder="جستجو در کدملی یا نام مشتری"
                                            class="w-1/2 inline shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 sm:text-sm border-gray-300 rounded-md border">
                                     <button v-on:click="submitSearchForm"
                                             class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
@@ -127,30 +127,30 @@
                                         <option value="TRANSFER">انتقال مالکیت</option>
                                     </select>
                                 </div>
-                                <div class="col-1 md:col-span-4">
-                                    <date-picker
-                                        @change="submitFromDate"
-                                        v-model="from_date"
-                                        element="from_date"
-                                        ref="from_date_cal"></date-picker>
-                                    <jet-input placeholder="تاریخ شروع"
-                                               name="from_date"
-                                               id="from_date"
-                                               ref="from_date"
-                                               v-model="from_date"
-                                               readonly/>
-                                    <date-picker
-                                        @change="submitToDate"
-                                        v-model="to_date"
-                                        element="to_date"
-                                        ref="to_date_cal"></date-picker>
-                                    <jet-input placeholder="تاریخ پایان"
-                                               name="to_date"
-                                               id="to_date"
-                                               ref="to_date"
-                                               v-model="to_date"
-                                               readonly/>
-                                </div>
+<!--                                <div class="col-1 md:col-span-4">-->
+<!--                                    <date-picker-->
+<!--                                        @change="submitFromDate"-->
+<!--                                        v-model="from_date"-->
+<!--                                        element="from_date"-->
+<!--                                        ref="from_date_cal"></date-picker>-->
+<!--                                    <jet-input placeholder="تاریخ شروع"-->
+<!--                                               name="from_date"-->
+<!--                                               id="from_date"-->
+<!--                                               ref="from_date"-->
+<!--                                               v-model="from_date"-->
+<!--                                               readonly/>-->
+<!--                                    <date-picker-->
+<!--                                        @change="submitToDate"-->
+<!--                                        v-model="to_date"-->
+<!--                                        element="to_date"-->
+<!--                                        ref="to_date_cal"></date-picker>-->
+<!--                                    <jet-input placeholder="تاریخ پایان"-->
+<!--                                               name="to_date"-->
+<!--                                               id="to_date"-->
+<!--                                               ref="to_date"-->
+<!--                                               v-model="to_date"-->
+<!--                                               readonly/>-->
+<!--                                </div>-->
                             </div>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>

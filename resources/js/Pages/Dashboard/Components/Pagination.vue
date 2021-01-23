@@ -19,6 +19,9 @@
                     <span>{{eachUrlArray.pageNumber}}</span>
                 </li>
             </InertiaLink>
+            <li v-else class="relative block py-2 px-3 leading-tight bg-white border border-gray-300 text-blue-700 hover:bg-gray-200">
+                <span>...</span>
+            </li>
             <InertiaLink v-if="previousPageUrl"
                          :href="previousPageUrl">
                 <li
