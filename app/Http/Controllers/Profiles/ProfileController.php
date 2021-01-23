@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Profiles;
 use App\Exports\Profiles\ProfileExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notifications\NotificationController;
+use App\Http\Requests\Profiles\Profile\UpdateTerminal;
 use App\Imports\Profiles\ProfileImport;
 use App\Models\Profiles\Profile;
 use App\Models\Profiles\LicenseType;
@@ -415,12 +416,9 @@ class ProfileController extends Controller
 
     }
 
-    public function updateTerminal(Request $request)
+    public function updateTerminal(UpdateTerminal $request)
     {
-        $request->validateWithBag('terminalForm', [
-            'terminal_id' => 'required',
-            'merchant_id' => 'required'
-        ]);
+        $byAdmin = $request->query('byAdmin', null);
 
         $user = Auth::user();
         $profileId = $request->route('profileId');
@@ -428,16 +426,21 @@ class ProfileController extends Controller
         $profile = Profile::find($profileId);
         if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
 
-        $device = Device::find($profile->device_id);
-        if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
-        $device->update(['psp_status' => 2]);
+        if ($byAdmin) {
+            $profile->fill($request->all());
+        } else {
+            $device = Device::find($profile->device_id);
+            if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
+            $device->update(['psp_status' => 2]);
 
-        $request->merge(['status' => 7]);
-        $profile->fill($request->all());
-
+            $request->merge(['status' => 7]);
+            $profile->fill($request->all());
+        }
         $profile->save();
 
         $this->setProfileMessage(7, $user, $profile, null);
+
+        if ($byAdmin) return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
 
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست ثبت شماره ترمینال و شماره پذیرنده با موفقیت ثبت شد.']);
 

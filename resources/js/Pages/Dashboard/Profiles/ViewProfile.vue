@@ -63,7 +63,8 @@
                                     <div class="col-6 sm:col-span-6">
                                         <p class="text-white text-center text-lg m-2 py-2 mb-4 bg-indigo-600 rounded">
                                             مشخصات پرونده</p>
-                                        <p v-show="$page.message" class="bg-green-300 rounded mx-2 my-3 p-3">{{$page.message}}</p>
+                                        <p v-show="$page.message" class="bg-green-300 rounded mx-2 my-3 p-3">
+                                            {{$page.message}}</p>
                                         <jet-button :class="{'bg-blue-600':profileTypeForm.type==='REGISTER'}"
                                                     @click.native="profileTypeForm.type='REGISTER'"
                                                     class="bg-blue-300 hover:bg-blue-400 active:bg-blue-800"
@@ -441,12 +442,38 @@
                                                 {{profile.psp ? profile.psp.name : 'نامشخص'}}
                                             </div>
                                             <div class="col-1 self-center sm:col-span-2">شماره پایانه</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">
+                                            <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                                 class="col-1 sm:col-span-2 font-bold">
+                                                <jet-input name="terminal_id"
+                                                           id="terminal_id"
+                                                           class="block w-full"
+                                                           v-model="terminalForm.terminal_id"/>
+                                                <jet-input-error :message="terminalForm.error('terminal_id')"
+                                                                 class="font-normal mt-2"/>
+                                            </div>
+                                            <div v-else class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.terminal_id ? profile.terminal_id : 'تخصیص نیافته'}}
                                             </div>
                                             <div class="col-1 self-center sm:col-span-2">شماره پذیرنده</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">
+                                            <div v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                                 class="col-1 sm:col-span-2 font-bold">
+                                                <jet-input name="merchant_id"
+                                                           id="merchant_id"
+                                                           class="block w-full"
+                                                           v-model="terminalForm.merchant_id"/>
+                                                <jet-input-error :message="terminalForm.error('merchant_id')"
+                                                                 class="font-normal mt-2"/>
+                                            </div>
+                                            <div v-else class="col-1 sm:col-span-2 font-bold">
                                                 {{profile.merchant_id ? profile.merchant_id : 'تخصیص نیافته'}}
+                                            </div>
+                                            <div class="col-span-2 sm:col-span-8 text-left">
+                                                <jet-button :disable="submitTerminalFormLoading"
+                                                            @click.native="submitTerminal">
+                                                    <div v-if="submitTerminalFormLoading"
+                                                         class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-5 w-5 mx-1"></div>
+                                                    ذخیره تغییرات
+                                                </jet-button>
                                             </div>
                                         </div>
                                     </div>
@@ -744,6 +771,15 @@
                 }),
                 submitProfileFormLoading: false,
 
+                terminalForm: this.$inertia.form({
+                    '_method': 'PUT',
+                    terminal_id: this.profile.terminal_id,
+                    merchant_id: this.profile.merchant_id,
+                }, {
+                    bag: 'terminalForm',
+                    resetOnSuccess: false,
+                }),
+                submitTerminalFormLoading: false,
 
                 filePreview: '',
                 fileUploadError: '',
@@ -809,6 +845,21 @@
                     this.submitProfileFormLoading = false;
                     this.profile.messages.reverse();
                 })
+            },
+            submitTerminal() {
+                this.submitTerminalFormLoading = true;
+                this.terminalForm.post(route('dashboard.profiles.update.terminal', {
+                    profileId: this.profile.id,
+                    byAdmin: true
+                }), {
+                    preserveScroll: true
+                })
+                    .then(response => {
+                        if (!this.terminalForm.hasErrors()) {
+
+                        }
+                        this.submitTerminalFormLoading = false;
+                    })
             },
             onTransferFileChange(e) {
                 const file = e.target.files[0];
