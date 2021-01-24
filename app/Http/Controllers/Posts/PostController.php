@@ -212,7 +212,7 @@ class PostController extends Controller
             $postsQuery->whereIn('id', $userPosts);
         }
 
-        $posts = $postsQuery->paginate(12);
+        $posts = $postsQuery->orderBy('id','DESC')->paginate(12);
         $paginatedLinks = paginationLinks($posts);
 
         $posts->each(function ($post) {

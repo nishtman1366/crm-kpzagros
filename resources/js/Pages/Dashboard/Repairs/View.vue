@@ -368,6 +368,15 @@
                                 در صف تعمیر
                             </jet-button>
                             <jet-button
+                                v-if="repair.status==2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                @click.native="changeRepairStatus(8)"
+                                type="button"
+                                class="mx-2 bg-red-600 hover:bg-red-500 active:bg-red-700"
+                                :class="{ 'opacity-25': updateRepairStatusForm.processing || updateRepairForm.processing }"
+                                :disabled="updateRepairStatusForm.processing || updateRepairForm.processing">
+                                غیرقابل تعمیر
+                            </jet-button>
+                            <jet-button
                                 v-if="repair.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(4)"
                                 type="button"
@@ -395,7 +404,7 @@
                                 پرداخت هزینه
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==6 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="(repair.status==6 || repair.status==8) && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(7)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"

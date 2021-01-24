@@ -99,8 +99,15 @@ class Profile extends Model
 
     public function getTypeTextAttribute()
     {
-        if($this->attributes['type']==='TRANSFER') return 'انتقال مالکیت';
-        else return 'پرونده جدید';
+        switch ($this->attributes['type']) {
+            default:
+            case 'REGISTER':
+                return 'پرونده جدید';
+            case 'TRANSFER':
+                return 'انتقال مالکیت';
+            case 'EDIT':
+                return 'تغییر مشخصات پذیرنده';
+        }
     }
 
     public function customer()

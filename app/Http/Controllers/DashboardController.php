@@ -257,9 +257,9 @@ class DashboardController extends Controller
     private function getLatestNewsForDashboard($user)
     {
         if ($user->isAdmin() || $user->isSuperuser()) {
-            return Post::with('category')->limit(15)->get();
+            return Post::with('category')->orderBy('id','DESC')->limit(15)->get();
         }
         $userPosts = Level::where('level', $user->level)->pluck('post_id');
-        return Post::with('category')->whereIn('id', $userPosts)->limit(15)->get();
+        return Post::with('category')->whereIn('id', $userPosts)->orderBy('id','DESC')->limit(15)->get();
     }
 }

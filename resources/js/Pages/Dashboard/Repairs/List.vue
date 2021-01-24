@@ -56,7 +56,7 @@
                                             class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option :value="null">وضعیت پرونده</option>
                                         <option v-for="statusItem in statuses" :key="statusItem.id"
-                                                :value="statusItem.id">{{statusItem.name}}
+                                                :value="statusItem.id">{{ statusItem.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -121,28 +121,29 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="repair in repairs.data" :key="repair.id">
-                                    <td class="py-4 text-center text-gray-900">{{repair.name}}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.name }}</td>
                                     <td class="py-4 text-center text-gray-900">
-                                        {{repair.device_type.name}}
+                                        {{ repair.device_type.name }}
                                         <p
-                                            class="text-indigo-600">({{repair.psp ? repair.psp.name : 'نامشخص'}})</p>
+                                            class="text-indigo-600">({{ repair.psp ? repair.psp.name : 'نامشخص' }})</p>
                                     </td>
                                     <td class="py-4 text-center text-gray-900">
-                                        <p class="text-sm text-gray-900">{{repair.user ? repair.user.name : 'نامشخص'}}</p>
+                                        <p class="text-sm text-gray-900">
+                                            {{ repair.user ? repair.user.name : 'نامشخص' }}</p>
                                         <p class="text-sm text-indigo-500">
-                                            {{repair.user && repair.user.parent ? 'نماینده: '+repair.user.parent.name : ''}}
+                                            {{ repair.user && repair.user.parent ? 'نماینده: ' + repair.user.parent.name : '' }}
                                         </p>
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">{{repair.tracking_code}}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.tracking_code }}</td>
                                     <td class="py-4 text-center text-gray-900">
                                         <span
                                             :class="statusColors(repair.status)"
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                                          {{repair.statusText}}
+                                          {{ repair.statusText }}
                                         </span>
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">{{repair.jCreatedAt}}</td>
-                                    <td class="py-4 text-center text-gray-900">{{repair.jUpdatedAt}}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.jCreatedAt }}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.jUpdatedAt }}</td>
                                     <td class="py-4 text-center text-gray-900">
                                         <InertiaLink
                                             :href="route('dashboard.repairs.view',{repairId: repair.id})"
@@ -171,99 +172,101 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from '@/Jetstream/Button'
-    import {Inertia} from "@inertiajs/inertia";
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-    import JetDangerButton from '@/Jetstream/DangerButton';
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-    import JetInputError from '@/Jetstream/InputError';
-    import JetInput from '@/Jetstream/Input';
-    import Pagination from "@/Pages/Dashboard/Components/Pagination";
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from '@/Jetstream/Button'
+import {Inertia} from "@inertiajs/inertia";
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
+import JetDangerButton from '@/Jetstream/DangerButton';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import JetInputError from '@/Jetstream/InputError';
+import JetInput from '@/Jetstream/Input';
+import Pagination from "@/Pages/Dashboard/Components/Pagination";
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
 
-    export default {
-        name: "List",
-        components: {
-            Dashboard,
-            JetButton,
-            JetConfirmationModal,
-            JetDangerButton,
-            JetSecondaryButton,
-            JetInputError,
-            JetInput,
-            Pagination,
-            datePicker: VuePersianDatetimePicker,
-        },
-        props: {
-            searchQuery: String,
+export default {
+    name: "List",
+    components: {
+        Dashboard,
+        JetButton,
+        JetConfirmationModal,
+        JetDangerButton,
+        JetSecondaryButton,
+        JetInputError,
+        JetInput,
+        Pagination,
+        datePicker: VuePersianDatetimePicker,
+    },
+    props: {
+        searchQuery: String,
 
-            repairs: Object,
+        repairs: Object,
 
-            statuses: Array,
-            statusId: String,
+        statuses: Array,
+        statusId: String,
 
-            fromDate: String,
-            toDate: String,
+        fromDate: String,
+        toDate: String,
 
-            paginatedLinks: Array
-        },
-        data() {
-            return {
-                status_id: null,
-                from_date: null,
-                to_date: null,
-                query: null,
+        paginatedLinks: Array
+    },
+    data() {
+        return {
+            status_id: null,
+            from_date: null,
+            to_date: null,
+            query: null,
+        }
+    },
+    mounted() {
+        this.query = this.searchQuery;
+        this.status_id = this.statusId;
+        this.from_date = this.fromDate;
+        this.to_date = this.toDate;
+    },
+    methods: {
+        statusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 1:
+                    return 'bg-green-100 text-green-800';
+                case 2:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 3:
+                    return 'bg-green-100 text-green-800';
+                case 4:
+                    return 'bg-green-100 text-green-800';
+                case 5:
+                    return 'bg-green-100 text-green-800';
+                case 6:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 7:
+                    return 'bg-green-100 text-green-800';
+                case 8:
+                    return 'bg-red-100 text-red-800';
             }
         },
-        mounted(){
-            this.query = this.searchQuery;
-            this.status_id = this.statusId;
-            this.from_date = this.fromDate;
-            this.to_date = this.toDate;
+        submitSearchForm() {
+            Inertia.visit(route('dashboard.repairs.list'), {
+                method: 'get',
+                data: {
+                    query: this.query,
+                    statusId: this.status_id,
+                    agentId: this.agent_id,
+                    marketerId: this.marketer_id,
+                    fromDate: this.from_date,
+                    toDate: this.to_date,
+                },
+            })
         },
-        methods:{
-            statusColors(status) {
-                switch (status) {
-                    case 0:
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 1:
-                        return 'bg-green-100 text-green-800';
-                    case 2:
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 3:
-                        return 'bg-green-100 text-green-800';
-                    case 4:
-                        return 'bg-green-100 text-green-800';
-                    case 5:
-                        return 'bg-green-100 text-green-800';
-                    case 6:
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 7:
-                        return 'bg-green-100 text-green-800';
-                }
-            },
-            submitSearchForm() {
-                Inertia.visit(route('dashboard.repairs.list'), {
-                    method: 'get',
-                    data: {
-                        query: this.query,
-                        statusId: this.status_id,
-                        agentId: this.agent_id,
-                        marketerId: this.marketer_id,
-                        fromDate: this.from_date,
-                        toDate: this.to_date,
-                    },
-                })
-            },
-            submitFromDate(e) {
-                this.submitSearchForm();
-            },
-            submitToDate(e) {
-                this.submitSearchForm();
-            }
+        submitFromDate(e) {
+            this.submitSearchForm();
+        },
+        submitToDate(e) {
+            this.submitSearchForm();
         }
     }
+}
 </script>
 
 <style scoped>
