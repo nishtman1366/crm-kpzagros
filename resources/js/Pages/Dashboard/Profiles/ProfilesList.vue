@@ -399,7 +399,7 @@
 
                     <div class="mt-4">
                         <p class="float-left">
-                            مدل دستگاه: <span class="text-red-400 font-bold mx-3">{{selectedDevice.device_type.name}}</span>
+                            مدل دستگاه: <span class="text-red-400 font-bold mx-3">{{selectedDevice.device_type ? selectedDevice.device_type.name : ''}}</span>
                         </p>
                         <p class="float-right">
                             سریال دستگاه: <span class="text-green-400 font-bold mx-3">{{selectedDevice.serial}}</span>

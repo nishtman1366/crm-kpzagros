@@ -371,7 +371,10 @@ class ProfileController extends Controller
                     'transfer_file' => 'required|image',
                 ]);
             }
+            $message = 'درخواست انتقال مالکیت با موفقیت ثبت شد.';
         } else {
+            $message = 'تغییر نوع پرونده با موفقیت ثبت شد.';
+
             $request->merge([
                 'previous_name' => null,
                 'previous_national_code' => null,
@@ -387,7 +390,7 @@ class ProfileController extends Controller
             LicenseController::upload($request->file('transfer_file'), 'transfer_file', $profileId);
         }
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'درخواست انتقال مالکیت با موفقیت ثبت شد.']);
+        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => $message]);
 
     }
 
