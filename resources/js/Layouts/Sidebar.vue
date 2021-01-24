@@ -148,7 +148,7 @@
                             </inertia-link>
                         </li>
                         <li>
-                            <inertia-link :href="route('dashboard.settings.main')">
+                            <inertia-link :href="route('dashboard.reports.profiles')">
                                 <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
                                 پرونده ها
                             </inertia-link>
