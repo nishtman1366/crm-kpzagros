@@ -78,7 +78,8 @@ class RepairController extends Controller
             ['id' => 4, 'name' => 'تعمیر شده'],
             ['id' => 5, 'name' => 'در انتظار پرداخت'],
             ['id' => 6, 'name' => 'پرداخت شده'],
-            ['id' => 7, 'name' => 'عودت شده']
+            ['id' => 7, 'name' => 'عودت شده'],
+            ['id' => 8, 'name' => 'غیرقابل تعمیر']
         ];
         return Inertia::render('Dashboard/Repairs/List', [
             'repairs' => $repairs,
@@ -241,6 +242,9 @@ class RepairController extends Controller
                     break;
                 case 7:
                     $title = sprintf('دستگاه عودت داده شد.');
+                    break;
+                case 8:
+                    $title = sprintf('دستگاه قابل تعمیر نمی باشد.');
                     break;
             }
         }

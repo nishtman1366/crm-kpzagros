@@ -44,6 +44,9 @@ class Repair extends Model
             case 7:
                 return 'عودت شده';
                 break;
+            case 8:
+                return 'غیرقابل تعمیر';
+                break;
             default:
                 return 'ثبت موقت';
                 break;
