@@ -110,8 +110,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         });
     });
 
-    Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('', 'ReportController@index')->name('list');
+    Route::prefix('reports')->name('reports.')->namespace('Reports')->group(function () {
+        Route::get('', 'ReportController@index')->name('main');
+        Route::get('profiles', 'ProfileController@index')->name('profiles');
     });
 
     Route::prefix('payments')->name('payments.')->namespace('Payments')->group(function () {

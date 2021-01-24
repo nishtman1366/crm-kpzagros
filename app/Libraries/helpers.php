@@ -97,3 +97,23 @@ if (!function_exists('clearAddress')) {
         return preg_replace('/\s+/', ' ', str_replace([',', '-', '/', '،', '?', '؟'], ' ', $address));
     }
 }
+
+if (!function_exists('monthOfYear')) {
+    function monthOfYear($year, $isLeapYear)
+    {
+        return [
+            ['فروردین', $year . '/01/01', $year . '/02/01'],
+            ['اردیبهشت', $year . '/02/01', $year . '/02/31'],
+            ['خرداد', $year . '/03/01', $year . '/03/31'],
+            ['تیر', $year . '/04/01', $year . '/04/31'],
+            ['مرداد', $year . '/05/01', $year . '/05/31'],
+            ['شهریور', $year . '/06/01', $year . '/06/31'],
+            ['مهر', $year . '/07/01', $year . '/07/30'],
+            ['آبان', $year . '/08/01', $year . '/08/30'],
+            ['آذر', $year . '/09/01', $year . '/09/30'],
+            ['دی', $year . '/10/01', $year . '/10/30'],
+            ['بهمن', $year . '/11/01', $year . '/11/30'],
+            ['اسفند', $year . '/12/01', $year . '/12/' . ($isLeapYear ? '30' : '29')],
+        ];
+    }
+}

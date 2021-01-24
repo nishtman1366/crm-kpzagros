@@ -127,7 +127,7 @@
                                     <div v-if="$page.user.level!=='MARKETER'" class="col-1 sm:col-span-2">
                                         <div class="bg-green-600 text-white p-1 text-lg">بازاریابان فعال</div>
                                         <bar-chart :chartData="topMarketersChartData"
-                                                   :chartOptions="chartOptions"></bar-chart>
+                                                   :chartOptions="chartOptions"/>
                                     </div>
                                     <div v-if="$page.user.level!=='MARKETER'" class="col-1 sm:col-span-2">
                                         <div class="bg-purple-600 text-white p-1 text-lg">دستگاه های نصب شده</div>

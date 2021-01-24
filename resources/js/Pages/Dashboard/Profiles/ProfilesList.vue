@@ -8,14 +8,14 @@
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                             <div class="grid md:grid-cols-4 gap-3">
                                 <div class="col-1 md:col-span-2">
-                                    <input type="text"
-                                           v-model="query"
-                                           placeholder="جستجو در کدملی یا نام مشتری"
-                                           class="w-1/2 inline shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 sm:text-sm border-gray-300 rounded-md border">
-                                    <button v-on:click="submitSearchForm"
-                                            class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    <jet-input type="text"
+                                               v-model="query"
+                                               placeholder="جستجو در کدملی یا نام مشتری"
+                                               class="w-1/2"/>
+                                    <jet-button @click.native="submitSearchForm"
+                                                class="bg-blue-500 hover:bg-blue-400">
                                         جستجو
-                                    </button>
+                                    </jet-button>
                                 </div>
                                 <div class="col-1 sm:col-span-2">
                                     <InertiaLink :href="route('dashboard.profiles.create',)">
@@ -127,60 +127,60 @@
                                         <option value="TRANSFER">انتقال مالکیت</option>
                                     </select>
                                 </div>
-<!--                                <div class="col-1 md:col-span-4">-->
-<!--                                    <date-picker-->
-<!--                                        @change="submitFromDate"-->
-<!--                                        v-model="from_date"-->
-<!--                                        element="from_date"-->
-<!--                                        ref="from_date_cal"></date-picker>-->
-<!--                                    <jet-input placeholder="تاریخ شروع"-->
-<!--                                               name="from_date"-->
-<!--                                               id="from_date"-->
-<!--                                               ref="from_date"-->
-<!--                                               v-model="from_date"-->
-<!--                                               readonly/>-->
-<!--                                    <date-picker-->
-<!--                                        @change="submitToDate"-->
-<!--                                        v-model="to_date"-->
-<!--                                        element="to_date"-->
-<!--                                        ref="to_date_cal"></date-picker>-->
-<!--                                    <jet-input placeholder="تاریخ پایان"-->
-<!--                                               name="to_date"-->
-<!--                                               id="to_date"-->
-<!--                                               ref="to_date"-->
-<!--                                               v-model="to_date"-->
-<!--                                               readonly/>-->
-<!--                                </div>-->
+                                <!--                                <div class="col-1 md:col-span-4">-->
+                                <!--                                    <date-picker-->
+                                <!--                                        @change="submitFromDate"-->
+                                <!--                                        v-model="from_date"-->
+                                <!--                                        element="from_date"-->
+                                <!--                                        ref="from_date_cal"></date-picker>-->
+                                <!--                                    <jet-input placeholder="تاریخ شروع"-->
+                                <!--                                               name="from_date"-->
+                                <!--                                               id="from_date"-->
+                                <!--                                               ref="from_date"-->
+                                <!--                                               v-model="from_date"-->
+                                <!--                                               readonly/>-->
+                                <!--                                    <date-picker-->
+                                <!--                                        @change="submitToDate"-->
+                                <!--                                        v-model="to_date"-->
+                                <!--                                        element="to_date"-->
+                                <!--                                        ref="to_date_cal"></date-picker>-->
+                                <!--                                    <jet-input placeholder="تاریخ پایان"-->
+                                <!--                                               name="to_date"-->
+                                <!--                                               id="to_date"-->
+                                <!--                                               ref="to_date"-->
+                                <!--                                               v-model="to_date"-->
+                                <!--                                               readonly/>-->
+                                <!--                                </div>-->
                             </div>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         نام پذیرنده
                                     </th>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         نوع پرونده
                                     </th>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         نوع خدمات
                                     </th>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         بازاریاب
                                     </th>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         وضعیت
                                     </th>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         زمان ثبت
                                     </th>
                                     <th scope="col"
-                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="list-table-header-cell">
                                         آخرین تغییرات
                                     </th>
                                     <th scope="col" class="py-3 bg-gray-50">عملیات</th>
@@ -188,35 +188,35 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="profile in profiles.data" :key="profile.id">
-                                    <td class="py-4 text-center text-gray-900">
+                                    <td class="list-table-body-cell">
                                         {{profile.customer.fullName}}
                                         <p
                                             class="text-indigo-600">({{profile.customer.national_code}})</p>
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">
+                                    <td class="list-table-body-cell">
                                         {{profile.typeText}}
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">
+                                    <td class="list-table-body-cell">
                                         دستگاه کارتخوان
                                         <p
-                                            class="text-indigo-600">({{profile.psp ? profile.psp.name : 'نامشخص'}})</p>
+                                            class="sub-text">({{profile.psp ? profile.psp.name : 'نامشخص'}})</p>
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">
-                                        <p class="text-sm text-gray-900">{{profile.user.name}}</p>
-                                        <p class="text-sm text-indigo-500">
+                                    <td class="list-table-body-cell">
+                                        <p>{{profile.user.name}}</p>
+                                        <p class="sub-text">
                                             {{profile.user.parent ? 'نماینده: '+profile.user.parent.name : ''}}
                                         </p>
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">
+                                    <td class="list-table-body-cell">
                                         <span
                                             :class="statusColors(profile.status)"
-                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
+                                            class="badge">
                                           {{profile.statusText}}
                                         </span>
                                     </td>
-                                    <td class="py-4 text-center text-gray-900">{{profile.jCreatedAt}}</td>
-                                    <td class="py-4 text-center text-gray-900">{{profile.jUpdatedAt}}</td>
-                                    <td class="py-4 text-center text-gray-900">
+                                    <td class="list-table-body-cell">{{profile.jCreatedAt}}</td>
+                                    <td class="list-table-body-cell">{{profile.jUpdatedAt}}</td>
+                                    <td class="list-table-body-cell">
                                         <InertiaLink
                                             :href="route('dashboard.profiles.view',{profileId: profile.id})"
                                             class="tooltip-box text-indigo-600 hover:text-indigo-900">
@@ -689,7 +689,7 @@
                                 جستجو
                             </button>
 
-                            <div class="mt-2">
+                            <div class="mt-2 h-48 overflow-y-auto">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead>
                                     <tr>
@@ -1057,39 +1057,39 @@
             statusColors(status) {
                 switch (status) {
                     case 0:
-                        return 'bg-yellow-100 text-yellow-800';
+                        return 'badge-yellow';
                     case 1:
-                        return 'bg-green-100 text-green-800';
+                        return 'badge-green';
                     case 2:
-                        return 'bg-yellow-100 text-yellow-800';
+                        return 'badge-yellow';
                     case 3:
-                        return 'bg-green-100 text-green-800';
+                        return 'badge-green';
                     case 4:
-                        return 'bg-green-100 text-green-800';
+                        return 'badge-green';
                     case 5:
-                        return 'bg-green-100 text-green-800';
+                        return 'badge-green';
                     case 6:
-                        return 'bg-yellow-100 text-yellow-800';
+                        return 'badge-yellow';
                     case 7:
-                        return 'bg-green-100 text-green-800';
+                        return 'badge-green';
                     case 8:
-                        return 'bg-green-100 text-green-800';
+                        return 'badge-green';
                     case 9:
-                        return 'bg-gray-100 text-gray-800';
+                        return 'badge-gray';
                     case 10:
-                        return 'bg-red-100 text-red-800';
+                        return 'badge-red';
                     case 11:
-                        return 'bg-red-100 text-red-800';
+                        return 'badge-red';
                     case 12:
-                        return 'bg-yellow-100 text-yellow-800';
+                        return 'badge-yellow';
                     case 13:
-                        return 'bg-red-100 text-red-800';
+                        return 'badge-red';
                     case 14:
-                        return 'bg-yellow-100 text-yellow-800';
+                        return 'badge-yellow';
                     case 15:
-                        return 'bg-yellow-100 text-yellow-800';
+                        return 'badge-yellow';
                     case 16:
-                        return 'bg-red-100 text-red-800';
+                        return 'badge-red';
                 }
             },
             updateProfileStatus(id, status) {
@@ -1302,5 +1302,15 @@
 </script>
 
 <style scoped>
+    .list-table-header-cell {
+        @apply py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider;
+    }
 
+    .list-table-body-cell {
+        @apply py-4 text-center text-gray-900;
+    }
+
+    .sub-text {
+        @apply text-sm text-indigo-600
+    }
 </style>
