@@ -38,7 +38,7 @@ class UpdateBusiness extends FormRequest
             'name' => 'required',
             'name_english' => 'required',
             'senf' => 'required',
-            'postal_code' => ['required', new UniquePostalCode((int)$this->get('profile_id'))],
+            'postal_code' => ['required', new UniquePostalCode((int)$this->get('profile_id'), true)],
             'address' => 'required',
             'phone_code' => 'required',
             'phone' => 'required',

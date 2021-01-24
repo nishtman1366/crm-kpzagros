@@ -11,15 +11,19 @@ class UniquePostalCode implements Rule
 {
     private $profileId;
 
+    private $update;
+
     /**
      * Create a new rule instance.
      *
      * @param int $profileId
+     * @param bool $update
      */
-    public function __construct(int $profileId)
+    public function __construct(int $profileId, bool $update = false)
     {
         if (is_null($profileId) || $profileId === 0) return false;
         $this->profileId = $profileId;
+        $this->update = $update;
     }
 
     /**
@@ -38,10 +42,18 @@ class UniquePostalCode implements Rule
             ->pluck('profile_id');
 
         if (count($customers) == 0) {
-            $b = Business::where('postal_code', $value)
-                ->exists();
+            if ($this->update) {
+                $b = Business::where('postal_code', $value)
+                    ->where('profile_id', '!=', $this->profileId)
+                    ->exists();
 
-            return !$b;
+                return !$b;
+            } else {
+                $b = Business::where('postal_code', $value)
+                    ->exists();
+
+                return !$b;
+            }
         } else {
             $businesses = Business::whereIn('profile_id', $customers)
                 ->pluck('id');
