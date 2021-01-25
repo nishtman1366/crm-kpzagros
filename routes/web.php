@@ -113,6 +113,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
     Route::prefix('reports')->name('reports.')->namespace('Reports')->group(function () {
         Route::get('', 'ReportController@index')->name('main');
         Route::get('profiles', 'ProfileController@index')->name('profiles');
+        Route::get('devices', 'DeviceController@index')->name('devices');
         Route::get('list', 'ReportController@index2')->name('list');
     });
 
