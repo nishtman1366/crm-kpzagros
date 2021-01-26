@@ -689,7 +689,7 @@ class ProfileController extends Controller
             'type' => $type
         ]);
 
-        NotificationController::handleProfileNotifications('PROFILE', $profile, $user);
+        NotificationController::handleProfileNotifications('PROFILES', $profile, $user);
 
     }
 
