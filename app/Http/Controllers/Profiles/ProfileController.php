@@ -565,12 +565,12 @@ class ProfileController extends Controller
     public function changeConfirm(Request $request)
     {
         $cancelType = $request->get('confirmChangeMessage');
-        $status = 7;
+        $status = 17;
         if ($cancelType) {
             $request->validateWithBag('confirmChangeSerialForm', [
                 'change_message' => 'required',
             ]);
-            $status = 15;
+            $status = 16;
         }
 
         $user = Auth::user();
@@ -578,26 +578,39 @@ class ProfileController extends Controller
         $profile = Profile::with('customer')->find($profileId);
         if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
 
-        $oldDevice = Device::find($profile->device_id);
-        if (!is_null($oldDevice)) {
-            $oldDevice->transport_status = 1;
-            $oldDevice->psp_status = 1;
-            $oldDevice->save();
+        $updateArray = [];
+
+        if ($status == 16) {
+            $updateArray = [
+                'status' => 7,
+            ];
+        } elseif ($status == 17) {
+            $oldDevice = Device::find($profile->device_id);
+            if (!is_null($oldDevice)) {
+                $oldDevice->transport_status = 1;
+                $oldDevice->psp_status = 1;
+                $oldDevice->save();
+            }
+
+            $newDevice = Device::find($profile->new_device_id);
+            if (!is_null($newDevice)) {
+                $newDevice->transport_status = 2;
+                $newDevice->psp_status = 2;
+                $newDevice->save();
+            }
+
+            $updateArray = [
+                'device_type_id' => $profile->new_device_type_id,
+                'device_id' => $profile->new_device_id,
+                'status' => 7
+            ];
         }
 
-        $newDevice = Device::find($profile->new_device_id);
-        if (!is_null($newDevice)) {
-            $newDevice->transport_status = 2;
-            $newDevice->psp_status = 2;
-            $newDevice->save();
-        }
-
-        if ($status == 7) $request->merge(['device_type_id' => $profile->new_device_type_id, 'device_id' => $profile->new_device_id]);
-        $profile->fill(['status' => $status]);
+        $profile->fill($updateArray);
 
         $profile->save();
 
-        $this->setProfileMessage($status == 15 ? 15 : 17, $user, $profile, $request->get('change_message'));
+        $this->setProfileMessage($status, $user, $profile, $request->get('change_message'));
 
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه جابجایی سریال با موفقیت ثبت شد.']);
     }
