@@ -220,6 +220,6 @@ Route::get('listSerials', function () {
         ->where('new_device_id', '!=', null)
         ->get()->each(function ($profile) {
             $newDevice = Device::where('id', $profile->new_device_id)->get()->first();
-            echo '<p>'.$profile->customer->fullName . '-' . $profile->customer->national_code . '-' . (!is_null($profile->device) ? $profile->device->serial : '') . '-' . (!is_null($newDevice) ? $newDevice->serial : '').'</p>';
+            echo '<p style="direction: rtl">'.$profile->customer->fullName . '-' . $profile->customer->national_code . '-' . (!is_null($profile->device) ? $profile->device->serial : '') . '-' . (!is_null($newDevice) ? $newDevice->serial : '').'</p>';
         });
 });
