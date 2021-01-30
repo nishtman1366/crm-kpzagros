@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,4 +30,30 @@ Route::middleware('auth:sanctum')->prefix('dashboard')->namespace('App\\Http\\Co
 
     Route::get('profiles/{profileId}/newDevice', 'Profiles\\ProfileController@getNewDeviceByAjax')->name('getNewDeviceByAjax');
     Route::get('profiles/{profileId}/newDeviceType', 'Profiles\\ProfileController@getNewDeviceTypeByAjax')->name('getNewDeviceTypeByAjax');
+
+    Route::prefix('profiles')->namespace('Profiles')->group(function () {
+        Route::get('', 'ProfileController@index');
+    });
+});
+
+Route::post('login', function (Request $request) {
+    if (Auth::attempt($request->only(['username', 'password']))) {
+        $user = Auth::user();
+        $token = $user->createToken($request->get('loginType'));
+
+        return response()->json([
+            'success' => true,
+            'token' => $token->plainTextToken,
+            'user' => $user
+        ]);
+    }
+    return response()->json([
+        'success' => false,
+        'message' => 'login error'
+    ]);
+});
+
+Route::middleware('auth:sanctum')->get('logout', function (Request $request) {
+    Auth::user()->currentAccessToken()->delete();
+    return response()->json(['success' => true]);
 });

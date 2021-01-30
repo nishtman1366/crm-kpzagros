@@ -200,7 +200,7 @@ class ProfileController extends Controller
             })
             ->get();
 
-
+        if ($request->wantsJson()) return response()->json($profiles);
 //        dd([$fromDate, $toDate]);
         return Inertia::render('Dashboard/Profiles/ProfilesList',
             [

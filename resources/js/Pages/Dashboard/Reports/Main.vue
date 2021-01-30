@@ -41,7 +41,9 @@
                             </div>
                         </div>
                         <p class="text-left">
-                            <jet-button class="bg-green-500 hover:bg-green-400">گزارش کامل</jet-button>
+                            <Inertia-link :href="route('dashboard.reports.devices')">
+                                <jet-button class="bg-green-500 hover:bg-green-400">گزارش کامل</jet-button>
+                            </Inertia-link>
                         </p>
                     </div>
                 </div>
@@ -51,60 +53,60 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import BarChart from "@/Pages/Dashboard/Components/Charts/BarChart";
-    import RadarChart from "@/Pages/Dashboard/Components/Charts/RadarChart";
-    import PieChart from "@/Pages/Dashboard/Components/Charts/PieChart";
-    import JetButton from "@/Jetstream/Button"
+import Dashboard from "@/Pages/Dashboard";
+import BarChart from "@/Pages/Dashboard/Components/Charts/BarChart";
+import RadarChart from "@/Pages/Dashboard/Components/Charts/RadarChart";
+import PieChart from "@/Pages/Dashboard/Components/Charts/PieChart";
+import JetButton from "@/Jetstream/Button"
 
-    export default {
-        name: "Main",
-        components: {PieChart, BarChart, RadarChart, Dashboard, JetButton},
-        props: {
-            profilesChartData: Object,
-            repairChartData: Object,
-            deviceChartData: Object
-        },
-        data() {
-            return {
-                devicePhysicalStatusChartData: this.deviceChartData.physicalStatus,
-                deviceTransportStatusChartData: this.deviceChartData.transportStatus,
-                devicePspStatusChartData: this.deviceChartData.pspStatus,
-                chartOptions: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        yAxes: [{
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                // steps: 10,
-                                // stepValue: 2,
-                                // max: 100
-                            }
-                        }]
-                    },
-                    legend: {
-                        labels: {
-                            defaultFontFamily: 'IRANSans',
+export default {
+    name: "Main",
+    components: {PieChart, BarChart, RadarChart, Dashboard, JetButton},
+    props: {
+        profilesChartData: Object,
+        repairChartData: Object,
+        deviceChartData: Object
+    },
+    data() {
+        return {
+            devicePhysicalStatusChartData: this.deviceChartData.physicalStatus,
+            deviceTransportStatusChartData: this.deviceChartData.transportStatus,
+            devicePspStatusChartData: this.deviceChartData.pspStatus,
+            chartOptions: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yAxes: [{
+                        display: true,
+                        ticks: {
+                            beginAtZero: true,
+                            // steps: 10,
+                            // stepValue: 2,
+                            // max: 100
                         }
+                    }]
+                },
+                legend: {
+                    labels: {
+                        defaultFontFamily: 'IRANSans',
                     }
                 }
             }
-        },
-    }
+        }
+    },
+}
 </script>
 
 <style scoped>
-    .report-box {
-        @apply mx-2 my-2 p-3 rounded border border-gray-300
-    }
+.report-box {
+    @apply mx-2 my-2 p-3 rounded border border-gray-300
+}
 
-    .report-box-title {
-        @apply text-lg font-bold text-indigo-600 mr-3 border-b border-gray-300
-    }
+.report-box-title {
+    @apply text-lg font-bold text-indigo-600 mr-3 border-b border-gray-300
+}
 
-    .report-box-subtitle {
-        @apply text-base font-bold
-    }
+.report-box-subtitle {
+    @apply text-base font-bold
+}
 </style>
