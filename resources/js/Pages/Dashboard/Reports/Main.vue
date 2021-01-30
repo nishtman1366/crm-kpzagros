@@ -19,7 +19,9 @@
                         <bar-chart :chartData="repairChartData"
                                    :chartOptions="chartOptions"/>
                         <p class="text-left">
-                            <jet-button class="bg-green-500 hover:bg-green-400">گزارش کامل</jet-button>
+                            <Inertia-link :href="route('dashboard.reports.repairs')">
+                                <jet-button class="bg-green-500 hover:bg-green-400">گزارش کامل</jet-button>
+                            </Inertia-link>
                         </p>
                     </div>
                 </div>

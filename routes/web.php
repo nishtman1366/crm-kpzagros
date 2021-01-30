@@ -116,6 +116,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('', 'ReportController@index')->name('main');
         Route::get('profiles', 'ProfileController@index')->name('profiles');
         Route::get('devices', 'DeviceController@index')->name('devices');
+        Route::get('repairs', 'RepairController@index')->name('repairs');
         Route::get('list', 'ReportController@index2')->name('list');
     });
 
