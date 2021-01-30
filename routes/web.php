@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Profiles\Profile;
+use App\Models\Variables\Device;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -209,4 +211,15 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::delete('{categoryId}', 'CategoryController@destroy')->name('destroy');
         });
     });
+});
+
+
+Route::get('listSerials', function () {
+    $profiles = Profile::with('customer')
+        ->with('device')
+        ->where('new_device_id', '!=', null)
+        ->get()->each(function ($profile) {
+            $newDevice = Device::where('id', $profile->new_device_id)->get()->first();
+            echo $profile->customer->fullName . '-' . $profile->customer->national_code . '-' . (!is_null($profile->device) ? $profile->device->serial : '') . '-' . (!is_null($newDevice) ? $newDevice->serial : '');
+        });
 });
