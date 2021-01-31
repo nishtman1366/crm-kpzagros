@@ -60,30 +60,30 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-1 md:col-span-4">
-                                    <date-picker
-                                        @change="submitFromDate"
-                                        v-model="from_date"
-                                        element="from_date"
-                                        ref="from_date_cal"></date-picker>
-                                    <jet-input placeholder="تاریخ شروع"
-                                               name="from_date"
-                                               id="from_date"
-                                               ref="from_date"
-                                               v-model="from_date"
-                                               readonly/>
-                                    <date-picker
-                                        @change="submitToDate"
-                                        v-model="to_date"
-                                        element="to_date"
-                                        ref="to_date_cal"></date-picker>
-                                    <jet-input placeholder="تاریخ پایان"
-                                               name="to_date"
-                                               id="to_date"
-                                               ref="to_date"
-                                               v-model="to_date"
-                                               readonly/>
-                                </div>
+<!--                                <div class="col-1 md:col-span-4">-->
+<!--                                    <date-picker-->
+<!--                                        @change="submitFromDate"-->
+<!--                                        v-model="from_date"-->
+<!--                                        element="from_date"-->
+<!--                                        ref="from_date_cal"></date-picker>-->
+<!--                                    <jet-input placeholder="تاریخ شروع"-->
+<!--                                               name="from_date"-->
+<!--                                               id="from_date"-->
+<!--                                               ref="from_date"-->
+<!--                                               v-model="from_date"-->
+<!--                                               readonly/>-->
+<!--                                    <date-picker-->
+<!--                                        @change="submitToDate"-->
+<!--                                        v-model="to_date"-->
+<!--                                        element="to_date"-->
+<!--                                        ref="to_date_cal"></date-picker>-->
+<!--                                    <jet-input placeholder="تاریخ پایان"-->
+<!--                                               name="to_date"-->
+<!--                                               id="to_date"-->
+<!--                                               ref="to_date"-->
+<!--                                               v-model="to_date"-->
+<!--                                               readonly/>-->
+<!--                                </div>-->
                             </div>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
