@@ -291,15 +291,15 @@ class RepairController extends Controller
         }
 
 
-        $fromDate = $request->query('fromDate', Jalalian::now()->subDays(7)->format('Y-m-d'));
-        $fromDate = str_replace('/', '-', $fromDate);
-        $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
-        $repairsQuery->where('created_at', '>=', $fromDate);
-
-        $toDate = $request->query('toDate', Jalalian::now()->format('Y-m-d'));
-        $toDate = str_replace('/', '-', $toDate);
-        $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
-        $repairsQuery->where('created_at', '<=', $toDate);
+//        $fromDate = $request->query('fromDate', Jalalian::now()->subDays(7)->format('Y-m-d'));
+//        $fromDate = str_replace('/', '-', $fromDate);
+//        $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
+//        $repairsQuery->where('created_at', '>=', $fromDate);
+//
+//        $toDate = $request->query('toDate', Jalalian::now()->format('Y-m-d'));
+//        $toDate = str_replace('/', '-', $toDate);
+//        $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
+//        $repairsQuery->where('created_at', '<=', $toDate);
 
         $repairs = $repairsQuery->orderBy('id', 'DESC')->get();
 
