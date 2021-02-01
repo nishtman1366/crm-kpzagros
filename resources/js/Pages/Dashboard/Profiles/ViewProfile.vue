@@ -432,27 +432,31 @@
                                                 <template v-else>{{profile.device_type.name}}</template>
                                             </div>
                                             <div class="col-1 sm:col-span-2">سریال دستگاه</div>
-                                            <div class="col-1 sm:col-span-6 font-bold">
-                                                <template
-                                                    v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                            <template
+                                                v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                                <div class="col-1 sm:col-span-3 font-bold">
                                                     <jet-input name="device_serial"
                                                                id="device_serial"
-                                                               class="inline-block w-3/4"
+                                                               class="block w-full"
                                                                v-model="serialForm.serial"/>
                                                     <jet-input-error :message="serialForm.error('serial')"
                                                                      class="font-normal mt-2"/>
+                                                </div>
+                                                <div class="col-span-2 sm:col-span-3 font-bold">
                                                     <jet-button :disable="submitSerialFormLoading"
-                                                                class="inline-block bg-green-500 hover:bg-green-400"
+                                                                class="block bg-green-500 hover:bg-green-400 mx-auto"
                                                                 @click.native="submitSerial">
                                                         <div v-if="submitSerialFormLoading"
                                                              class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-5 w-5 mx-1"></div>
                                                         ذخیره تغییرات
                                                     </jet-button>
-                                                </template>
-                                                <template v-else>
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <div class="col-1 sm:col-span-6 font-bold">
                                                     {{profile.device ? profile.device.serial : 'تخصیص نیافته'}}
-                                                </template>
-                                            </div>
+                                                </div>
+                                            </template>
                                             <div class="col-1 sm:col-span-2">تاریخ شروع گارانتی</div>
                                             <div class="col-1 sm:col-span-2 font-bold">{{profile.device ?
                                                 profile.device.guarantee_start : 'ثبت نشده'}}

@@ -15,6 +15,7 @@ use App\Models\Variables\Device;
 use App\Models\Variables\DevicePsp;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
+use App\Rules\ChangeSerial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -416,31 +417,44 @@ class ProfileController extends Controller
 
         if ($byAdmin) {
             $request->validateWithBag('serialForm', [
-                'serial' => 'required|exists:devices,serial',
-                'device_type_id' => 'required'
+                'device_type_id' => 'required',
+                'serial' => ['required', new ChangeSerial($request->get('device_type_id'))],
             ]);
-            $serial = $request->get('serial');
-            $device = Device::where('serial', $serial)->get()->first();
 
-            if ($device->physicalStatus == 2) $error = '';
-            if ($device->transportStatus == 2 || $device->transportStatus == 3) $error = '';
-            if ($device->pspStatus == 2) $error = '';
+            $device = Device::where('serial', $request->get('serial'))->get()->first();
+            //دستگاه قدیمی
+            if(!is_null($profile->device)){
+                $profile->device->update(
+                    [
+                        'transport_status' => 1,
+                        'psp_status' => 1,
+                    ]
+                );
+            }
 
-            dd($error);
+            $profile->fill([
+                'device_type_id' => $request->get('device_type_id'),
+                'device_id' => $device->id,
+            ]);
+
+            $device->update([
+                'transport_status' => $profile->status == 5 ? 2 : 3,
+                'psp_status' => $profile->status == 5 ? 1 : 2,
+            ]);
         } else {
             $profile->fill([
                 'device_type_id' => $deviceTypeId,
                 'device_id' => $deviceId,
                 'status' => 6
             ]);
+
+            Device::find($deviceId)->update([
+                'transport_status' => 2
+            ]);
+
+            $this->setProfileMessage(6, $user, $profile, null);
         }
         $profile->save();
-
-        Device::find($deviceId)->update([
-            'transport_status' => 2
-        ]);
-
-        $this->setProfileMessage(6, $user, $profile, null);
 
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست ثبت شماره سریال با موفقیت ثبت شد.']);
 
