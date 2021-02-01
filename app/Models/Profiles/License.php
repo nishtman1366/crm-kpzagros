@@ -3,6 +3,7 @@
 namespace App\Models\Profiles;
 
 use App\Models\Profiles\LicenseType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,9 +17,9 @@ class License extends Model
 
     public function getUrlAttribute()
     {
-        $microtime = microtime();
-        $version = explode(' ', $microtime);
-        return url('storage') . '/profiles/' . $this->attributes['profile_id'] . '/' . $this->attributes['file'] . '?ver=' . $version[1];
+        $version = $this->updated_at->timestamp;
+
+        return url('storage') . '/profiles/' . $this->attributes['profile_id'] . '/' . $this->attributes['file'] . '?ver=' . $version;
     }
 
     public function type()

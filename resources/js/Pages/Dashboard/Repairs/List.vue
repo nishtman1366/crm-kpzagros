@@ -161,6 +161,7 @@
                                 :urlsArray="paginatedLinks"
                                 :previousPageUrl="repairs.prev_page_url"
                                 :nextPageUrl="repairs.next_page_url"
+                                :totalRows="repairs.total"
                             >
                             </pagination>
                         </div>

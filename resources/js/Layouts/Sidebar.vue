@@ -138,33 +138,35 @@
                                 </inertia-link>
                             </li>
                         </template>
-                        <li class="header-menu">
-                            <span>گزارشات</span>
-                        </li>
-                        <li>
-                            <inertia-link :href="route('dashboard.reports.main')">
-                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                خلاصه
-                            </inertia-link>
-                        </li>
-                        <li>
-                            <inertia-link :href="route('dashboard.reports.profiles')">
-                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                پرونده ها
-                            </inertia-link>
-                        </li>
-                        <li>
-                            <inertia-link :href="route('dashboard.reports.devices')">
-                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                دستگاه ها
-                            </inertia-link>
-                        </li>
-                        <li>
-                            <inertia-link :href="route('dashboard.settings.main')">
-                                <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                تعمیرات
-                            </inertia-link>
-                        </li>
+                        <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                            <li class="header-menu">
+                                <span>گزارشات</span>
+                            </li>
+                            <li>
+                                <inertia-link :href="route('dashboard.reports.main')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
+                                    خلاصه
+                                </inertia-link>
+                            </li>
+                            <li>
+                                <inertia-link :href="route('dashboard.reports.profiles')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
+                                    پرونده ها
+                                </inertia-link>
+                            </li>
+                            <li>
+                                <inertia-link :href="route('dashboard.reports.devices')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
+                                    دستگاه ها
+                                </inertia-link>
+                            </li>
+                            <li>
+                                <inertia-link :href="route('dashboard.reports.repairs')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
+                                    تعمیرات
+                                </inertia-link>
+                            </li>
+                        </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <li class="header-menu">
                                 <span>تنظیمات</span>

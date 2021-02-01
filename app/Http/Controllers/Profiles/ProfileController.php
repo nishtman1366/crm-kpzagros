@@ -12,6 +12,7 @@ use App\Models\Profiles\LicenseType;
 use App\Models\Profiles\ProfileMessage;
 use App\Models\User;
 use App\Models\Variables\Device;
+use App\Models\Variables\DevicePsp;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
 use Illuminate\Http\Request;
@@ -282,12 +283,21 @@ class ProfileController extends Controller
             ['id' => 16, 'name' => 'رد درخواست جابجایی'],
         ];
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
+
+        $deviceTypes = DeviceType::where(function ($query) use ($profile) {
+//            if (!is_null($profile->psp_id)) {
+            $devicePsps = DevicePsp::where('psp_id', $profile->psp_id)->pluck('device_type_id');
+            $query->whereIn('id', $devicePsps);
+//            }
+        })->get();
+
         $licenseTypes = LicenseType::where('status', 1)->orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/ViewProfile', [
             'profile' => $profile,
             'psps' => $psps,
             'statuses' => $statuses,
             'licenseTypes' => $licenseTypes,
+            'deviceTypes' => $deviceTypes,
         ]);
     }
 
@@ -402,13 +412,28 @@ class ProfileController extends Controller
         if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
         $deviceId = $request->get('device_id');
         $deviceTypeId = $request->get('device_type_id');
+        $byAdmin = $request->query('byAdmin', null);
 
-        $profile->fill([
-            'device_type_id' => $deviceTypeId,
-            'device_id' => $deviceId,
-            'status' => 6
-        ]);
+        if ($byAdmin) {
+            $request->validateWithBag('serialForm', [
+                'serial' => 'required|exists:devices,serial',
+                'device_type_id' => 'required'
+            ]);
+            $serial = $request->get('serial');
+            $device = Device::where('serial', $serial)->get()->first();
 
+            if ($device->physicalStatus == 2) $error = '';
+            if ($device->transportStatus == 2 || $device->transportStatus == 3) $error = '';
+            if ($device->pspStatus == 2) $error = '';
+
+            dd($error);
+        } else {
+            $profile->fill([
+                'device_type_id' => $deviceTypeId,
+                'device_id' => $deviceId,
+                'status' => 6
+            ]);
+        }
         $profile->save();
 
         Device::find($deviceId)->update([

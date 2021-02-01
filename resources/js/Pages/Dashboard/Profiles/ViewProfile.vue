@@ -416,11 +416,42 @@
                                                 {{profile.device_type.type.name}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">مدل دستگاه</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.device_type.name}}
+                                            <div class="col-1 sm:col-span-2 font-bold">
+                                                <template
+                                                    v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                                    <select class="form-input rounded-md shadow-sm block w-full pr-6"
+                                                            name="device_type_id"
+                                                            v-model="serialForm.device_type_id">
+                                                        <option v-for="type in deviceTypes" :key="type.id"
+                                                                :value="type.id">{{type.name}}
+                                                        </option>
+                                                    </select>
+                                                    <jet-input-error :message="serialForm.error('device_type_id')"
+                                                                     class="font-normal mt-2"/>
+                                                </template>
+                                                <template v-else>{{profile.device_type.name}}</template>
                                             </div>
                                             <div class="col-1 sm:col-span-2">سریال دستگاه</div>
                                             <div class="col-1 sm:col-span-6 font-bold">
-                                                {{profile.device ? profile.device.serial : 'تخصیص نیافته'}}
+                                                <template
+                                                    v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                                    <jet-input name="device_serial"
+                                                               id="device_serial"
+                                                               class="inline-block w-3/4"
+                                                               v-model="serialForm.serial"/>
+                                                    <jet-input-error :message="serialForm.error('serial')"
+                                                                     class="font-normal mt-2"/>
+                                                    <jet-button :disable="submitSerialFormLoading"
+                                                                class="inline-block bg-green-500 hover:bg-green-400"
+                                                                @click.native="submitSerial">
+                                                        <div v-if="submitSerialFormLoading"
+                                                             class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-5 w-5 mx-1"></div>
+                                                        ذخیره تغییرات
+                                                    </jet-button>
+                                                </template>
+                                                <template v-else>
+                                                    {{profile.device ? profile.device.serial : 'تخصیص نیافته'}}
+                                                </template>
                                             </div>
                                             <div class="col-1 sm:col-span-2">تاریخ شروع گارانتی</div>
                                             <div class="col-1 sm:col-span-2 font-bold">{{profile.device ?
@@ -727,6 +758,7 @@
             psps: Array,
             statuses: Array,
             licenseTypes: Array,
+            deviceTypes: Array,
         },
         data() {
             return {
@@ -780,6 +812,16 @@
                     resetOnSuccess: false,
                 }),
                 submitTerminalFormLoading: false,
+
+                serialForm: this.$inertia.form({
+                    '_method': 'PUT',
+                    serial: this.profile.device ? this.profile.device.serial : '',
+                    device_type_id: this.profile.device_type_id,
+                }, {
+                    bag: 'serialForm',
+                    resetOnSuccess: false,
+                }),
+                submitSerialFormLoading: false,
 
                 filePreview: '',
                 fileUploadError: '',
@@ -859,6 +901,21 @@
 
                         }
                         this.submitTerminalFormLoading = false;
+                    })
+            },
+            submitSerial() {
+                this.submitSerialFormLoading = true;
+                this.serialForm.post(route('dashboard.profiles.update.serial', {
+                    profileId: this.profile.id,
+                    byAdmin: true
+                }), {
+                    preserveScroll: true
+                })
+                    .then(response => {
+                        if (!this.serialForm.hasErrors()) {
+
+                        }
+                        this.submitSerialFormLoading = false;
                     })
             },
             onTransferFileChange(e) {
