@@ -38,27 +38,27 @@
             <template
                 v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
                 <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">کاربران</p>
-                <inertia-link :href="route('dashboard.users.list',{type:'admin'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER'" :href="route('dashboard.users.list',{type:'admin'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">people</i>
                     مدیران سیستم
                 </inertia-link>
-                <inertia-link :href="route('dashboard.users.list',{type:'office'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'" :href="route('dashboard.users.list',{type:'office'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
                     کارمندان دفتر
                 </inertia-link>
-                <inertia-link :href="route('dashboard.users.list',{type:'agent'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'" :href="route('dashboard.users.list',{type:'agent'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
                     نمایندگان
                 </inertia-link>
-                <inertia-link :href="route('dashboard.users.list',{type:'marketer'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'" :href="route('dashboard.users.list',{type:'marketer'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">person</i>
                     بازاریابان
                 </inertia-link>
-                <inertia-link :href="route('dashboard.users.list',{type:'technical'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'" :href="route('dashboard.users.list',{type:'technical'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
                     کارشناسان فنی
