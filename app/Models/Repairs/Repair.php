@@ -16,7 +16,7 @@ class Repair extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
-        'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit'];
+        'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit', 'business_name'];
 
     protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'jGuaranteeEnd'];
 

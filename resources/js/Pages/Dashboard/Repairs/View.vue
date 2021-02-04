@@ -132,6 +132,16 @@
                                            autocomplete="mobile"/>
                                 <jet-input-error :message="updateRepairForm.error('mobile')" class="mt-2"/>
                             </div>
+                            <div class="col-span-6 sm:col-span-2">
+                                <jet-label for="business_name" value="نام فروشگاه"/>
+                                <jet-input id="business_name"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="updateRepairForm.business_name"
+                                           ref="business_name"
+                                           autocomplete="business_name"/>
+                                <jet-input-error :message="updateRepairForm.error('business_name')" class="mt-2"/>
+                            </div>
                             <div class="col-span-6">
                                 <jet-section-border></jet-section-border>
                             </div>
@@ -525,6 +535,7 @@
                     serial: this.repair.serial,
                     guarantee_end: this.repair.guarantee_end,
                     name: this.repair.name,
+                    business_name: this.repair.business_name,
                     mobile: this.repair.mobile,
                     national_code: this.repair.national_code,
                     repairTypeList: this.repairTypesList,

@@ -94,6 +94,10 @@
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        نام فروشگاه
+                                    </th>
+                                    <th scope="col"
+                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         مدل دستگاه
                                     </th>
                                     <th scope="col"
@@ -122,6 +126,7 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="repair in repairs.data" :key="repair.id">
                                     <td class="py-4 text-center text-gray-900">{{ repair.name }}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.business_name }}</td>
                                     <td class="py-4 text-center text-gray-900">
                                         {{ repair.device_type.name }}
                                         <p

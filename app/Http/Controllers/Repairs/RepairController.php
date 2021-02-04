@@ -112,6 +112,7 @@ class RepairController extends Controller
             'psp_id' => 'required',
             'serial' => 'required',
             'name' => 'required',
+            'business_name' => 'required',
             'mobile' => 'required',
             'national_code' => 'required',
             'repairTypeList' => 'required|array',
