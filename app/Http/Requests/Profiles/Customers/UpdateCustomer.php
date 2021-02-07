@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Profiles\Customers;
 
+use App\Rules\NationalCode;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -33,7 +34,7 @@ class UpdateCustomer extends FormRequest
             'last_name_english' => 'nullable',
             'father' => 'required',
             'father_english' => 'nullable',
-            'national_code' => 'required|numeric|digits:10',
+            'national_code' => ['required', 'numeric', 'digits:10', new NationalCode($this->get('first_name'), $this->get('last_name'))],
             'id_code' => 'required|digits_between:1,10',
             'birthday' => 'required|date',
             'gender' => ['required', Rule::in(['male', 'female']),],

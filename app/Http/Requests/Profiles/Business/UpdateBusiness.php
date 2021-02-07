@@ -28,7 +28,7 @@ class UpdateBusiness extends FormRequest
     public function rules()
     {
         $profileId = $this->route('profileId');
-        $business = Business::where('profile_id', $profileId)->get()->first();
+
         $validationArray = [
             'profile_id' => 'required|exists:profiles,id',
             'ostan_id' => 'required|exists:ostan,id',
@@ -38,12 +38,12 @@ class UpdateBusiness extends FormRequest
             'name' => 'required',
             'name_english' => 'required',
             'senf' => 'required',
-            'postal_code' => ['required', new UniquePostalCode((int)$this->get('profile_id'), true)],
+            'postal_code' => ['required', 'numeric', 'digits:10', new UniquePostalCode((int)$this->get('profile_id'), true)],
             'address' => 'required',
             'phone_code' => 'required',
             'phone' => 'required',
             'has_license' => 'required|in:YES,NO',
-            'tax_code' => 'required',
+            'tax_code' => ['required', 'numeric', 'digits:10',],
         ];
 
         $hasLicense = $this->input('has_license');

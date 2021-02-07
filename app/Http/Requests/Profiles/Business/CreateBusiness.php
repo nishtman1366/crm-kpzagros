@@ -36,12 +36,12 @@ class CreateBusiness extends FormRequest
             'name' => 'required',
             'name_english' => 'required',
             'senf' => 'required',
-            'postal_code' => ['required', new UniquePostalCode((int)$this->get('profile_id'))],
+            'postal_code' => ['required', 'numeric', 'digits:10', new UniquePostalCode((int)$this->get('profile_id'))],
             'address' => 'required',
             'phone_code' => 'required',
             'phone' => 'required',
             'has_license' => 'required|in:YES,NO',
-            'tax_code' => 'required'
+            'tax_code' => ['required', 'numeric', 'digits:10',]
         ];
         $hasLicense = $this->input('has_license');
 
