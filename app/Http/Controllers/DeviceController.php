@@ -51,6 +51,14 @@ class DeviceController extends Controller
                 $query->where('device_type_id', $modelId);
             });
         }
+
+        $ownerId = $request->query('ownerId', '');
+        if ($ownerId != '') {
+            $devicesQuery->where(function ($query) use ($ownerId) {
+                $query->where('user_id', $ownerId);
+            });
+        }
+
         $typeId = $request->query('typeId', '');
         if ($typeId != '') {
             $deviceTypes = DeviceType::where('device_connection_type_id', $typeId)->pluck('id');
@@ -89,6 +97,8 @@ class DeviceController extends Controller
             ->paginate();
         $paginatedLinks = paginationLinks($devices->appends($request->query->all()));
 
+        $ownerIds = Device::groupBy('user_id')->get('user_id')->pluck('user_id');
+        $owners = User::whereIn('id', $ownerIds)->get();
 
         $models = DeviceType::orderBy('name', 'ASC')->get();
 
@@ -97,10 +107,12 @@ class DeviceController extends Controller
         return Inertia::render('Dashboard/Devices/DevicesList', [
             'devices' => $devices,
             'models' => $models,
+            'owners' => $owners,
             'types' => $types,
             'paginatedLinks' => $paginatedLinks,
             'typeId' => $typeId,
             'modelId' => $modelId,
+            'ownerId' => $ownerId,
             'searchQuery' => $searchQuery,
             'physicalStatus' => $physicalStatus,
             'transportStatus' => $transportStatus,

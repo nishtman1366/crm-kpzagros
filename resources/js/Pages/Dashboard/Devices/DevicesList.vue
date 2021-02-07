@@ -76,6 +76,17 @@
                                         <option v-for="model in models" :key="model.id" :value="model.id">{{model.name}}
                                         </option>
                                     </select>
+                                    <select id="owners"
+                                            name="owners"
+                                            v-model="owner_id"
+                                            ref="owners"
+                                            autocomplete="owners"
+                                            v-on:change="submitSearchForm"
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option value="">مالک دستگاه</option>
+                                        <option v-for="owner in owners" :key="owner.id" :value="owner.id">{{owner.name}}
+                                        </option>
+                                    </select>
                                     <select id="physical_status"
                                             name="physical_status"
                                             ref="physical_status"
@@ -309,10 +320,12 @@
             devices: Object,
             paginatedLinks: Array,
             models: Array,
+            owners: Array,
             types: Array,
             searchQuery: String,
             typeId: String,
             modelId: String,
+            ownerId: String,
             physicalStatus: String,
             transportStatus: String,
             pspStatus: String,
@@ -323,6 +336,7 @@
                 query: null,
                 type_id: null,
                 model_id: null,
+                owner_id: null,
                 physical_status: null,
                 transport_status: null,
                 psp_status: null,
@@ -344,6 +358,7 @@
             this.query = this.searchQuery;
             this.type_id = this.typeId;
             this.model_id = this.modelId;
+            this.owner_id = this.ownerId;
             this.physical_status = this.physicalStatus;
             this.transport_status = this.transportStatus;
             this.psp_status = this.pspStatus;
@@ -383,6 +398,7 @@
                         searchQuery: this.query,
                         typeId: this.type_id,
                         modelId: this.model_id,
+                        ownerId: this.owner_id,
                         physicalStatus: this.physical_status,
                         transportStatus: this.transport_status,
                         pspStatus: this.psp_status,
