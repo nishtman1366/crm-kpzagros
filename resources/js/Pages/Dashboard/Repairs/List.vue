@@ -27,7 +27,7 @@
                                             ثبت درخواست جدید
                                         </jet-button>
                                     </InertiaLink>
-                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='TECHNICAL' || $page.user.level==='SUPERUSER'"
                                        target="_blank"
                                        :href="route('dashboard.repairs.downloadExcel',{
                                                 query: query,
