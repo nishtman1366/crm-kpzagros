@@ -229,8 +229,12 @@ Route::get('accounts', function () {
     $i = 0;
     $accounts = \App\Models\Profiles\Account::orderBy('id', 'ASC')->get()->each(function ($account) use (&$i) {
         $profileAccounts = \App\Models\Profiles\ProfilesAccount::where('account_id', $account->id)->get();
-        if ($profileAccounts->count() == 0) $i++;
-        echo $account->id . '-' . $profileAccounts->count() . '<br>';
+        if ($profileAccounts->count() == 0) {
+            $i++;
+            $customer = \App\Models\Profiles\Customer::where('id', $account->customer_id)->get()->first();
+            $profile = Profile::where('id', $customer->profile_id)->get()->first();
+        }
+        echo $account->id . '-' . $profileAccounts->count() . '-' . $customer->fullName . '-' . $profile->id . '<br>';
     });
     echo $i . ' accounts are lost';
 });
