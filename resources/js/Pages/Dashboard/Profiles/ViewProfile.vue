@@ -5,7 +5,7 @@
             <ProfileSteps :step="5"
                           :customer-info="!!profile.customer"
                           :customer-id="profile.customer ? profile.customer.id : ''"
-                          :business-info="profile.business &&!!profile.business"
+                          :business-info="profile.business && !!profile.business"
                           :accounts-info="profile.accounts.length > 0"
                           :device-info="!!profile.device_type"
                           :profile-id="profile.id"

@@ -159,7 +159,12 @@
                                           :href="route('dashboard.profiles.businesses.edit',{profileId})">
                                 کسب و کار
                             </inertia-link>
-                            <span v-else>کسب و کار</span>
+                            <span v-else>
+                                <inertia-link
+                                    :href="route('dashboard.profiles.businesses.create',{profileId})">
+                                    کسب و کار
+                                </inertia-link>
+                            </span>
                         </h2>
                         <p class="text-xs text-gray-600">
                             اطلاعات کسب و کار
