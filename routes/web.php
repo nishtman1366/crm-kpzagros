@@ -226,8 +226,11 @@ Route::get('listSerials', function () {
 });
 
 Route::get('accounts', function () {
-    $accounts = \App\Models\Profiles\Account::orderBy('id', 'ASC')->get()->each(function ($account) {
+    $i = 0;
+    $accounts = \App\Models\Profiles\Account::orderBy('id', 'ASC')->get()->each(function ($account) use (&$i) {
         $profileAccounts = \App\Models\Profiles\ProfilesAccount::where('account_id', $account->id)->get();
+        if ($profileAccounts->count() == 0) $i++;
         echo $account->id . '-' . $profileAccounts->count() . '<br>';
     });
+    echo $i . ' accounts are lost';
 });
