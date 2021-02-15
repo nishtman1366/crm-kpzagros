@@ -5,7 +5,7 @@
             <ProfileSteps :step="5"
                           :customer-info="!!profile.customer"
                           :customer-id="profile.customer ? profile.customer.id : ''"
-                          :business-info="!!profile.business"
+                          :business-info="profile.business &&!!profile.business"
                           :accounts-info="profile.accounts.length > 0"
                           :device-info="!!profile.device_type"
                           :profile-id="profile.id"
@@ -298,52 +298,52 @@
                                             اطلاعات کسب و کار</p>
                                         <div class="grid  grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-1">استان</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.ostan}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.ostan}}</div>
                                             <div class="col-1 sm:col-span-1">شهرستان</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.shahrestan}}
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.shahrestan}}
                                             </div>
                                             <div class="col-1 sm:col-span-1">بخش</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.bakhsh}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.bakhsh}}</div>
                                             <div class="col-1 sm:col-span-1">شهر</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business.shahr}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.shahr}}</div>
                                             <div class="col-1 sm:col-span-2">نام</div>
-                                            <div class="col-2 sm:col-span-2 font-bold">{{profile.business.name}}</div>
+                                            <div class="col-2 sm:col-span-2 font-bold">{{profile.business && profile.business.name}}</div>
                                             <div class="col-1 sm:col-span-2">نام انگلیسی</div>
                                             <div class="col-2 sm:col-span-2 font-bold">
-                                                {{profile.business.name_english}}
+                                                {{profile.business && profile.business.name_english}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">صنف مرتبط</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business.senf}}</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business && profile.business.senf}}</div>
                                             <div class="col-1 sm:col-span-2">تلفن تماس</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business.fullPhone}}
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business && profile.business.fullPhone}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">آدرس</div>
-                                            <div class="col-5 sm:col-span-6 font-bold">{{profile.business.address}}
+                                            <div class="col-5 sm:col-span-6 font-bold">{{profile.business && profile.business.address}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">کد پستی</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
-                                                {{profile.business.postal_code}}
+                                                {{profile.business && profile.business.postal_code}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">جواز کسب</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
-                                                {{profile.business.has_license=='YES' ? 'دارد' : 'ندارد'}}
+                                                {{profile.business && profile.business.has_license=='YES' ? 'دارد' : 'ندارد'}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">شماره جواز</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
-                                                {{profile.business.license_code}}
+                                                {{profile.business && profile.business.license_code}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">تاریخ جواز</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
-                                                {{profile.business.jLicenseDate}}
+                                                {{profile.business && profile.business.jLicenseDate}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">کد مالیاتی</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
-                                                {{profile.business.tax_code}}
+                                                {{profile.business && profile.business.tax_code}}
                                             </div>
                                             <div class="col-1 sm:col-span-8">
                                                 <jet-section-border></jet-section-border>
                                             </div>
-                                            <div v-if="profile.business.has_license==='YES'"
+                                            <div v-if="profile.business && profile.business.has_license==='YES'"
                                                  class="col-1 text-center text-indigo-600 sm:col-span-2 hover:text-indigo-400">
                                                 <a target="_blank" :href="profile.business.licenseFile">
                                                     <img :src="profile.business.licenseFile"
@@ -353,8 +353,8 @@
                                             </div>
                                             <div v-else
                                                  class="col-1 text-center text-indigo-600  sm:col-span-2 hover:text-indigo-400">
-                                                <a target="_blank" :href="profile.business.esteshhadFile">
-                                                    <img :src="profile.business.esteshhadFile"
+                                                <a target="_blank" :href="profile.business && profile.business.esteshhadFile">
+                                                    <img :src="profile.business && profile.business.esteshhadFile"
                                                          class="w-full rounded border-indigo-600 hover:border-indigo-400">
                                                     تصویر استشهادنامه
                                                 </a>
