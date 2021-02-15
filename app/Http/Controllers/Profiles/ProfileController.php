@@ -260,7 +260,7 @@ class ProfileController extends Controller
 
         if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
         if (is_null($profile->customer)) return response()->json(['message' => 'اطلاعات مشتری یافت نشد'], 404);
-        if (is_null($profile->business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
+//        if (is_null($profile->business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
         if (count($profile->accounts) == 0) return redirect()->route('dashboard.profiles.accounts.create', ['profileId' => $profileId]);
         if (is_null($profile->deviceType)) return redirect()->route('dashboard.profiles.devices.create', ['profileId' => $profileId]);
 
