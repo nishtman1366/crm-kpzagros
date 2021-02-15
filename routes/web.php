@@ -221,6 +221,13 @@ Route::get('listSerials', function () {
         ->where('new_device_id', '!=', null)
         ->get()->each(function ($profile) {
             $newDevice = Device::where('id', $profile->new_device_id)->get()->first();
-            echo '<p style="direction: rtl">'.$profile->id.','.$profile->customer->fullName . ',' . $profile->customer->national_code . ',' .$profile->device_id.','. (!is_null($profile->device) ? $profile->device->serial : '') . ',' .$profile->new_device_id.','. (!is_null($newDevice) ? $newDevice->serial : '').'</p>';
+            echo '<p style="direction: rtl">' . $profile->id . ',' . $profile->customer->fullName . ',' . $profile->customer->national_code . ',' . $profile->device_id . ',' . (!is_null($profile->device) ? $profile->device->serial : '') . ',' . $profile->new_device_id . ',' . (!is_null($newDevice) ? $newDevice->serial : '') . '</p>';
         });
+});
+
+Route::get('accounts', function () {
+    $accounts = \App\Models\Profiles\Account::orderBy('id', 'ASC')->get()->each(function ($account) {
+        $profileAccounts = \App\Models\Profiles\ProfilesAccount::where('account_id', $account->id)->get();
+        echo $account->id . '-' . $profileAccounts->count() . '<br>';
+    });
 });
