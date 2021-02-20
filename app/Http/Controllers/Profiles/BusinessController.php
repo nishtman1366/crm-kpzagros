@@ -66,7 +66,7 @@ class BusinessController extends Controller
         $customer = $profile->customer;
         if (is_null($customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
         $business = $profile->business;
-        if (is_null($business)) throw new NotFoundHttpException('اطلاعات کسب و کار یافت نشد.');
+        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
         $profile->load('deviceType');
         $ostans = DB::table('ostan')->select()->get(['id', 'name']);
         $shahrestans = DB::table('shahrestan')->select()->get(['id', 'name']);
