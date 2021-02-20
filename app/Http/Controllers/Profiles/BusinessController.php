@@ -90,9 +90,7 @@ class BusinessController extends Controller
         $profileId = $request->route('profileId');
 
         $business = Business::where('profile_id', $profileId)->get()->first();
-        if (is_null($business)) throw new NotFoundHttpException('اطلاعات کسب و کار یافت نشد.');
-
-
+        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
 
         $business->fill($request->all());
         $business->save();

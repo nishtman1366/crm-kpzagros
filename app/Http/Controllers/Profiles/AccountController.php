@@ -26,7 +26,7 @@ class AccountController extends Controller
         $customer = $profile->customer;
         if (is_null($customer)) return response()->json(['message' => 'اطلاعات مشتری یافت نشد'], 404);
         $business = $profile->business;
-        if (is_null($business)) return response()->json(['message' => 'اطلاعات کسب و کار یافت نشد'], 404);
+        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
 
         $banks = Bank::orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/CreateAccount', [

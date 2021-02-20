@@ -24,7 +24,7 @@ class DeviceController extends Controller
         $customer = $profile->customer;
         if (is_null($customer)) return response()->json(['message' => 'اطلاعات مشتری یافت نشد'], 404);
         $business = $profile->business;
-        if (is_null($business)) return response()->json(['message' => 'اطلاعات کسب و کار یافت نشد'], 404);
+        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
         $accounts = $profile->accounts;
         if (count($accounts) === 0) return response()->json(['message' => 'اطلاعات حساب های بانکی یافت نشد'], 404);
         $user = Auth::User();
