@@ -13,6 +13,8 @@ use App\Models\Repairs\Repair;
 use App\Models\Repairs\Location;
 use App\Models\Repairs\RepairTypesList;
 use App\Models\Repairs\Type;
+use App\Models\User;
+use App\Models\Variables\Bank;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
 use Illuminate\Http\Request;
@@ -53,6 +55,10 @@ class RepairController extends Controller
             });
         }
 
+        $userId = $request->query('userId', null);
+        if (!is_null($userId)) {
+            $repairsQuery->where('user_id', $userId);
+        }
 
 //        $fromDate = $request->query('fromDate', Jalalian::now()->subDays(7)->format('Y-m-d'));
 //        $fromDate = str_replace('/', '-', $fromDate);
@@ -81,11 +87,17 @@ class RepairController extends Controller
             ['id' => 7, 'name' => 'عودت شده'],
             ['id' => 8, 'name' => 'غیرقابل تعمیر']
         ];
+
+        $repairUsers = Repair::groupBy('user_id')->pluck('user_id');
+        $users = User::whereIn('id', $repairUsers)->where('id', '!=', 1)->get();
+
         return Inertia::render('Dashboard/Repairs/List', [
             'repairs' => $repairs,
             'searchQuery' => $searchQuery,
             'statusId' => $statusId,
             'statuses' => $statuses,
+            'userId' => $userId,
+            'users' => $users,
 //            'fromDate' => $jFromDate,
 //            'toDate' => $jToDate,
             'paginatedLinks' => $paginatedLinks,
@@ -98,9 +110,11 @@ class RepairController extends Controller
         $deviceTypes = DeviceType::where('status', 1)->orderBy('name', 'ASC')->get();
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
         $repairTypes = Type::where('status', 1)->orderBy('name', 'ASC')->get();
+        $banks = Bank::where('status', 1)->orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Repairs/Create', [
             'deviceTypes' => $deviceTypes,
             'psps' => $psps,
+            'banks' => $banks,
             'repairTypes' => $repairTypes,
         ]);
     }
@@ -149,12 +163,14 @@ class RepairController extends Controller
         $deviceTypes = DeviceType::where('status', 1)->orderBy('name', 'ASC')->get();
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
         $repairTypes = Type::where('status', 1)->orderBy('name', 'ASC')->get();
+        $banks = Bank::where('status', 1)->orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Repairs/View', [
             'repair' => $repair,
             'repairTypesList' => $repairTypesList,
             'locations' => $locations,
             'deviceTypes' => $deviceTypes,
             'psps' => $psps,
+            'banks' => $banks,
             'repairTypes' => $repairTypes,
         ]);
     }

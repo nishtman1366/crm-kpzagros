@@ -4,6 +4,7 @@ namespace App\Models\Repairs;
 
 use App\Models\Payments\Payment;
 use App\Models\User;
+use App\Models\Variables\Bank;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,7 @@ class Repair extends Model
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
+    protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'bank_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
         'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit', 'business_name'];
 
     protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'jGuaranteeEnd'];
@@ -84,6 +85,12 @@ class Repair extends Model
     public function psp()
     {
         return $this->belongsTo(Psp::class, 'psp_id', 'id');
+    }
+
+
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class, 'bank_id', 'id');
     }
 
     public function location()

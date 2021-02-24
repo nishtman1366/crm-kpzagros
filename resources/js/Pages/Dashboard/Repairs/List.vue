@@ -59,6 +59,20 @@
                                                 :value="statusItem.id">{{ statusItem.name }}
                                         </option>
                                     </select>
+                                    <select id="user_id"
+                                            name="user_id"
+                                            ref="user_id"
+                                            v-model="user_id"
+                                            autocomplete="user_id"
+                                            v-on:change="submitSearchForm"
+                                            title="فیلتر بر اساس کاربر درخواست کننده"
+                                            v-b-tooltip.hover
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option :value="null">درخواست کننده</option>
+                                        <option v-for="user in users" :key="user.id"
+                                                :value="user.id">{{ user.name }}
+                                        </option>
+                                    </select>
                                 </div>
 <!--                                <div class="col-1 md:col-span-4">-->
 <!--                                    <date-picker-->
@@ -110,6 +124,10 @@
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        هزینه
+                                    </th>
+                                    <th scope="col"
+                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         وضعیت
                                     </th>
                                     <th scope="col"
@@ -140,6 +158,7 @@
                                         </p>
                                     </td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.tracking_code }}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.price }}</td>
                                     <td class="py-4 text-center text-gray-900">
                                         <span
                                             :class="statusColors(repair.status)"
@@ -210,6 +229,9 @@ export default {
         statuses: Array,
         statusId: String,
 
+        users: Array,
+        userId: String,
+
         fromDate: String,
         toDate: String,
 
@@ -217,17 +239,15 @@ export default {
     },
     data() {
         return {
-            status_id: null,
-            from_date: null,
-            to_date: null,
-            query: null,
+            user_id: this.userId,
+            status_id: this.statusId,
+            from_date: this.fromDate,
+            to_date: this.toDate,
+            query: this.searchQuery,
         }
     },
     mounted() {
-        this.query = this.searchQuery;
-        this.status_id = this.statusId;
-        this.from_date = this.fromDate;
-        this.to_date = this.toDate;
+
     },
     methods: {
         statusColors(status) {
@@ -257,6 +277,7 @@ export default {
                 method: 'get',
                 data: {
                     query: this.query,
+                    userId: this.user_id,
                     statusId: this.status_id,
                     agentId: this.agent_id,
                     marketerId: this.marketer_id,

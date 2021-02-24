@@ -69,6 +69,19 @@
                                 <jet-input-error :message="newRepairForm.error('psp_id')" class="mt-2"/>
                             </div>
                             <div class="col-span-6 sm:col-span-2">
+                                <jet-label for="bank_id" value="بانک"/>
+                                <select id="bank_id" name="bank_id" ref="bank_id"
+                                        v-model="newRepairForm.bank_id"
+                                        autocomplete="bank_id"
+                                        class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
+                                    <option v-for="bank in banks" :key="bank.id"
+                                            :value="bank.id">
+                                        {{bank.name}}
+                                    </option>
+                                </select>
+                                <jet-input-error :message="newRepairForm.error('bank_id')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6 sm:col-span-2">
                                 <jet-label for="guarantee_end" value="تاریخ پایان گارانتی"/>
                                 <date-picker
                                     ref="guarantee_cal"
@@ -208,6 +221,7 @@
         props: {
             deviceTypes: Array,
             psps: Array,
+            banks: Array,
             repairTypes: Array,
         },
         data() {
@@ -217,6 +231,7 @@
                     '_method': 'POST',
                     device_type_id: '',
                     psp_id: '',
+                    bank_id: '',
                     serial: '',
                     guarantee_end: '',
                     name: '',

@@ -125,6 +125,7 @@
                                         <option :value="null">نوع پرونده</option>
                                         <option value="REGISTER">پرونده جدید</option>
                                         <option value="TRANSFER">انتقال مالکیت</option>
+                                        <option value="EDIT">تغییر مشخصات</option>
                                     </select>
                                 </div>
                                 <!--                                <div class="col-1 md:col-span-4">-->
