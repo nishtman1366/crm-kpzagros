@@ -146,7 +146,7 @@
                                     <td class="py-4 text-center text-gray-900">{{ repair.name }}</td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.business_name }}</td>
                                     <td class="py-4 text-center text-gray-900">
-                                        {{ repair.device_type.name }}
+                                        {{ repair.device_type && repair.device_type.name }}
                                         <p
                                             class="text-indigo-600">({{ repair.psp ? repair.psp.name : 'نامشخص' }})</p>
                                     </td>

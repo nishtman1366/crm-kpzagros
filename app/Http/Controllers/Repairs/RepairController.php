@@ -218,8 +218,8 @@ class RepairController extends Controller
             $notification = false;
 
             $typeList = $request->get('repairTypeList', []);
+            RepairTypesList::where('repair_id', $repair->id)->delete();
             foreach ($typeList as $item) {
-                RepairTypesList::where('repair_id', $repair->id)->delete();
                 RepairTypesList::create(['repair_id' => $repair->id, 'type_id' => $item]);
             }
         }
