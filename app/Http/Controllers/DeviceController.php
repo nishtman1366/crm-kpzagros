@@ -12,6 +12,7 @@ use App\Models\Variables\DeviceConnectionType;
 use App\Models\Variables\DeviceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
@@ -181,9 +182,13 @@ class DeviceController extends Controller
 
     public function update(Request $request)
     {
+        $user = Auth::user();
+
         $deviceId = $request->route('id');
         $device = Device::find($deviceId);
         if (is_null($device)) return response()->json('not found', 404);
+
+        if ($device->status == 2 && $user->isAgent()) throw ValidationException::withMessages(['error' => 'پس از تایید دستگاه امکان ویرایش اطلاعات آن وجود ندارد.'])->errorBag('deviceForm');
 
         $request->validateWithBag('deviceForm', [
             'device_connection_type_id' => 'required|exists:device_connection_types,id',
@@ -196,7 +201,7 @@ class DeviceController extends Controller
             'psp_status' => 'required',
         ]);
 
-        $user = Auth::user();
+
         $requestStatus = $request->get('status');
         $oldStatus = $device->status;
         $device->fill($request->all());
