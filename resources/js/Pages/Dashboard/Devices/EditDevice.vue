@@ -106,9 +106,9 @@
                                         <label for="guarantee_start" class="block text-sm font-medium text-gray-700">
                                             تاریخ شروع گارانتی:
                                         </label>
-                                        <date-picker
+                                        <date-picker :disabled="$page.user.level==='AGENT' && device.status===2"
                                             v-model="deviceForm.guarantee_start" ref="guarantee_start_cal"
-                                            element="guarantee_start"></date-picker>
+                                            element="guarantee_start"/>
                                         <input type="text"
                                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                placeholder="تاریخ شروع گارانتی"
@@ -124,9 +124,9 @@
                                         <label for="guarantee_end" class="block text-sm font-medium text-gray-700">
                                             تاریخ پایان گارانتی:
                                         </label>
-                                        <date-picker
+                                        <date-picker :disabled="$page.user.level==='AGENT' && device.status===2"
                                             v-model="deviceForm.guarantee_end" ref="guarantee_end_cal"
-                                            element="guarantee_end"></date-picker>
+                                            element="guarantee_end"/>
                                         <input type="text"
                                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                placeholder="تاریخ پایان گارانتی"
