@@ -211,12 +211,13 @@ class PostController extends Controller
             $userPosts = Level::where('level', $user->level)->pluck('post_id');
             $postsQuery->whereIn('id', $userPosts);
         }
-
-        $posts = $postsQuery->orderBy('id','DESC')->paginate(12);
+        $posts = $postsQuery->where(function ($query) use ($user) {
+            $query->where('status', 1);
+        })->orderBy('id', 'DESC')->paginate(12);
         $paginatedLinks = paginationLinks($posts);
 
         $posts->each(function ($post) {
-            $post->body = substr($post->body, 0, 250).'...';
+            $post->body = substr($post->body, 0, 250) . '...';
         });
 
         return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery', 'paginatedLinks', 'categoryId', 'posts', 'categories'));
