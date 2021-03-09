@@ -423,7 +423,7 @@ class ProfileController extends Controller
 
             $device = Device::where('serial', $request->get('serial'))->get()->first();
             //دستگاه قدیمی
-            if(!is_null($profile->device)){
+            if (!is_null($profile->device)) {
                 $profile->device->update(
                     [
                         'transport_status' => 1,
@@ -530,6 +530,12 @@ class ProfileController extends Controller
         $profile->fill(['status' => $status]);
 
         $profile->save();
+
+        if(!$cancelType){
+            $profile->device->transport_status = 1;
+            $profile->device->psp_status = 1;
+            $profile->device->save();
+        }
 
         $this->setProfileMessage($status == 8 ? 14 : $status, $user, $profile, $request->get('message'));
 

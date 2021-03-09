@@ -295,7 +295,7 @@
                                                 v-b-tooltip.hover>
                                             <i class="material-icons">cancel</i>
                                         </button>
-                                        <button v-if="profile.status == 12"
+                                        <button v-if="profile.status == 12 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='OFFICE')"
                                                 v-on:click="confirmCancel(profile.id,profile.cancel_reason)"
                                                 class="text-yellow-600 hover:text-yellow-700"
                                                 title="تایید فسخ"
@@ -564,14 +564,16 @@
                         <div class="flex">
                             <jet-button
                                 @click.native="confirmCancelForm.confirmCancelMessage=false"
-                                class="bg-green-600 mx-auto hover:bg-green-500">
+                                :class="!confirmCancelForm.confirmCancelMessage ? 'bg-green-600' : 'bg-green-300'"
+                                class="mx-auto hover:bg-green-500">
                                 تایید
                             </jet-button>
-                            <jet-danger-button
+                            <jet-button
                                 @click.native="confirmCancelForm.confirmCancelMessage=true"
+                                :class="confirmCancelForm.confirmCancelMessage ? 'bg-red-600' : 'bg-red-300'"
                                 class="mx-auto">
                                 رد درخواست
-                            </jet-danger-button>
+                            </jet-button>
                         </div>
                         <div v-if="confirmCancelForm.confirmCancelMessage">
                             <label for="message"
