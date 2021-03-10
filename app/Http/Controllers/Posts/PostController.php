@@ -223,3 +223,7 @@ class PostController extends Controller
         return Inertia::render('Dashboard/Posts/Archive', compact('searchQuery', 'paginatedLinks', 'categoryId', 'posts', 'categories'));
     }
 }
+
+
+
+

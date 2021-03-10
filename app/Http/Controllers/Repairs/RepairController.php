@@ -30,6 +30,7 @@ class RepairController extends Controller
         $user = Auth::user();
         $repairsQuery = Repair::with('user')
             ->with('psp')
+            ->with('location')
             ->with('deviceType')
             ->where(function ($query) use ($user) {
                 if ($user->isAgent()) {
@@ -60,6 +61,10 @@ class RepairController extends Controller
             $repairsQuery->where('user_id', $userId);
         }
 
+        $locationId = $request->query('locationId', null);
+        if (!is_null($locationId)) {
+            $repairsQuery->where('location_id', $locationId);
+        }
 //        $fromDate = $request->query('fromDate', Jalalian::now()->subDays(7)->format('Y-m-d'));
 //        $fromDate = str_replace('/', '-', $fromDate);
 //        $jFromDate = $fromDate;
@@ -90,6 +95,7 @@ class RepairController extends Controller
 
         $repairUsers = Repair::groupBy('user_id')->pluck('user_id');
         $users = User::whereIn('id', $repairUsers)->where('id', '!=', 1)->get();
+        $locations = Location::orderBy('name', 'ASC')->get();
 
         return Inertia::render('Dashboard/Repairs/List', [
             'repairs' => $repairs,
@@ -98,6 +104,8 @@ class RepairController extends Controller
             'statuses' => $statuses,
             'userId' => $userId,
             'users' => $users,
+            'locationId' => $locationId,
+            'locations' => $locations,
 //            'fromDate' => $jFromDate,
 //            'toDate' => $jToDate,
             'paginatedLinks' => $paginatedLinks,

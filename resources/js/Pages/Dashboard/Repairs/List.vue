@@ -45,6 +45,7 @@
                                     </a>
                                 </div>
                                 <div class="col-1 md:col-span-4">
+                                    <!-- فیلتر بر اساس وضعیت پرونده-->
                                     <select id="status_id"
                                             name="status_id"
                                             ref="status_id"
@@ -59,6 +60,7 @@
                                                 :value="statusItem.id">{{ statusItem.name }}
                                         </option>
                                     </select>
+                                    <!-- فیلتر بر اساس کاربر درخواست کننده-->
                                     <select id="user_id"
                                             name="user_id"
                                             ref="user_id"
@@ -73,6 +75,22 @@
                                                 :value="user.id">{{ user.name }}
                                         </option>
                                     </select>
+                                    <!-- فیلتر بر اساس محل تعمیرات-->
+                                    <select id="location_id"
+                                            name="location_id"
+                                            ref="location_id"
+                                            v-model="location_id"
+                                            autocomplete="location_id"
+                                            v-on:change="submitSearchForm"
+                                            title="فیلتر بر اساس محل تعمیرات"
+                                            v-b-tooltip.hover
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option :value="null">محل تعمیرات</option>
+                                        <option v-for="location in locations" :key="location.id"
+                                                :value="location.id">{{ location.name }}
+                                        </option>
+                                    </select>
+
                                 </div>
 <!--                                <div class="col-1 md:col-span-4">-->
 <!--                                    <date-picker-->
@@ -124,6 +142,10 @@
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        محل تعمیرات
+                                    </th>
+                                    <th scope="col"
+                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         هزینه
                                     </th>
                                     <th scope="col"
@@ -159,6 +181,7 @@
                                     </td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.tracking_code }}</td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.price }}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.location && repair.location.name }}</td>
                                     <td class="py-4 text-center text-gray-900">
                                         <span
                                             :class="statusColors(repair.status)"
@@ -232,6 +255,9 @@ export default {
         users: Array,
         userId: String,
 
+        locations: Array,
+        locationId: String,
+
         fromDate: String,
         toDate: String,
 
@@ -240,6 +266,7 @@ export default {
     data() {
         return {
             user_id: this.userId,
+            location_id: this.locationId,
             status_id: this.statusId,
             from_date: this.fromDate,
             to_date: this.toDate,
@@ -278,6 +305,7 @@ export default {
                 data: {
                     query: this.query,
                     userId: this.user_id,
+                    locationId: this.location_id,
                     statusId: this.status_id,
                     agentId: this.agent_id,
                     marketerId: this.marketer_id,
