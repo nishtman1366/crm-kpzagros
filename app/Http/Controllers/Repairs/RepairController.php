@@ -65,6 +65,11 @@ class RepairController extends Controller
         if (!is_null($locationId)) {
             $repairsQuery->where('location_id', $locationId);
         }
+
+        $deviceTypeId = $request->query('deviceTypeId', null);
+        if (!is_null($deviceTypeId)) {
+            $repairsQuery->where('device_type_id', $deviceTypeId);
+        }
 //        $fromDate = $request->query('fromDate', Jalalian::now()->subDays(7)->format('Y-m-d'));
 //        $fromDate = str_replace('/', '-', $fromDate);
 //        $jFromDate = $fromDate;
@@ -96,6 +101,7 @@ class RepairController extends Controller
         $repairUsers = Repair::groupBy('user_id')->pluck('user_id');
         $users = User::whereIn('id', $repairUsers)->where('id', '!=', 1)->get();
         $locations = Location::orderBy('name', 'ASC')->get();
+        $deviceTypes = DeviceType::orderBy('name', 'ASC')->get();
 
         return Inertia::render('Dashboard/Repairs/List', [
             'repairs' => $repairs,
@@ -106,6 +112,8 @@ class RepairController extends Controller
             'users' => $users,
             'locationId' => $locationId,
             'locations' => $locations,
+            'deviceTypeId' => $deviceTypeId,
+            'deviceTypes' => $deviceTypes,
 //            'fromDate' => $jFromDate,
 //            'toDate' => $jToDate,
             'paginatedLinks' => $paginatedLinks,

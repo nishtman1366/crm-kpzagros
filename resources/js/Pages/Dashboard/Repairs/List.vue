@@ -90,6 +90,21 @@
                                                 :value="location.id">{{ location.name }}
                                         </option>
                                     </select>
+                                    <!-- فیلتر بر اساس نوع دستگاه-->
+                                    <select id="device_type_id"
+                                            name="device_type_id"
+                                            ref="device_type_id"
+                                            v-model="device_type_id"
+                                            autocomplete="device_type_id"
+                                            v-on:change="submitSearchForm"
+                                            title="فیلتر بر اساس نوع دستگاه"
+                                            v-b-tooltip.hover
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option :value="null">انواع دستگاه</option>
+                                        <option v-for="device in deviceTypes" :key="device.id"
+                                                :value="device.id">{{device.name}}
+                                        </option>
+                                    </select>
 
                                 </div>
 <!--                                <div class="col-1 md:col-span-4">-->
@@ -142,11 +157,11 @@
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        محل تعمیرات
+                                        هزینه
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        هزینه
+                                        محل تعمیرات
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -258,6 +273,9 @@ export default {
         locations: Array,
         locationId: String,
 
+        deviceTypes: Array,
+        deviceTypeId: String,
+
         fromDate: String,
         toDate: String,
 
@@ -267,6 +285,7 @@ export default {
         return {
             user_id: this.userId,
             location_id: this.locationId,
+            device_type_id: this.deviceTypeId,
             status_id: this.statusId,
             from_date: this.fromDate,
             to_date: this.toDate,
@@ -306,6 +325,7 @@ export default {
                     query: this.query,
                     userId: this.user_id,
                     locationId: this.location_id,
+                    deviceTypeId: this.device_type_id,
                     statusId: this.status_id,
                     agentId: this.agent_id,
                     marketerId: this.marketer_id,
