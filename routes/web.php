@@ -38,6 +38,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
 
         Route::get('excel', 'DeviceController@downloadExcel')->name('downloadExcel');
         Route::post('excel', 'DeviceController@uploadExcel')->name('uploadExcel');
+
+        Route::post('batchJob', 'DeviceController@batchJob')->name('batchJob');
     });
 
     Route::prefix('users/{type}')->name('users.')->group(function () {

@@ -6,6 +6,64 @@
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                            <transition leave-active-class="transition ease-in duration-1000" leave-class="opacity-100"
+                                        leave-to-class="opacity-0">
+                                <div v-if="message"
+                                     :class="messageType==='danger' ? 'bg-red-500' : 'bg-green-500'"
+                                     class="rounded px-3 py-2 m-2 text-white flex">
+                                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                    </svg>
+                                    <div class="mx-2 text-lg font-bold">{{message}}</div>
+                                </div>
+                            </transition>
+                            <div class="flex justify-end">
+                                <InertiaLink :href="route('dashboard.devices.create')">
+                                    <jet-button class="my-5 mx-1 sm:float-left">
+                                        <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                  d="M10,4L12,6H20A2,2 0 0,1 22,8V18A2,2 0 0,1 20,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10M15,9V12H12V14H15V17H17V14H20V12H17V9H15Z"/>
+                                        </svg>
+                                        ثبت دستگاه جدید
+                                    </jet-button>
+                                </InertiaLink>
+                                <jet-button v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                            class="my-5 mx-1 bg-green-600 hover:bg-green-500 sm:float-left"
+                                            @click.native="viewUploadModal=true">
+                                    <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
+                                    </svg>
+                                    ورود اطلاعات
+                                </jet-button>
+                                <a v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                   target="_blank"
+                                   :href="route('dashboard.devices.downloadExcel',{
+                                                typeId:type_id,
+                                                modelId:model_id,
+                                                query:query,
+                                                physicalStatus:physical_status,
+                                                transportStatus:transport_status,
+                                                pspStatus:psp_status
+                                            })">
+                                    <jet-button class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
+                                        <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
+                                        </svg>
+                                        دریافت لیست
+                                    </jet-button>
+                                </a>
+                                <jet-button v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                            class="my-5 mx-1 bg-blue-600 hover:bg-blue-500 sm:float-left"
+                                            @click.native="processBatchJob">
+                                    <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
+                                        <path fill="currentColor" d="M2,2H6V3H13V2H17V6H16V9H18V8H22V12H21V18H22V22H18V21H12V22H8V18H9V16H6V17H2V13H3V6H2V2M18,12V11H16V13H17V17H13V16H11V18H12V19H18V18H19V12H18M13,6V5H6V6H5V13H6V14H9V12H8V8H12V9H14V6H13M12,12H11V14H13V13H14V11H12V12Z" />
+                                    </svg>
+                                    عملیات گروهی
+                                </jet-button>
+                            </div>
                             <div class="grid md:grid-cols-4 gap-3">
                                 <div class="col-1 md:col-span-2">
                                     <input type="text"
@@ -16,42 +74,6 @@
                                                 class="bg-blue-600 hover:bg-blue-500">
                                         جستجو
                                     </jet-button>
-                                </div>
-                                <div class="col-1 sm:col-span-2">
-                                    <InertiaLink :href="route('dashboard.devices.create')">
-                                        <jet-button class="my-5 mx-1 sm:float-left">
-                                            <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
-                                                <path fill="currentColor"
-                                                      d="M10,4L12,6H20A2,2 0 0,1 22,8V18A2,2 0 0,1 20,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10M15,9V12H12V14H15V17H17V14H20V12H17V9H15Z"/>
-                                            </svg>
-                                            ثبت دستگاه جدید
-                                        </jet-button>
-                                    </InertiaLink>
-                                    <jet-button v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'" class="my-5 mx-1 bg-green-600 hover:bg-green-500 sm:float-left"
-                                                @click.native="viewUploadModal=true">
-                                        <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
-                                            <path fill="currentColor"
-                                                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
-                                        </svg>
-                                        ورود اطلاعات
-                                    </jet-button>
-                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'" target="_blank"
-                                       :href="route('dashboard.devices.downloadExcel',{
-                                                typeId:type_id,
-                                                modelId:model_id,
-                                                query:query,
-                                                physicalStatus:physical_status,
-                                                transportStatus:transport_status,
-                                                pspStatus:psp_status
-                                            })">
-                                        <jet-button class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
-                                            <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
-                                                <path fill="currentColor"
-                                                      d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
-                                            </svg>
-                                            دریافت لیست
-                                        </jet-button>
-                                    </a>
                                 </div>
                                 <div class="col-1 md:col-span-4">
                                     <select id="type_id"
@@ -138,6 +160,12 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
+                                    <th>
+                                        <input type="checkbox"
+                                               ref="toggleSelect"
+                                               v-on:click="toggleSelectItems"
+                                               class="border border-gray-300 bg-white text-indigo-500 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         مدل دستگاه
@@ -175,6 +203,15 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="device in devices.data" :key="device.id">
+                                    <td class="text-center">
+                                        <input type="checkbox"
+                                               :name="'device_id['+device.id+']'"
+                                               :id="'device_id['+device.id+']'"
+                                               :ref="'device_id['+device.id+']'"
+                                               :value="device.id"
+                                               class="border border-gray-300 bg-white text-indigo-500 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                               v-model="batchJobs.list">
+                                    </td>
                                     <td class="py-4 text-center text-gray-900">
                                         <div class="text-sm text-gray-900">
                                             {{device.device_type.name}}
@@ -228,11 +265,13 @@
                                                       d="M23.5,17L18.5,22L15,18.5L16.5,17L18.5,19L22,15.5L23.5,17M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,17C12.5,17 12.97,16.93 13.42,16.79C13.15,17.5 13,18.22 13,19V19.45L12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5C17,4.5 21.27,7.61 23,12C22.75,12.64 22.44,13.26 22.08,13.85C21.18,13.31 20.12,13 19,13C18.22,13 17.5,13.15 16.79,13.42C16.93,12.97 17,12.5 17,12A5,5 0 0,0 12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17Z"/>
                                             </svg>
                                         </InertiaLink>
-                                        <InertiaLink v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'" method="DELETE"
-                                                     :href="route('dashboard.devices.destroy',{id: device.id})"
-                                                     class="text-red-600 hover:text-red-900"
-                                                     v-b-tooltip.hover
-                                                     title="حذف">
+                                        <InertiaLink
+                                            v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                            method="DELETE"
+                                            :href="route('dashboard.devices.destroy',{id: device.id})"
+                                            class="text-red-600 hover:text-red-900"
+                                            v-b-tooltip.hover
+                                            title="حذف">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                       d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
@@ -289,6 +328,137 @@
                 </template>
             </jet-confirmation-modal>
 
+            <jet-confirmation-modal :show="viewBatchJobModal" @close="viewBatchJobModal = false">
+                <template #title>
+                    عملیات گروهی
+                </template>
+                <template #content>
+                    <div class="w-full mt-3 text-center sm:mt-0 sm:text-right">
+                        <div class="mt-2 text-center">
+                            <jet-button class="my-1 hover:bg-green-500"
+                                        :class="batchJobs.type==='changeOwner' ? 'bg-green-600' : 'bg-green-300'"
+                                        @click.native="batchJobs.type='changeOwner'">تغییر مالکیت
+                            </jet-button>
+                            <jet-button class="my-1 hover:bg-green-500"
+                                        :class="batchJobs.type==='changeStatus' ? 'bg-green-600' : 'bg-green-300'"
+                                        @click.native="batchJobs.type='changeStatus'">تغییر وضعیت
+                            </jet-button>
+                            <p></p>
+                            <jet-button class="my-1 hover:bg-green-500"
+                                        :class="batchJobs.type==='changePhysicalStatus' ? 'bg-green-600' : 'bg-green-300'"
+                                        @click.native="batchJobs.type='changePhysicalStatus'">تغییر وضعیت فیزیکی
+                            </jet-button>
+                            <jet-button class="my-1 hover:bg-green-500"
+                                        :class="batchJobs.type==='changeTransportStatus' ? 'bg-green-600' : 'bg-green-300'"
+                                        @click.native="batchJobs.type='changeTransportStatus'">تغییر وضعیت انبار
+                            </jet-button>
+                            <jet-button class="my-1 hover:bg-green-500"
+                                        :class="batchJobs.type==='changePspStatus' ? 'bg-green-600' : 'bg-green-300'"
+                                        @click.native="batchJobs.type='changePspStatus'">تغییر وضعیت psp
+                            </jet-button>
+                            <jet-input-error
+                                :message="batchJobs.error('type')"
+                                class="mt-2"/>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <jet-label class=" text-lg">تعداد دستگاه های انتخاب شده: {{batchJobs.list.length}}</jet-label>
+                            <jet-input-error
+                                :message="batchJobs.error('list')"
+                                class="mt-2"/>
+                        </div>
+                        <jet-section-border/>
+                        <div v-if="batchJobs.type==='changeOwner'" class="mt-1 flex items-center">
+                            <jet-label class="mx-3">مالک جدید</jet-label>
+                            <select name="owners" id="batch-job-owners" ref="owners" v-model="batchJobs.owner_id"
+                                    class="mt-1 mx-3 block py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option v-for="owner in owners" :key="owner.id" :value="owner.id">
+                                    {{owner.name}}
+                                </option>
+                            </select>
+                            <jet-input-error
+                                :message="batchJobs.error('owner_id')"
+                                class="mt-2 mx-3"/>
+                        </div>
+                        <div v-if="batchJobs.type==='changeStatus'" class="mt-1 flex items-center">
+                            <jet-label class=" mx-3">تغییر وضعیت</jet-label>
+                            <select id="batch_job_device_status"
+                                    name="device_status"
+                                    v-model="batchJobs.device_status"
+                                    ref="device_status"
+                                    autocomplete="device_status"
+                                    class="mt-1 mx-3 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="1">ثبت شده</option>
+                                <option value="2">تایید شده</option>
+                                <option value="3">رد شده</option>
+                            </select>
+                            <jet-input-error
+                                :message="batchJobs.error('device_status')"
+                                class="mt-2 mx-3"/>
+                        </div>
+                        <div v-if="batchJobs.type==='changePhysicalStatus'" class="mt-1 flex items-center">
+                            <jet-label class=" mx-3">تغییر وضعیت سلامت</jet-label>
+                            <select id="batch_job_physical_status"
+                                    name="physical_status"
+                                    ref="physical_status"
+                                    v-model="batchJobs.physical_status"
+                                    autocomplete="physical_status"
+                                    class="mt-1 mx-3 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="1">سالم</option>
+                                <option value="2">خراب</option>
+                            </select>
+                            <jet-input-error
+                                :message="batchJobs.error('physical_status')"
+                                class="mt-2 mx-3"/>
+                        </div>
+                        <div v-if="batchJobs.type==='changeTransportStatus'" class="mt-1 flex items-center">
+                            <jet-label class=" mx-3">تغییر وضعیت انبار</jet-label>
+                            <select id="batch_job_transport_status"
+                                    name="transport_status"
+                                    v-model="batchJobs.transport_status"
+                                    ref="transport_status"
+                                    autocomplete="transport_status"
+                                    class="mt-1 mx-3 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="1">در انبار</option>
+                                <option value="2">در انتظار نصب</option>
+                                <option value="3">نصب شده</option>
+                            </select>
+                            <jet-input-error
+                                :message="batchJobs.error('transport_status')"
+                                class="mt-2 mx-3"/>
+                        </div>
+                        <div v-if="batchJobs.type==='changePspStatus'" class="mt-1 flex items-center">
+                            <jet-label class=" mx-3">تغییر وضعیت psp</jet-label>
+                            <select id="batch_job_psp_status"
+                                    name="psp_status"
+                                    v-model="batchJobs.psp_status"
+                                    ref="psp_status"
+                                    class="mt-1 mx-3 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="1">در انتظار تخصیص</option>
+                                <option value="2">تخصیص داده شده</option>
+                            </select>
+                            <jet-input-error
+                                :message="batchJobs.error('psp_status')"
+                                class="mt-2 mx-3"/>
+                        </div>
+                        <p v-if="batchJobs.processing" class="my-3 mx-2 text-indigo-600">در حال انجام عملیات
+                            گروهی...</p>
+                        <jet-action-message :on="batchJobs.recentlySuccessful" class="my-3 mx-2 text-green-600">
+                            عملیات گروهی با موفقیت انجام شد.
+                        </jet-action-message>
+                    </div>
+                </template>
+                <template #footer>
+                    <jet-secondary-button class="ml-2" @click.native="viewBatchJobModal = false">
+                        انصراف
+                    </jet-secondary-button>
+                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="submitBatchJob"
+                                :class="{ 'opacity-25': batchJobs.processing }"
+                                :disabled="batchJobs.processing">
+                        ارسال
+                    </jet-button>
+                </template>
+            </jet-confirmation-modal>
+
         </template>
     </Dashboard>
 </template>
@@ -303,6 +473,9 @@
     import JetDangerButton from '@/Jetstream/DangerButton';
     import JetSecondaryButton from '@/Jetstream/SecondaryButton'
     import JetActionMessage from '@/Jetstream/ActionMessage'
+    import JetInput from '@/Jetstream/Input'
+    import JetLabel from '@/Jetstream/Label'
+    import JetSectionBorder from '@/Jetstream/SectionBorder'
 
     export default {
         name: "DevicesList",
@@ -314,6 +487,9 @@
             JetConfirmationModal,
             JetDangerButton,
             JetActionMessage,
+            JetInput,
+            JetLabel,
+            JetSectionBorder,
             JetSecondaryButton
         },
         props: {
@@ -333,6 +509,8 @@
         },
         data() {
             return {
+                message: null,
+                messageType: null,
                 query: null,
                 type_id: null,
                 model_id: null,
@@ -342,6 +520,22 @@
                 psp_status: null,
                 viewUploadModal: false,
                 excelFile: '',
+                batchJobs: this.$inertia.form({
+                    '_method': 'POST',
+                    list: [],
+                    type: '',
+                    owner_id: '',
+                    device_status: '',
+                    physical_status: '',
+                    transport_status: '',
+                    psp_status: '',
+                }, {
+                    bag: 'batchJobs',
+                    resetOnSuccess: true
+                }),
+                viewBatchJobModal: false,
+
+
                 excelForm: this.$inertia.form({
                     '_method': 'POST',
                     file: ''
@@ -365,6 +559,42 @@
             this.device_status = this.deviceStatus;
         },
         methods: {
+            toggleSelectItems() {
+                if (this.batchJobs.list.length === 0) {
+                    for (let device of this.devices.data) {
+                        this.batchJobs.list.push(device.id);
+                    }
+                } else {
+                    this.batchJobs.list = [];
+                }
+            },
+            processBatchJob() {
+                if (this.batchJobs.list.length > 0) {
+                    this.viewBatchJobModal = true;
+                } else {
+                    this.message = 'لطفا دستگاه های مورد نظر را انتخاب نمایید.';
+                    this.messageType = 'danger';
+                    setTimeout(() => {
+                        this.message = null;
+                        this.messageType = null;
+                    }, 2000);
+                }
+            },
+            submitBatchJob() {
+                this.batchJobs.post(route('dashboard.devices.batchJob'))
+                    .then(response => {
+                        if (this.batchJobs.recentlySuccessful) {
+                            this.message = 'لطفا دستگاه های مورد نظر را انتخاب نمایید.';
+                            this.messageType = null;
+                            setTimeout(() => {
+                                this.message = null;
+                                this.messageType = null;
+                            }, 2000);
+                            this.viewBatchJobModal = false;
+                            this.$refs.toggleSelect.checked = false;
+                        }
+                    });
+            },
             statusColors(status) {
                 switch (status) {
                     case 1:
@@ -389,6 +619,8 @@
                         return 'bg-green-100 text-green-800';
                     case 1:
                         return 'bg-yellow-100 text-yellow-800';
+                    case 3:
+                        return 'bg-red-100 text-red-800';
                 }
             },
             submitSearchForm() {

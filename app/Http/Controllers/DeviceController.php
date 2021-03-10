@@ -366,4 +366,72 @@ class DeviceController extends Controller
 
         return $devices;
     }
+
+    public function batchJob(Request $request)
+    {
+        $request->validateWithBag('batchJobs', [
+            'type' => 'required',
+            'list' => 'required|array'
+        ],
+            [
+                'type.required' => 'لطفا نوع عملیات گروهی را انتخاب نمایید.'
+            ]);
+
+        $batchJobType = $request->get('type');
+        $list = $request->get('list');
+        switch ($batchJobType) {
+            case 'changeOwner':
+                $request->validateWithBag('batchJobs', [
+                    'owner_id' => 'required|exists:users,id'
+                ],
+                    [
+                        'owner_id.required' => 'لطفا مالک جدید دستگاه ها را انتخاب نمایید.'
+                    ]);
+                $ownerId = $request->get('owner_id');
+                Device::whereIn('id', $list)->update(['user_id' => $ownerId]);
+                break;
+            case 'changeStatus':
+                $request->validateWithBag('batchJobs', [
+                    'device_status' => 'required'
+                ],
+                    [
+                        'device_status.required' => 'لطفا وضعیت جدید دستگاه ها را انتخاب نمایید.'
+                    ]);
+                $status = $request->get('device_status');
+                Device::whereIn('id', $list)->update(['status' => $status]);
+                break;
+            case 'changePhysicalStatus':
+                $request->validateWithBag('batchJobs', [
+                    'physical_status' => 'required'
+                ],
+                    [
+                        'physical_status.required' => 'لطفا وضعیت فیزیکی جدید دستگاه ها را انتخاب نمایید.'
+                    ]);
+                $status = $request->get('physical_status');
+                Device::whereIn('id', $list)->update(['physical_status' => $status]);
+                break;
+            case 'changeTransportStatus':
+                $request->validateWithBag('batchJobs', [
+                    'transport_status' => 'required'
+                ],
+                    [
+                        'transport_status.required' => 'لطفا وضعیت انبار جدید دستگاه ها را انتخاب نمایید.'
+                    ]);
+                $status = $request->get('transport_status');
+                Device::whereIn('id', $list)->update(['transport_status' => $status]);
+                break;
+            case 'changePspStatus':
+                $request->validateWithBag('batchJobs', [
+                    'psp_status' => 'required'
+                ],
+                    [
+                        'psp_status.required' => 'لطفا وضعیت سرویس دهنده جدید دستگاه ها را انتخاب نمایید.'
+                    ]);
+                $status = $request->get('psp_status');
+                Device::whereIn('id', $list)->update(['psp_status' => $status]);
+                break;
+        }
+
+        return redirect()->route('dashboard.devices.list')->with('message', 'عملیات گروهی با موفقیت انجام شد.');
+    }
 }

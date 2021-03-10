@@ -69,6 +69,9 @@ class Device extends Model
             case 2:
                 return 'تایید شده';
                 break;
+            case 3:
+                return 'رد شده';
+                break;
         }
     }
 
