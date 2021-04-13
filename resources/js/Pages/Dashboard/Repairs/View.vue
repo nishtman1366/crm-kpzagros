@@ -156,6 +156,21 @@
                                 <jet-input-error :message="updateRepairForm.error('business_name')" class="mt-2"/>
                             </div>
                             <div class="col-span-6">
+                                <jet-label for="accessories" value="اقلام همراه"/>
+
+                                <div class="flex">
+                                    <jet-label v-for="item in accessories" :key="item.id" class="flex items-center"
+                                               :for="'accessories_'+item.id">
+                                        <input class="form-checkbox" type="checkbox" :name="'accessories_'+item.id"
+                                               :id="'accessories_'+item.id"
+                                               v-model="updateRepairForm.accessories"
+                                               :value="item.id"/>
+                                        <span class="mr- ml-3">{{item.name}}</span>
+                                    </jet-label>
+                                </div>
+                                <jet-input-error :message="updateRepairForm.error('accessories')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6">
                                 <jet-section-border></jet-section-border>
                             </div>
                             <div class="col-span-6 text-lg">
@@ -535,6 +550,7 @@
             psps: Array,
             banks: Array,
             repairTypes: Array,
+            accessories: Array,
         },
         data() {
             return {
@@ -563,6 +579,7 @@
                     loan_device_type_id: this.repair.loan_device_type_id,
                     deposit: this.repair.deposit,
                     technical_description: this.repair.technical_description,
+                    accessories: this.repair.accessories,
                 }, {
                     bag: 'updateRepairForm',
                 }),

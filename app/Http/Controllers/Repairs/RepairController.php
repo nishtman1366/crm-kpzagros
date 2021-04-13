@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Controllers\Payments\PaymentController;
 use App\Http\Requests\Repairs\CreateRepair;
+use App\Models\Repairs\Accessory;
 use App\Models\Repairs\Event;
 use App\Models\Repairs\Repair;
 use App\Models\Repairs\Location;
@@ -127,26 +128,18 @@ class RepairController extends Controller
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
         $repairTypes = Type::where('status', 1)->orderBy('name', 'ASC')->get();
         $banks = Bank::where('status', 1)->orderBy('name', 'ASC')->get();
+        $accessories = Accessory::where('status', 1)->get();
         return Inertia::render('Dashboard/Repairs/Create', [
             'deviceTypes' => $deviceTypes,
             'psps' => $psps,
             'banks' => $banks,
             'repairTypes' => $repairTypes,
+            'accessories' => $accessories,
         ]);
     }
 
     public function store(CreateRepair $request)
     {
-        $request->validateWithBag('newRepairForm', [
-            'device_type_id' => 'required',
-            'psp_id' => 'required',
-            'serial' => 'required',
-            'name' => 'required',
-            'business_name' => 'required',
-            'mobile' => 'required',
-            'national_code' => 'required',
-            'repairTypeList' => 'required|array',
-        ]);
         $user = Auth::user();
 
         $request->merge([
@@ -180,6 +173,8 @@ class RepairController extends Controller
         $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
         $repairTypes = Type::where('status', 1)->orderBy('name', 'ASC')->get();
         $banks = Bank::where('status', 1)->orderBy('name', 'ASC')->get();
+        $accessories = Accessory::where('status', 1)->get();
+
         return Inertia::render('Dashboard/Repairs/View', [
             'repair' => $repair,
             'repairTypesList' => $repairTypesList,
@@ -188,6 +183,7 @@ class RepairController extends Controller
             'psps' => $psps,
             'banks' => $banks,
             'repairTypes' => $repairTypes,
+            'accessories' => $accessories,
         ]);
     }
 

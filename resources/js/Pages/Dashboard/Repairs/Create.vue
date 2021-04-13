@@ -144,6 +144,21 @@
                                 <jet-input-error :message="newRepairForm.error('business_name')" class="mt-2"/>
                             </div>
                             <div class="col-span-6">
+                                <jet-label for="accessories" value="اقلام همراه"/>
+
+                                <div class="flex">
+                                    <jet-label v-for="item in accessories" :key="item.id" class="flex items-center"
+                                               :for="'accessories_'+item.id">
+                                        <input class="form-checkbox" type="checkbox" :name="'accessories_'+item.id"
+                                               :id="'accessories_'+item.id"
+                                               v-model="newRepairForm.accessories"
+                                               :value="item.id"/>
+                                        <span class="mr- ml-3">{{item.name}}</span>
+                                    </jet-label>
+                                </div>
+                                <jet-input-error :message="newRepairForm.error('accessories')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6">
                                 <jet-section-border></jet-section-border>
                             </div>
                             <div class="col-span-6 text-lg">
@@ -223,6 +238,7 @@
             psps: Array,
             banks: Array,
             repairTypes: Array,
+            accessories: Array,
         },
         data() {
             return {
@@ -241,6 +257,7 @@
                     repairTypeList: [],
                     description: '',
                     status: 1,
+                    accessories: []
                 }, {
                     bag: 'newRepairForm',
                     resetOnSuccess: false
@@ -255,7 +272,7 @@
                     }
                 })
             },
-            selectGuaranteeEnd(e){
+            selectGuaranteeEnd(e) {
                 this.newRepairForm.guarantee_end = e.format('YYYY/MM/DD');
             }
         }

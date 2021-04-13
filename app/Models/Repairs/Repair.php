@@ -17,9 +17,28 @@ class Repair extends Model
     use HasFactory, Notifiable;
 
     protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'bank_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
-        'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit', 'business_name'];
+        'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit', 'business_name', 'accessories'];
 
-    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'jGuaranteeEnd'];
+    protected $appends = ['statusText', 'accessoryList', 'jCreatedAt', 'jUpdatedAt', 'jGuaranteeEnd'];
+
+    public function getAccessoryListAttribute()
+    {
+        if (is_null($this->attributes['accessories'])) return null;
+
+        return '';
+    }
+
+    public function getAccessoriesAttribute()
+    {
+        if (is_null($this->attributes['accessories'])) return null;
+
+        return explode(',', $this->attributes['accessories']);
+    }
+
+    public function setAccessoriesAttribute($value)
+    {
+        $this->attributes['accessories'] = implode(',', $value);
+    }
 
     public function getStatusTextAttribute()
     {
