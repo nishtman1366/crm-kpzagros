@@ -34,10 +34,10 @@
 <main>
     <section class="my-2 mx-3 p-3 bg-gray-100">
         <div class="grid grid-cols-2 gap-3">
-            <div>نام پذیرنده: {{$repair->name}}</div>
-            <div>مدل دستگاه: {{!is_null($repair->deviceType) ? $repair->deviceType->name : 'نامشخص'}}</div>
-            <div>شماره تماس:{{$repair->mobile}}</div>
-            <div>سریال دستگاه: {{$repair->serial}}</div>
+            <div>نام پذیرنده: <span class="font-bold">{{$repair->name}}</span></div>
+            <div>مدل دستگاه: <span class="font-bold">{{!is_null($repair->deviceType) ? $repair->deviceType->name : 'نامشخص'}}</span> </div>
+            <div>شماره تماس:<span class="font-bold">{{$repair->mobile}}</span></div>
+            <div>سریال دستگاه: <span class="font-bold">{{$repair->serial}}</span> </div>
         </div>
     </section>
     <section class="p-3 mx-3">
