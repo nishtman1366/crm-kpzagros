@@ -21,7 +21,7 @@ class Profile extends Model
         'previous_name', 'previous_national_code', 'previous_mobile', 'new_device_type_id',
         'new_device_id', 'status'];
 
-    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl', 'typeText'];
+    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl', 'transferPaymentFileUrl', 'typeText'];
 
     public function getStatusTextAttribute()
     {
@@ -95,6 +95,11 @@ class Profile extends Model
     public function getTransferFileUrlAttribute()
     {
         return LicenseController::view('transfer_file', $this->attributes['id']);
+    }
+
+    public function getTransferPaymentFileUrlAttribute()
+    {
+        return LicenseController::view('transfer_payment_file', $this->attributes['id']);
     }
 
     public function getTypeTextAttribute()

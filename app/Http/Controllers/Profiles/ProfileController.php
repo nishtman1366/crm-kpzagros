@@ -382,6 +382,11 @@ class ProfileController extends Controller
                     'transfer_file' => 'required|image',
                 ]);
             }
+            if (!LicenseController::has('transfer_payment_file', $profileId)) {
+                $request->validateWithBag('profileTypeForm', [
+                    'transfer_payment_file' => 'required|image',
+                ]);
+            }
             $message = 'درخواست انتقال مالکیت با موفقیت ثبت شد.';
         } else {
             $message = 'تغییر نوع پرونده با موفقیت ثبت شد.';
@@ -401,6 +406,9 @@ class ProfileController extends Controller
             LicenseController::upload($request->file('transfer_file'), 'transfer_file', $profileId);
         }
 
+        if ($request->hasFile('transfer_payment_file') && $type == 'TRANSFER') {
+            LicenseController::upload($request->file('transfer_payment_file'), 'transfer_payment_file', $profileId);
+        }
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => $message]);
 
     }

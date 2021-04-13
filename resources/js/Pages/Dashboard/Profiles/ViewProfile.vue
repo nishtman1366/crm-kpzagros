@@ -89,6 +89,7 @@
                                             قبلی:</p>
                                         <div v-show="profileTypeForm.type==='TRANSFER'" class="grid grid-cols-2 gap-3">
                                             <div>
+                                            <div>
                                                 <jet-label>نام</jet-label>
                                                 <jet-input tye="text"
                                                            class="block w-full mt-3"
@@ -128,46 +129,85 @@
                                                     class="mt-2"/>
                                             </div>
                                             <div>
-                                                <div
-                                                    class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                                    <div class="space-y-1 text-center">
-                                                        <svg v-if="imageFiles.transferFilePreview===''"
-                                                             class="mx-auto h-12 w-12 text-gray-400"
-                                                             stroke="currentColor"
-                                                             fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                            <path
-                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                                stroke-width="2" stroke-linecap="round"
-                                                                stroke-linejoin="round"/>
-                                                        </svg>
-                                                        <img v-else :src="imageFiles.transferFilePreview">
-                                                        <div class="flex text-sm text-gray-600">
-                                                            <label for="transfer_file"
-                                                                   class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                                <span>انتخاب فایل</span>
-                                                                <input id="transfer_file"
-                                                                       name="transfer_file"
-                                                                       type="file"
-                                                                       :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
-                                                                       @change="onTransferFileChange"
-                                                                       class="sr-only">
-                                                            </label>
-                                                        </div>
-                                                        <p class="text-xs text-gray-500">
-                                                            تصویر فرم انتقال مالکیت
-                                                        </p>
-                                                        <jet-input-error
-                                                            :message="profileTypeForm.error('transfer_file')"
-                                                            class="mt-2"/>
-                                                        <jet-input-error
-                                                            :message="fileUploadErrors.transfer_file"
-                                                            class="mt-2"/>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div>
                                                 <p class="text-red-700 font-bold">حتما پس از ثبت اطلاعات، پرونده را ثبت
                                                     نهایی نمایید.</p>
+                                            </div>
+                                            </div>
+                                            <div>
+                                                <div>
+                                                    <div
+                                                        class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                        <div class="space-y-1 text-center">
+                                                            <svg v-if="imageFiles.transferFilePreview===''"
+                                                                 class="mx-auto h-12 w-12 text-gray-400"
+                                                                 stroke="currentColor"
+                                                                 fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                                <path
+                                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round"/>
+                                                            </svg>
+                                                            <img v-else :src="imageFiles.transferFilePreview">
+                                                            <div class="flex text-sm text-gray-600">
+                                                                <label for="transfer_file"
+                                                                       class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                                    <span>انتخاب فایل</span>
+                                                                    <input id="transfer_file"
+                                                                           name="transfer_file"
+                                                                           type="file"
+                                                                           :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
+                                                                           @change="onTransferFileChange"
+                                                                           class="sr-only">
+                                                                </label>
+                                                            </div>
+                                                            <p class="text-xs text-gray-500">
+                                                                تصویر فرم انتقال مالکیت
+                                                            </p>
+                                                            <jet-input-error
+                                                                :message="profileTypeForm.error('transfer_file')"
+                                                                class="mt-2"/>
+                                                            <jet-input-error
+                                                                :message="fileUploadErrors.transfer_file"
+                                                                class="mt-2"/>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                        <div class="space-y-1 text-center">
+                                                            <svg v-if="imageFiles.transferPaymentFilePreview===''"
+                                                                 class="mx-auto h-12 w-12 text-gray-400"
+                                                                 stroke="currentColor"
+                                                                 fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                                <path
+                                                                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                    stroke-width="2" stroke-linecap="round"
+                                                                    stroke-linejoin="round"/>
+                                                            </svg>
+                                                            <img v-else :src="imageFiles.transferPaymentFilePreview">
+                                                            <div class="flex text-sm text-gray-600">
+                                                                <label for="transfer_payment_file"
+                                                                       class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                                    <span>انتخاب فایل</span>
+                                                                    <input id="transfer_payment_file"
+                                                                           name="transfer_payment_file"
+                                                                           type="file"
+                                                                           :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
+                                                                           @change="onTransferPaymentFileChange"
+                                                                           class="sr-only">
+                                                                </label>
+                                                            </div>
+                                                            <p class="text-xs text-gray-500">
+                                                                تصویر رسید پرداخت وجه
+                                                            </p>
+                                                            <jet-input-error
+                                                                :message="profileTypeForm.error('transfer_payment_file')"
+                                                                class="mt-2"/>
+                                                            <jet-input-error
+                                                                :message="fileUploadErrors.transfer_payment_file"
+                                                                class="mt-2"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="text-left">
@@ -780,7 +820,8 @@
                 viewSearchModal: false,
                 viewErrorModal: false,
                 imageFiles: {
-                    transferFilePreview: this.profile.transferFileUrl
+                    transferFilePreview: this.profile.transferFileUrl,
+                    transferPaymentFilePreview: this.profile.transferPaymentFileUrl,
                 },
                 fileUploadErrors: {transfer_file: ''},
                 profileTypeForm: this.$inertia.form({
@@ -790,6 +831,7 @@
                     previous_national_code: this.profile.previous_national_code,
                     previous_mobile: this.profile.previous_mobile,
                     transfer_file: '',
+                    transfer_payment_file: '',
                 }, {
                     bag: 'profileTypeForm',
                     resetOnSuccess: false
@@ -933,6 +975,18 @@
                 this.fileUploadErrors.transfer_file = '';
                 this.profileTypeForm.transfer_file = e.target.files[0];
                 this.imageFiles.transferFilePreview = URL.createObjectURL(file);
+            },
+            onTransferPaymentFileChange(e) {
+                const file = e.target.files[0];
+                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                    this.fileUploadErrors.transfer_file = 'فایل انتخاب شده نباید بیشتر از '
+                        + this.$page.configs.maximumUploadSize
+                        + 'کیلوبایت باشد.';
+                    return;
+                }
+                this.fileUploadErrors.transfer_payment_file = '';
+                this.profileTypeForm.transfer_payment_file = e.target.files[0];
+                this.imageFiles.transferPaymentFilePreview = URL.createObjectURL(file);
             },
             submitProfileTypeForm() {
                 this.profileTypeForm.post(route('dashboard.profiles.update.type', {profileId: this.profile.id}), {

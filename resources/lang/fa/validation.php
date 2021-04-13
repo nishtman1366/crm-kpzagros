@@ -220,5 +220,6 @@ return [
         'previous_national_code' => 'کدملی پذیرنده قبلی',
         'previous_mobile' => 'تلفن همراه پذیرنده قبلی',
         'transfer_file' => 'تصویر فرم انتقال مالکیت',
+        'transfer_payment_file' => 'تصویر واریز وجه',
     ],
 ];
