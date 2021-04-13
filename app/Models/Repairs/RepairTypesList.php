@@ -12,4 +12,9 @@ class RepairTypesList extends Model
     protected $fillable = ['repair_id', 'type_id'];
 
     public $timestamps = false;
+
+    public function type()
+    {
+        return $this->hasOne(Type::class,'id','type_id');
+    }
 }

@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RepairController extends Controller
 {
@@ -340,5 +341,21 @@ class RepairController extends Controller
 
         $jDate = Jalalian::forge(now())->format('Y.m.d');
         return Excel::download(new RepairExport($repairs), 'repairs.' . $jDate . '.xlsx');
+    }
+
+    public function print(Request $request)
+    {
+        $id = (int)$request->route('repairId');
+        $repair = Repair::with('user')
+            ->with('psp')
+            ->with('location')
+            ->with('deviceType')
+            ->find($id);
+        if (is_null($repair)) throw new NotFoundHttpException('مشخصات پرونده یافت نشد');
+
+        $repairTypesList = RepairTypesList::with('type')->where('repair_id', $id)->get();
+
+
+        return view('print.repairs.faktor', compact('repair', 'repairTypesList'));
     }
 }

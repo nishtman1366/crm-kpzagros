@@ -24,8 +24,13 @@ class Repair extends Model
     public function getAccessoryListAttribute()
     {
         if (is_null($this->attributes['accessories'])) return null;
-
-        return '';
+        $accessories = explode(',', $this->attributes['accessories']);
+        $list = [];
+        foreach ($accessories as $accessory) {
+            $item = Accessory::where('id', $accessory)->get()->first();
+            if (!is_null($item)) $list[] = $item->name;
+        }
+        return implode(' , ', $list);
     }
 
     public function getAccessoriesAttribute()

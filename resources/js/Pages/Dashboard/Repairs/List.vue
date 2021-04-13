@@ -206,15 +206,24 @@
                                     </td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.jCreatedAt }}</td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.jUpdatedAt }}</td>
-                                    <td class="py-4 text-center text-gray-900">
+                                    <td class="py-4 text-center text-gray-900 flex">
                                         <InertiaLink
                                             :href="route('dashboard.repairs.view',{repairId: repair.id})"
                                             class="tooltip-box text-indigo-600 hover:text-indigo-900">
                                             <button title="مشاهده درخواست"
                                                     v-b-tooltip.hover>
-                                                <i id="test" class="material-icons">folder_shared</i>
+                                                <i class="material-icons">folder_shared</i>
                                             </button>
                                         </InertiaLink>
+                                        <a
+                                            target="_blank"
+                                            :href="route('dashboard.repairs.print',{repairId: repair.id})"
+                                            class="tooltip-box text-green-600 hover:text-green-900">
+                                            <button title="چاپ فاکتور"
+                                                    v-b-tooltip.hover>
+                                                <i class="material-icons">print</i>
+                                            </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>

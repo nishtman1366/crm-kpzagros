@@ -131,6 +131,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('new', 'RepairController@create')->name('create');
         Route::post('', 'RepairController@store')->name('store');
         Route::get('{repairId}', 'RepairController@view')->name('view');
+        Route::get('{repairId}/print', 'RepairController@print')->name('print');
         Route::put('{repairId}', 'RepairController@update')->name('update');
         Route::get('excel', 'RepairController@downloadExcel')->name('downloadExcel');
     });
