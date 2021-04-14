@@ -34,7 +34,7 @@ class CreateBusiness extends FormRequest
             'bakhsh_id' => 'required|exists:bakhsh,id',
             'shahr_id' => 'nullable|exists:shahr,id',
             'name' => 'required',
-            'name_english' => 'required|regex:/(^([a-zA-Z]+)(\d+)?$)/u',
+            'name_english' => 'required|regex:/(^[a-zA-Z0-9 ]+$)/u',
             'senf' => 'required',
             'postal_code' => ['required', 'numeric', 'digits:10', new UniquePostalCode((int)$this->get('profile_id'))],
             'address' => 'required',
