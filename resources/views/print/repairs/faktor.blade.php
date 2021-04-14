@@ -35,9 +35,11 @@
     <section class="my-2 mx-3 p-3 bg-gray-100">
         <div class="grid grid-cols-2 gap-3">
             <div>نام پذیرنده: <span class="font-bold">{{$repair->name}}</span></div>
-            <div>مدل دستگاه: <span class="font-bold">{{!is_null($repair->deviceType) ? $repair->deviceType->name : 'نامشخص'}}</span> </div>
+            <div>مدل دستگاه: <span
+                    class="font-bold">{{!is_null($repair->deviceType) ? $repair->deviceType->name : 'نامشخص'}}</span>
+            </div>
             <div>شماره تماس:<span class="font-bold">{{$repair->mobile}}</span></div>
-            <div>سریال دستگاه: <span class="font-bold">{{$repair->serial}}</span> </div>
+            <div>سریال دستگاه: <span class="font-bold">{{$repair->serial}}</span></div>
         </div>
     </section>
     <section class="p-3 mx-3">
@@ -62,6 +64,14 @@
             <p class="text-justify">{{$repair->technical_description}}</p>
         </div>
     </section>
+    @if($repair->price && $repair->price!=0)
+        <section class="p-3 my-2 mx-3 bg-gray-100">
+            <div class="my-4">
+                <p class="mb-3 text-lg font-bold">هزینه تعمیرات:</p>
+                <p class="text-justify">{{number_format($repair->price)}}</p>
+            </div>
+        </section>
+    @endif
 </main>
 </body>
 </html>

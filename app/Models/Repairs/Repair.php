@@ -42,7 +42,9 @@ class Repair extends Model
 
     public function setAccessoriesAttribute($value)
     {
-        $this->attributes['accessories'] = implode(',', $value);
+        if (!is_null($value) && is_array($value)) {
+            $this->attributes['accessories'] = implode(',', $value);
+        }
     }
 
     public function getStatusTextAttribute()
