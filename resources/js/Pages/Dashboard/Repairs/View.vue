@@ -201,181 +201,187 @@
                             <div class="col-span-6">
                                 <jet-section-border></jet-section-border>
                             </div>
-                            <div class="col-span-6 text-lg">
-                                تعمیرات
-                            </div>
-                            <div
-                                v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL'"
-                                class="col-span-6 sm:col-span-2">
-                                <jet-label for="location_id" value="محل تعمیرات"/>
-                                <select id="location_id" name="location_id" ref="location_id"
-                                        v-model="updateRepairForm.location_id"
-                                        autocomplete="location_id"
-                                        class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
-                                    <option v-for="location in locations" :key="location.id"
-                                            :value="location.id">
-                                        {{location.name}}
-                                    </option>
-                                </select>
-                                <jet-input-error :message="updateRepairForm.error('location_id')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6 sm:col-span-2">
-                                <jet-label for="price" value="هزینه تعمیرات"/>
-                                <jet-input id="price"
-                                           type="text"
-                                           class="mt-1 block w-full"
-                                           v-model="updateRepairForm.price"
-                                           ref="price"
-                                           :disabled="$page.user.level==='AGENT' || $page.user.level==='MARKETER'"
-                                           autocomplete="price"/>
-                                <jet-input-error :message="updateRepairForm.error('price')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6 text-lg">
-                                دستگاه جایگزین
-                            </div>
-                            <div class="col-span-6 sm:col-span-2">
-                                <jet-label for="location_id" value="مدل دستگاه جایگزین"/>
-                                <select id="new_device_type_id" name="new_device_type_id" ref="new_device_type_id"
-                                        v-model="updateRepairForm.new_device_type_id"
-                                        autocomplete="new_device_type_id"
-                                        class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
-                                    <option v-for="device in deviceTypes" :key="device.id"
-                                            :value="device.id">
-                                        {{device.name}}
-                                    </option>
-                                </select>
-                                <jet-input-error :message="updateRepairForm.error('new_device_type_id')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6 sm:col-span-2">
-                                <jet-label for="new_serial" value="سریال دستگاه جایگزین"/>
-                                <jet-input id="new_serial"
-                                           type="text"
-                                           class="mt-1 block w-full"
-                                           v-model="updateRepairForm.new_serial"
-                                           ref="new_serial"
-                                           autocomplete="new_serial"/>
-                                <jet-input-error :message="updateRepairForm.error('new_serial')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6 text-lg">
-                                دستگاه امانی
-                            </div>
-                            <div class="col-span-6 sm:col-span-2">
-                                <jet-label for="loan_device_type_id" value="مدل دستگاه امانی"/>
-                                <select id="loan_device_type_id" name="loan_device_type_id" ref="loan_device_type_id"
-                                        v-model="updateRepairForm.loan_device_type_id"
-                                        autocomplete="loan_device_type_id"
-                                        class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
-                                    <option v-for="device in deviceTypes" :key="device.id"
-                                            :value="device.id">
-                                        {{device.name}}
-                                    </option>
-                                </select>
-                                <jet-input-error :message="updateRepairForm.error('loan_device_type_id')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6 sm:col-span-2">
-                                <jet-label for="loan_serial" value="سریال دستگاه امانی"/>
-                                <jet-input id="loan_serial"
-                                           type="text"
-                                           class="mt-1 block w-full"
-                                           v-model="updateRepairForm.loan_serial"
-                                           ref="loan_serial"
-                                           autocomplete="loan_serial"/>
-                                <jet-input-error :message="updateRepairForm.error('loan_serial')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6 sm:col-span-2">
-                                <jet-label for="deposit" value="ودیعه دستگاه امانی"/>
-                                <jet-input id="deposit"
-                                           type="text"
-                                           class="mt-1 block w-full"
-                                           v-model="updateRepairForm.deposit"
-                                           ref="deposit"
-                                           :disabled="$page.user.level==='AGENT' || $page.user.level==='MARKETER'"
-                                           autocomplete="deposit"/>
-                                <jet-input-error :message="updateRepairForm.error('deposit')" class="mt-2"/>
-                            </div>
-                            <div class="col-span-6">
-                                <jet-section-border></jet-section-border>
-                            </div>
-                            <div class="col-span-6 text-lg">
-                                پرداخت ها
-                            </div>
-                            <div class="col-span-6">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            نام پرداخت کننده
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            شیوه پرداخت
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            تاریخ
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            کد پیگیری بانک
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            کد پیگیری سیستم
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            وضعیت
-                                        </th>
-                                        <th scope="col"
-                                            class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            تایید پرداخت
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="payment in repair.payments" :key="payment.id">
-                                        <td class="py-4 text-center text-gray-900">{{payment.user_id}}</td>
-                                        <td class="py-4 text-center text-gray-900">{{payment.type_id}}</td>
-                                        <td class="py-4 text-center text-gray-900">{{payment.jDate}}</td>
-                                        <td class="py-4 text-center text-gray-900">{{payment.ref_code}}</td>
-                                        <td class="py-4 text-center text-gray-900">{{payment.tracking_code}}</td>
-                                        <td :colspan="payment.status==2 ? 2 : ''"
-                                            class="py-4 text-center text-gray-900">
+                            <template
+                                v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL'">
+                                <div class="col-span-6 text-lg">
+                                    تعمیرات
+                                </div>
+                                <div
+                                    v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL'"
+                                    class="col-span-6 sm:col-span-2">
+                                    <jet-label for="location_id" value="محل تعمیرات"/>
+                                    <select id="location_id" name="location_id" ref="location_id"
+                                            v-model="updateRepairForm.location_id"
+                                            autocomplete="location_id"
+                                            class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
+                                        <option v-for="location in locations" :key="location.id"
+                                                :value="location.id">
+                                            {{location.name}}
+                                        </option>
+                                    </select>
+                                    <jet-input-error :message="updateRepairForm.error('location_id')" class="mt-2"/>
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <jet-label for="price" value="هزینه تعمیرات"/>
+                                    <jet-input id="price"
+                                               type="text"
+                                               class="mt-1 block w-full"
+                                               v-model="updateRepairForm.price"
+                                               ref="price"
+                                               :disabled="$page.user.level==='AGENT' || $page.user.level==='MARKETER'"
+                                               autocomplete="price"/>
+                                    <jet-input-error :message="updateRepairForm.error('price')" class="mt-2"/>
+                                </div>
+                                <div class="col-span-6 text-lg">
+                                    دستگاه جایگزین
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <jet-label for="location_id" value="مدل دستگاه جایگزین"/>
+                                    <select id="new_device_type_id" name="new_device_type_id" ref="new_device_type_id"
+                                            v-model="updateRepairForm.new_device_type_id"
+                                            autocomplete="new_device_type_id"
+                                            class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
+                                        <option v-for="device in deviceTypes" :key="device.id"
+                                                :value="device.id">
+                                            {{device.name}}
+                                        </option>
+                                    </select>
+                                    <jet-input-error :message="updateRepairForm.error('new_device_type_id')"
+                                                     class="mt-2"/>
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <jet-label for="new_serial" value="سریال دستگاه جایگزین"/>
+                                    <jet-input id="new_serial"
+                                               type="text"
+                                               class="mt-1 block w-full"
+                                               v-model="updateRepairForm.new_serial"
+                                               ref="new_serial"
+                                               autocomplete="new_serial"/>
+                                    <jet-input-error :message="updateRepairForm.error('new_serial')" class="mt-2"/>
+                                </div>
+                                <div class="col-span-6 text-lg">
+                                    دستگاه امانی
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <jet-label for="loan_device_type_id" value="مدل دستگاه امانی"/>
+                                    <select id="loan_device_type_id" name="loan_device_type_id"
+                                            ref="loan_device_type_id"
+                                            v-model="updateRepairForm.loan_device_type_id"
+                                            autocomplete="loan_device_type_id"
+                                            class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
+                                        <option v-for="device in deviceTypes" :key="device.id"
+                                                :value="device.id">
+                                            {{device.name}}
+                                        </option>
+                                    </select>
+                                    <jet-input-error :message="updateRepairForm.error('loan_device_type_id')"
+                                                     class="mt-2"/>
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <jet-label for="loan_serial" value="سریال دستگاه امانی"/>
+                                    <jet-input id="loan_serial"
+                                               type="text"
+                                               class="mt-1 block w-full"
+                                               v-model="updateRepairForm.loan_serial"
+                                               ref="loan_serial"
+                                               autocomplete="loan_serial"/>
+                                    <jet-input-error :message="updateRepairForm.error('loan_serial')" class="mt-2"/>
+                                </div>
+                                <div class="col-span-6 sm:col-span-2">
+                                    <jet-label for="deposit" value="ودیعه دستگاه امانی"/>
+                                    <jet-input id="deposit"
+                                               type="text"
+                                               class="mt-1 block w-full"
+                                               v-model="updateRepairForm.deposit"
+                                               ref="deposit"
+                                               :disabled="$page.user.level==='AGENT' || $page.user.level==='MARKETER'"
+                                               autocomplete="deposit"/>
+                                    <jet-input-error :message="updateRepairForm.error('deposit')" class="mt-2"/>
+                                </div>
+                                <div class="col-span-6">
+                                    <jet-section-border></jet-section-border>
+                                </div>
+                                <div class="col-span-6 text-lg">
+                                    پرداخت ها
+                                </div>
+                                <div class="col-span-6">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                نام پرداخت کننده
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                شیوه پرداخت
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                تاریخ
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                کد پیگیری بانک
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                کد پیگیری سیستم
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                وضعیت
+                                            </th>
+                                            <th scope="col"
+                                                class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                تایید پرداخت
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                        <tr v-for="payment in repair.payments" :key="payment.id">
+                                            <td class="py-4 text-center text-gray-900">{{payment.user_id}}</td>
+                                            <td class="py-4 text-center text-gray-900">{{payment.type_id}}</td>
+                                            <td class="py-4 text-center text-gray-900">{{payment.jDate}}</td>
+                                            <td class="py-4 text-center text-gray-900">{{payment.ref_code}}</td>
+                                            <td class="py-4 text-center text-gray-900">{{payment.tracking_code}}</td>
+                                            <td :colspan="payment.status==2 ? 2 : ''"
+                                                class="py-4 text-center text-gray-900">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                                   :class="paymentStatusColors(payment.status)">
                                                     {{payment.statusText}}
                                             </span>
-                                        </td>
-                                        <td class="py-4 text-center text-gray-900">
-                                            <InertiaLink
-                                                v-if="payment.status==1 && $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                                :href="route('dashboard.payments.confirm',{paymentId: payment.id})"
-                                                class="tooltip-box text-indigo-600 hover:text-indigo-900">
-                                                <button title="تایید پرداخت"
-                                                        v-b-tooltip.hover>
-                                                    <i id="test" class="material-icons">check</i>
-                                                </button>
-                                            </InertiaLink>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-span-6">
-                                <jet-section-border></jet-section-border>
-                            </div>
-                            <div class="col-span-6 sm:col-span-4">
-                                <jet-label for="technical_description" value="گزارش عملیات"/>
-                                <textarea id="technical_description"
-                                          type="technical_description"
-                                          class="form-input mt-1 block w-full"
-                                          v-model="updateRepairForm.technical_description"
-                                          ref="technical_description"
-                                          autocomplete="technical_description" rows="3" cols="60"></textarea>
-                                <jet-input-error :message="updateRepairStatusForm.error('technical_description')"
-                                                 class="mt-2"/>
-                            </div>
+                                            </td>
+                                            <td class="py-4 text-center text-gray-900">
+                                                <InertiaLink
+                                                    v-if="payment.status==1 && $page.user.level==='ADMIN'  || $page.user.level==='SUPERUSER'"
+                                                    :href="route('dashboard.payments.confirm',{paymentId: payment.id})"
+                                                    class="tooltip-box text-indigo-600 hover:text-indigo-900">
+                                                    <button title="تایید پرداخت"
+                                                            v-b-tooltip.hover>
+                                                        <i id="test" class="material-icons">check</i>
+                                                    </button>
+                                                </InertiaLink>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="col-span-6">
+                                    <jet-section-border></jet-section-border>
+                                </div>
+                                <div class="col-span-6 sm:col-span-4">
+                                    <jet-label for="technical_description" value="گزارش عملیات"/>
+                                    <textarea id="technical_description"
+                                              type="technical_description"
+                                              class="form-input mt-1 block w-full"
+                                              v-model="updateRepairForm.technical_description"
+                                              ref="technical_description"
+                                              autocomplete="technical_description" rows="3" cols="60"></textarea>
+                                    <jet-input-error :message="updateRepairStatusForm.error('technical_description')"
+                                                     class="mt-2"/>
+                                </div>
+                            </template>
                         </template>
                         <template #actions>
                             <jet-action-message :on="updateRepairForm.recentlySuccessful" class="mr-3">
@@ -383,12 +389,13 @@
                             </jet-action-message>
 
                             <jet-button
+                                v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='TECHNICAL'"
                                 :class="{ 'opacity-25': updateRepairForm.processing || updateRepairStatusForm.processing }"
                                 :disabled="updateRepairForm.processing || updateRepairStatusForm.processing">
                                 ویرایش اطلاعات پرونده / ثبت گزارش
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(2)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -397,7 +404,7 @@
                                 دریافت توسط واحد فنی
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==2 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(3)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -406,7 +413,7 @@
                                 در صف تعمیر
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(8)"
                                 type="button"
                                 class="mx-2 bg-red-600 hover:bg-red-500 active:bg-red-700"
@@ -415,7 +422,7 @@
                                 غیرقابل تعمیر
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(4)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -424,7 +431,7 @@
                                 تعمیر شده
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==4 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(5)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -433,7 +440,7 @@
                                 در انتظار پرداخت
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==5 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==5 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
                                 @click.native="showPaymentModal"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -442,7 +449,7 @@
                                 پرداخت هزینه
                             </jet-button>
                             <jet-button
-                                v-if="(repair.status==6 || repair.status==8) && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='TECHNICAL')"
+                                v-if="(repair.status==6 || repair.status==8) && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='TECHNICAL')"
                                 @click.native="changeRepairStatus(7)"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
