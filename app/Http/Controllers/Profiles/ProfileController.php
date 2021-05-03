@@ -770,13 +770,13 @@ class ProfileController extends Controller
             ->whereHas('customer')
             ->where(function ($query) use ($user) {
                 $query->where('user_id', $user->id);
-                if ($user->isAgent() || $user->isAdmin() || $user->isSuperUser()) {
+                if ($user->isAgent() || $user->isAdmin()) {
                     $query->orWhereHas('user', function ($query) use ($user) {
                         $query->where('parent_id', $user->id);
                     });
                 }
 
-                if ($user->isAdmin() || $user->isSuperUser()) {
+                if ($user->isAdmin()) {
                     $query->orWhereHas('user.parent', function ($query) use ($user) {
                         $query->where('parent_id', $user->id);
                     });
