@@ -816,9 +816,9 @@ class ProfileController extends Controller
 
         $profilesListCount = $profilesQuery->count();
         $jDate = Jalalian::forge(now())->format('Y.m.d');
-        if ($profilesListCount > 100) {
+        if ($profilesListCount > 500) {
             $i = 1;
-            $profilesQuery->orderBy('id', 'ASC')->chunk(100, function ($profiles) use ($jDate, &$i) {
+            $profilesQuery->orderBy('id', 'ASC')->chunk(500, function ($profiles) use ($jDate, &$i) {
                 $fileName = 'profiles.' . $jDate . '_' . $i . '_' . '.xlsx';
                 Excel::store(new ProfileExport($profiles), 'temp/excel/profiles/' . $jDate . '/' . $fileName);
                 $i++;
