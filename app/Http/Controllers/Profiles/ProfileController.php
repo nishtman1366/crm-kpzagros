@@ -539,7 +539,7 @@ class ProfileController extends Controller
 
         $profile->save();
 
-        if(!$cancelType){
+        if (!$cancelType) {
             $profile->device->transport_status = 1;
             $profile->device->psp_status = 1;
             $profile->device->save();
@@ -769,17 +769,19 @@ class ProfileController extends Controller
             ->with('customer')
             ->whereHas('customer')
             ->where(function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-                if ($user->isAgent() || $user->isAdmin()) {
-                    $query->orWhereHas('user', function ($query) use ($user) {
-                        $query->where('parent_id', $user->id);
-                    });
-                }
+                if (!$user->isSuperUser()) {
+                    $query->where('user_id', $user->id);
+                    if ($user->isAgent() || $user->isAdmin()) {
+                        $query->orWhereHas('user', function ($query) use ($user) {
+                            $query->where('parent_id', $user->id);
+                        });
+                    }
 
-                if ($user->isAdmin()) {
-                    $query->orWhereHas('user.parent', function ($query) use ($user) {
-                        $query->where('parent_id', $user->id);
-                    });
+                    if ($user->isAdmin()) {
+                        $query->orWhereHas('user.parent', function ($query) use ($user) {
+                            $query->where('parent_id', $user->id);
+                        });
+                    }
                 }
             });
 
