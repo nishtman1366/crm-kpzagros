@@ -448,6 +448,7 @@ class ProfileController extends Controller
             $profile->fill([
                 'device_type_id' => $request->get('device_type_id'),
                 'device_id' => $device->id,
+                'reject_serial_reason' => null
             ]);
 
             $device->update([
@@ -458,7 +459,8 @@ class ProfileController extends Controller
             $profile->fill([
                 'device_type_id' => $deviceTypeId,
                 'device_id' => $deviceId,
-                'status' => 6
+                'status' => 6,
+                'reject_serial_reason' => null
             ]);
 
             Device::find($deviceId)->update([
