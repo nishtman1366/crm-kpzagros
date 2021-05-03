@@ -16,13 +16,16 @@ use App\Models\Variables\DevicePsp;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
 use App\Rules\ChangeSerial;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use ZipArchive;
 
 class ProfileController extends Controller
 {
@@ -811,10 +814,45 @@ class ProfileController extends Controller
         $searchQuery = $request->query('query', null);
 //        if()
 
-        $profiles = $profilesQuery->orderBy('id', 'ASC')->get();
-
+        $profilesListCount = $profilesQuery->count();
         $jDate = Jalalian::forge(now())->format('Y.m.d');
-        return Excel::download(new ProfileExport($profiles), 'profiles.' . $jDate . '.xlsx');
+        if ($profilesListCount > 500) {
+            $i = 1;
+            $profilesQuery->orderBy('id', 'ASC')->chunk(500, function ($profiles) use ($jDate, &$i) {
+                $fileName = 'profiles.' . $jDate . '_' . $i . '_' . '.xlsx';
+                Excel::store(new ProfileExport($profiles), 'temp/excel/profiles/' . $jDate . '/' . $fileName);
+                $i++;
+            });
+
+
+            $files = Storage::files('temp/excel/profiles/' . $jDate);
+            if (count($files) > 0) {
+                $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $jDate));
+                $archive = new ZipArchive();
+                if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
+                    throw new Exception("Zip file could not be created: " . $archive->getStatusString());
+                }
+
+                foreach ($files as $file) {
+                    $f = storage_path('app/' . $file);
+                    if (!$archive->addFile($f, basename($file))) {
+                        throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
+                    }
+                }
+
+                if (!$archive->close()) {
+                    throw new Exception("Could not close zip file: " . $archive->getStatusString());
+                }
+                Storage::deleteDirectory('temp/excel/profiles/' . $jDate);
+                return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])->deleteFileAfterSend(true);
+            }
+
+            throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");
+        } else {
+            $profiles = $profilesQuery->orderBy('id', 'ASC')->get();
+            $fileName = $jDate . '.xlsx';
+            return Excel::download(new ProfileExport($profiles), $fileName);
+        }
     }
 
     public function uploadExcel(Request $request)
