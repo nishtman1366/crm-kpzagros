@@ -243,8 +243,8 @@
                                             <i class="material-icons">assignment_turned_in</i>
                                         </button>
                                         <button
-                                            v-if="profile.status==5 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
-                                            v-on:click="viewDevicesModal(profile.id)"
+                                            v-if="(profile.status==5 || profile.status==13) && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
+                                            v-on:click="viewDevicesModal(profile)"
                                             class="text-green-400 hover:text-green-500"
                                             title="انتخاب دستگاه"
                                             v-b-tooltip.hover>
@@ -252,7 +252,7 @@
                                         </button>
                                         <button
                                             v-if="profile.status==6 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
-                                            v-on:click="selectTerminal(profile.id)"
+                                            v-on:click="selectTerminal(profile)"
                                             class="text-blue-600 hover:text-blue-700"
                                             title="تخصیص"
                                             v-b-tooltip.hover>
@@ -295,11 +295,12 @@
                                                 v-b-tooltip.hover>
                                             <i class="material-icons">cancel</i>
                                         </button>
-                                        <button v-if="profile.status == 12 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='OFFICE')"
-                                                v-on:click="confirmCancel(profile.id,profile.cancel_reason)"
-                                                class="text-yellow-600 hover:text-yellow-700"
-                                                title="تایید فسخ"
-                                                v-b-tooltip.hover>
+                                        <button
+                                            v-if="profile.status == 12 && ($page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='OFFICE')"
+                                            v-on:click="confirmCancel(profile.id,profile.cancel_reason)"
+                                            class="text-yellow-600 hover:text-yellow-700"
+                                            title="تایید فسخ"
+                                            v-b-tooltip.hover>
                                             <i class="material-icons">block</i>
                                         </button>
                                     </td>
@@ -323,7 +324,12 @@
                     جستجوی شماره سریال
                 </template>
                 <template #content>
-                    <div class="sm:flex sm:items-start">
+                    <div>
+                        <div v-if="rejectSerialReason"
+                             class="w-full bg-red-200 text-red-500 rounded border border-red-500 m-2 px-3 py-1">
+                            <p class="font-bold">علت عدم تایید سریال:</p>
+                            <p>{{rejectSerialReason}}</p>
+                        </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                             <input type="text"
                                    class=" inline-flex shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 sm:text-sm border-gray-300 rounded-md border"
@@ -451,6 +457,10 @@
                                                  class="mt-2"/>
                             </div>
                         </div>
+                        <div>
+                            <p>مدل دستگاه: <span class="font-bold">{{selectedProfile && selectedProfile.device_type && selectedProfile.device_type.name}}</span></p>
+                            <p>سریال: <span class="font-bold">{{selectedProfile && selectedProfile.device && selectedProfile.device.serial}}</span></p>
+                        </div>
                     </div>
                 </template>
                 <template #footer>
@@ -462,62 +472,41 @@
                                 :disabled="terminalForm.processing">
                         تایید
                     </jet-button>
-                    <jet-danger-button class="ml-2" @click.native="rejectSerial"
-                                       v-on:click="rejectSerialModal=true">
+                    <jet-danger-button class="ml-2" @click.native="viewRejectSerialModal=true">
                         عدم تایید سریال
                     </jet-danger-button>
                 </template>
             </jet-confirmation-modal>
             <!-- عدم تایید سریال -->
-            <!--            <jet-confirmation-modal :show="viewTerminalModal" @close="viewTerminalModal = false">-->
-            <!--                <template #title>-->
-            <!--                    ثبت شماره پایانه و پذیرنده-->
-            <!--                </template>-->
-            <!--                <template #content>-->
-            <!--                    <div class="sm:flex sm:items-start">-->
-            <!--                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">-->
-            <!--                            <div>-->
-            <!--                                <label for="terminal_id"-->
-            <!--                                       class="block text-sm font-medium text-gray-700">شماره پایانه</label>-->
-            <!--                                <input type="text"-->
-            <!--                                       class="mt-1 block w-full py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"-->
-            <!--                                       placeholder="شماره پایانه"-->
-            <!--                                       ref="terminal_id"-->
-            <!--                                       id="terminal_id"-->
-            <!--                                       v-model="terminalForm.terminal_id"/>-->
-            <!--                                <jet-input-error :message="terminalForm.error('terminal_id')"-->
-            <!--                                                 class="mt-2"/>-->
-            <!--                            </div>-->
-            <!--                            <div class="mt-2">-->
-            <!--                                <label for="merchant_id"-->
-            <!--                                       class="block text-sm font-medium text-gray-700">شماره پذیرنده</label>-->
-            <!--                                <input type="text"-->
-            <!--                                       class="mt-1 block w-full py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"-->
-            <!--                                       placeholder="شماره پذیرنده"-->
-            <!--                                       ref="merchant_id"-->
-            <!--                                       id="merchant_id"-->
-            <!--                                       v-model="terminalForm.merchant_id"/>-->
-            <!--                                <jet-input-error :message="terminalForm.error('merchant_id')"-->
-            <!--                                                 class="mt-2"/>-->
-            <!--                            </div>-->
-            <!--                        </div>-->
-            <!--                    </div>-->
-            <!--                </template>-->
-            <!--                <template #footer>-->
-            <!--                    <jet-secondary-button class="ml-2" @click.native="viewTerminalModal = false">-->
-            <!--                        انصراف-->
-            <!--                    </jet-secondary-button>-->
-            <!--                    <jet-button class="ml-2 bg-green-600" @click.native="submitTerminal"-->
-            <!--                                :class="{ 'opacity-25': terminalForm.processing }"-->
-            <!--                                :disabled="terminalForm.processing">-->
-            <!--                        تایید-->
-            <!--                    </jet-button>-->
-            <!--                    <jet-danger-button class="ml-2" @click.native="rejectSerial"-->
-            <!--                                       v-on:click="rejectSerialModal=true">-->
-            <!--                        عدم تایید سریال-->
-            <!--                    </jet-danger-button>-->
-            <!--                </template>-->
-            <!--            </jet-confirmation-modal>-->
+            <jet-confirmation-modal :show="viewRejectSerialModal" @close="viewRejectSerialModal = false">
+                <template #title>
+                    عدم تایید سریال
+                </template>
+                <template #content>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
+                        <label for="reject_serial_reason"
+                               class="block text-sm font-medium text-gray-700">علت عدم تایید</label>
+                        <textarea
+                            class="mt-1 block w-full form-input"
+                            placeholder="علت عدم تایید"
+                            ref="reject_serial_reason"
+                            id="reject_serial_reason"
+                            v-model="rejectSerialForm.reject_serial_reason"/>
+                        <jet-input-error :message="rejectSerialForm.error('reject_serial_reason')"
+                                         class="mt-2"/>
+                    </div>
+                </template>
+                <template #footer>
+                    <jet-secondary-button class="ml-2" @click.native="viewRejectSerialModal = false">
+                        انصراف
+                    </jet-secondary-button>
+                    <jet-button class="ml-2 bg-green-600" @click.native="submitRejectSerialForm"
+                                :class="{ 'opacity-25': rejectSerialForm.processing }"
+                                :disabled="rejectSerialForm.processing">
+                        ذخیره
+                    </jet-button>
+                </template>
+            </jet-confirmation-modal>
             <!-- درخواست فسخ -->
             <jet-confirmation-modal :show="viewCancelRequestModal" @close="viewCancelRequestModal = false">
                 <template #title>
@@ -939,6 +928,7 @@
                 from_date: null,
                 to_date: null,
                 query: null,
+                selectedProfile: null,
 
                 profileForm: this.$inertia.form({
                     '_method': 'PUT',
@@ -1044,6 +1034,16 @@
                     bag: 'confirmChangeSerialForm',
                     resetOnSuccess: true
                 }),
+
+                rejectSerialReason: null,
+                viewRejectSerialModal: false,
+                rejectSerialForm: this.$inertia.form({
+                    '_method': 'PUT',
+                    reject_serial_reason: '',
+                }, {
+                    bag: 'rejectSerialForm',
+                    resetOnSuccess: true
+                }),
             }
         },
         mounted() {
@@ -1102,12 +1102,14 @@
 
                     })
             },
-            viewDevicesModal(profileId) {
+            viewDevicesModal(profile) {
+                this.seletcedProfile = profile;
+                this.rejectSerialReason = profile.reject_serial_reason;
                 this.search.results = [];
                 this.devices = [];
                 this.viewSearchModal = true;
-                this.profileId = profileId;
-                axios.get('dashboard/devices/' + profileId)
+                this.profileId = profile.id;
+                axios.get('dashboard/devices/' + profile.id)
                     .then(response => {
                         this.devices = response.data;
                     })
@@ -1138,12 +1140,14 @@
                             this.$refs.search_serial.value = '';
                             this.search.serial = '';
                             this.profileId = '';
+                            this.selectedProfile = null;
                             this.search.results = [];
                         }
                     })
             },
-            selectTerminal(profileId) {
-                this.profileId = profileId;
+            selectTerminal(profile) {
+                this.selectedProfile = profile;
+                this.profileId = profile.id;
                 this.viewTerminalModal = true;
             },
             submitTerminal() {
@@ -1151,6 +1155,16 @@
                     .then(response => {
                         if (!this.terminalForm.hasErrors()) {
                             this.viewTerminalModal = false;
+                            this.profileId = '';
+                        }
+                    })
+            },
+            submitRejectSerialForm() {
+                this.rejectSerialForm.post(route('dashboard.profiles.update.rejectSerial', {profileId: this.profileId}))
+                    .then(response => {
+                        if (!this.rejectSerialForm.hasErrors()) {
+                            this.viewTerminalModal = false;
+                            this.viewRejectSerialModal = false;
                             this.profileId = '';
                         }
                     })

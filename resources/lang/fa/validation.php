@@ -221,5 +221,8 @@ return [
         'previous_mobile' => 'تلفن همراه پذیرنده قبلی',
         'transfer_file' => 'تصویر فرم انتقال مالکیت',
         'transfer_payment_file' => 'تصویر واریز وجه',
+
+
+        'reject_serial_reason' => 'علت عدم تایید',
     ],
 ];

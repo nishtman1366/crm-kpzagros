@@ -62,6 +62,8 @@ class ProfileController extends Controller
         $profilesQuery = Profile::with('customer')
             ->with('psp')
             ->with('user')
+            ->with('device')
+            ->with('deviceType')
             ->with('user.parent')
             ->with('customer')
             ->whereHas('customer')
@@ -499,6 +501,35 @@ class ProfileController extends Controller
 
         return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست ثبت شماره ترمینال و شماره پذیرنده با موفقیت ثبت شد.']);
 
+    }
+
+    public function rejectSerial(Request $request)
+    {
+        $request->validateWithBag('rejectSerialForm', [
+            'reject_serial_reason' => 'required',
+        ]);
+
+        $user = Auth::user();
+        $profileId = $request->route('profileId');
+        $profile = Profile::find($profileId);
+        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+
+        $device = Device::find($profile->device_id);
+        if (!is_null($device)) {
+            $device->update([
+                'transport_status' => 1,
+                'psp_status' => 1,
+            ]);
+        }
+
+        $profile->status = 13;
+        $profile->device_id = null;
+        $profile->reject_serial_reason = $request->get('reject_serial_reason');
+        $profile->save();
+
+        $this->setProfileMessage(13, $user, $profile, $request->get('reject_serial_reason'));
+
+        return redirect()->route('dashboard.profiles.list')->with(['message' => 'عدم تایید سریال با موفقیت ثبت شد.']);
     }
 
     public function cancelRequest(Request $request)
