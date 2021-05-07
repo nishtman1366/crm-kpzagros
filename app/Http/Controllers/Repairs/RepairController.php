@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Controllers\Payments\PaymentController;
 use App\Http\Requests\Repairs\CreateRepair;
-use App\Models\Repairs\Accessory;
+use App\Models\Variables\Accessory;
 use App\Models\Repairs\Event;
 use App\Models\Repairs\Repair;
 use App\Models\Repairs\Location;
@@ -165,6 +165,8 @@ class RepairController extends Controller
         $repair = Repair::with('events')
             ->with('events.user')
             ->with('payments')
+            ->with('payments.user')
+            ->with('payments.type')
             ->find($id);
 
         if (is_null($repair)) return response()->json(['message' => 'اطلاعات درخواست یافت نشد'], 404);
@@ -212,10 +214,10 @@ class RepairController extends Controller
                 $ref_code = $request->get('ref_code');
                 $date = $request->get('payment_date');
                 $payment = PaymentController::createPayment(
+                    'repairs',
                     $typeId,
                     $repair->price,
                     $user->id,
-                    null,
                     $repair->id,
                     null,
                     $ref_code,

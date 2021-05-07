@@ -9,20 +9,33 @@ use Illuminate\Http\Request;
 class PaymentController extends Controller
 {
 
-    public static function createPayment($typeId, $amount, $userId, $profileId, $repairId, $req_code, $ref_code, $date = null, $status = 1)
+    public static function createPayment($type, $typeId, $amount, $userId, $modelId, $req_code, $ref_code, $date = null, $status = 1)
     {
-        $payment = Payment::create([
-            'type_id' => $typeId,
-            'user_id' => $userId,
-            'profile_id' => $profileId,
-            'repair_id' => $repairId,
-            'req_code' => $req_code,
-            'ref_code' => $ref_code,
-            'date' => $date,
-            'tracking_code' => static::createTrackingCode(),
-            'status' => $status,
-            'amount' => $amount,
-        ]);
+        if($type=='repairs') {
+            $payment = Payment::create([
+                'type_id' => $typeId,
+                'user_id' => $userId,
+                'repair_id' => $modelId,
+                'req_code' => $req_code,
+                'ref_code' => $ref_code,
+                'date' => $date,
+                'tracking_code' => static::createTrackingCode(),
+                'status' => $status,
+                'amount' => $amount,
+            ]);
+        }elseif($type=='returns'){
+            $payment = Payment::create([
+                'type_id' => $typeId,
+                'user_id' => $userId,
+                'return_device_id' => $modelId,
+                'req_code' => $req_code,
+                'ref_code' => $ref_code,
+                'date' => $date,
+                'tracking_code' => static::createTrackingCode(),
+                'status' => $status,
+                'amount' => $amount,
+            ]);
+        }
 
         return $payment;
     }
@@ -48,5 +61,6 @@ class PaymentController extends Controller
 
         if (!is_null($payment->profile_id)) return redirect()->route('dashboard.profiles.view', ['profileId' => $payment->profile_id]);
         elseif (!is_null($payment->repair_id)) return redirect()->route('dashboard.repairs.view', ['repairId' => $payment->repair_id]);
+        elseif (!is_null($payment->return_device_id)) return redirect()->route('dashboard.returns.view', ['returnId' => $payment->return_device_id]);
     }
 }

@@ -20,6 +20,7 @@ Route::pattern('profileId', '[0-9]+');
 Route::pattern('customerId', '[0-9]+');
 Route::pattern('repairId', '[0-9]+');
 Route::pattern('postId', '[0-9]+');
+Route::pattern('returnId', '[0-9]+');
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -134,6 +135,15 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('{repairId}/print', 'RepairController@print')->name('print');
         Route::put('{repairId}', 'RepairController@update')->name('update');
         Route::get('excel', 'RepairController@downloadExcel')->name('downloadExcel');
+    });
+
+    Route::prefix('returns')->name('returns.')->namespace('Returns')->group(function () {
+        Route::get('', 'ReturnController@index')->name('list');
+        Route::get('new', 'ReturnController@create')->name('create');
+        Route::post('', 'ReturnController@store')->name('store');
+        Route::get('{returnId}', 'ReturnController@view')->name('view');
+        Route::post('{returnId}', 'ReturnController@update')->name('update');
+        Route::put('{returnId}/status', 'ReturnController@updateStatus')->name('updateStatus');
     });
 
     Route::prefix('profiles')->name('profiles.')->namespace('Profiles')->group(function () {

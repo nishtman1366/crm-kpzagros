@@ -340,8 +340,8 @@
                                         </thead>
                                         <tbody class="bg-white divide-y divide-gray-200">
                                         <tr v-for="payment in repair.payments" :key="payment.id">
-                                            <td class="py-4 text-center text-gray-900">{{payment.user_id}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.type_id}}</td>
+                                            <td class="py-4 text-center text-gray-900">{{payment.user && payment.user.name}}</td>
+                                            <td class="py-4 text-center text-gray-900">{{payment.type && payment.type.name}}</td>
                                             <td class="py-4 text-center text-gray-900">{{payment.jDate}}</td>
                                             <td class="py-4 text-center text-gray-900">{{payment.ref_code}}</td>
                                             <td class="py-4 text-center text-gray-900">{{payment.tracking_code}}</td>

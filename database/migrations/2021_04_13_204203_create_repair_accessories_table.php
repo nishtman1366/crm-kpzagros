@@ -27,7 +27,7 @@ class CreateRepairAccessoriesTable extends Migration
             ['id' => 5, 'name' => 'کارتن'],
         ]);
         $accessories->each(function($accessory){
-            \App\Models\Repairs\Accessory::create($accessory);
+            \App\Models\Variables\Accessory::create($accessory);
         });
     }
 

@@ -84,6 +84,12 @@
                                     تعمیرات
                                 </inertia-link>
                             </li>
+                            <li v-if="$page.user.level!='MARKETER'" class="sidebar-dropdown">
+                                <inertia-link :href="route('dashboard.returns.list')">
+                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">keyboard_return</i>
+                                    عودت دستگاه
+                                </inertia-link>
+                            </li>
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <li class="header-menu">
