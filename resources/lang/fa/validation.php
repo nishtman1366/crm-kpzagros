@@ -224,5 +224,7 @@ return [
 
 
         'reject_serial_reason' => 'علت عدم تایید',
+
+        'amount' => 'مبلغ',
     ],
 ];
