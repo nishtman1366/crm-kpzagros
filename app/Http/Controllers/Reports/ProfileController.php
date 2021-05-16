@@ -19,6 +19,7 @@ class ProfileController extends Controller
         $year = (int)$request->query('year', $now->getYear());
         $months = monthOfYear($year, $now->isLeapYear());
         $month = (int)$request->query('month', $now->getMonth());
+        $month = sprintf("%02d", $month);
         $agentId = (int)$request->query('agent', 0);
         $marketer = (int)$request->query('marketer', 0);
         $agent = User::where('id', $agentId)->get()->first();
@@ -26,18 +27,17 @@ class ProfileController extends Controller
         foreach ($months as $m) {
             $monthLabels[] = $m[0];
         }
-
         $yearChartData = $this->getYearChartData($months, $agentId);
         $monthChartData = $this->getMonthChartData($months[($month - 1)], $agentId);
 
         $totalProfilesCount = Profile::where('status', '!=', 0)->count();
 
-        $startDayOfYear = Jalalian::fromFormat('Y/m/d', $year . '/01/01')->toCarbon();
-        $endDayOfYear = Jalalian::fromFormat('Y/m/d', $year . '/12/' . ($now->isLeapYear() ? '30' : '29'))->toCarbon();
+        $startDayOfYear = Jalalian::fromFormat('Y/m/d', sprintf('%s/01/01', $year))->toCarbon();
+        $endDayOfYear = Jalalian::fromFormat('Y/m/d', sprintf('%s/12/%s', $year, $now->isLeapYear() ? '30' : '29'))->toCarbon();
         $thisYearProfilesCount = Profile::whereBetween('created_at', [$startDayOfYear, $endDayOfYear])->where('status', '!=', 0)->count();
 
-        $startDayOfMonth = Jalalian::fromFormat('Y/m/d', $year . '/' . $month . '/01')->toCarbon();
-        $endDayOfMonth = Jalalian::fromFormat('Y/m/d', $year . '/' . $month . '/' . $now->getMonthDays())->toCarbon();
+        $startDayOfMonth = Jalalian::fromFormat('Y/m/d', sprintf('%s/%s/01', $year, $month))->toCarbon();
+        $endDayOfMonth = Jalalian::fromFormat('Y/m/d', sprintf('%s/%s/%s', $year, $month, $now->getMonthDays()))->toCarbon();
         $thisMonthProfilesCount = Profile::whereBetween('created_at', [$startDayOfMonth, $endDayOfMonth])->where('status', '!=', 0)->count();
 
         $agentsChartData = $this->getAgentsChartData();
