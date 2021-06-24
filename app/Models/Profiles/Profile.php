@@ -22,7 +22,36 @@ class Profile extends Model
         'new_device_id', 'status',
         'device_sell_type', 'device_amount', 'device_dept_profile_id', 'device_physical_status'];
 
-    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl', 'transferPaymentFileUrl', 'typeText'];
+    protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl',
+        'transferPaymentFileUrl', 'typeText', 'devicePhysicalStatusText', 'deviceSellTypeText'];
+
+
+    public function getDevicePhysicalStatusTextAttribute()
+    {
+        switch ($this->attributes['device_physical_status']) {
+            default:
+                return 'ثبت نشده';
+            case 'new':
+                return 'آکبند';
+            case 'stock':
+                return 'کارکرده';
+        }
+    }
+
+
+    public function getDeviceSellTypeTextAttribute()
+    {
+        switch ($this->attributes['device_sell_type']) {
+            default:
+                return 'ثبت نشده';
+            case 'cash':
+                return 'نقدی';
+            case 'dept':
+                return 'امانی';
+            case 'installment':
+                return 'اقساطی';
+        }
+    }
 
     public function getStatusTextAttribute()
     {

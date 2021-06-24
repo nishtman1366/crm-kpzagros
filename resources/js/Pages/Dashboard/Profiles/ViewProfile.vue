@@ -89,49 +89,50 @@
                                             قبلی:</p>
                                         <div v-show="profileTypeForm.type==='TRANSFER'" class="grid grid-cols-2 gap-3">
                                             <div>
-                                            <div>
-                                                <jet-label>نام</jet-label>
-                                                <jet-input tye="text"
-                                                           class="block w-full mt-3"
-                                                           name="previous_name"
-                                                           ref="previous_name"
-                                                           id="previous_name"
-                                                           :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
-                                                           v-model="profileTypeForm.previous_name"/>
-                                                <jet-input-error
-                                                    :message="profileTypeForm.error('previous_name')"
-                                                    class="mt-2"/>
-                                            </div>
-                                            <div>
-                                                <jet-label>کد ملی</jet-label>
-                                                <jet-input tye="text"
-                                                           class="block w-full mt-3"
-                                                           name="previous_national_code"
-                                                           ref="previous_national_code"
-                                                           id="previous_national_code"
-                                                           :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
-                                                           v-model="profileTypeForm.previous_national_code"/>
-                                                <jet-input-error
-                                                    :message="profileTypeForm.error('previous_national_code')"
-                                                    class="mt-2"/>
-                                            </div>
-                                            <div>
-                                                <jet-label>تلفن همراه</jet-label>
-                                                <jet-input tye="text"
-                                                           class="block w-full mt-3"
-                                                           name="previous_mobile"
-                                                           ref="previous_mobile"
-                                                           id="previous_mobile"
-                                                           :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
-                                                           v-model="profileTypeForm.previous_mobile"/>
-                                                <jet-input-error
-                                                    :message="profileTypeForm.error('previous_mobile')"
-                                                    class="mt-2"/>
-                                            </div>
-                                            <div>
-                                                <p class="text-red-700 font-bold">حتما پس از ثبت اطلاعات، پرونده را ثبت
-                                                    نهایی نمایید.</p>
-                                            </div>
+                                                <div>
+                                                    <jet-label>نام</jet-label>
+                                                    <jet-input tye="text"
+                                                               class="block w-full mt-3"
+                                                               name="previous_name"
+                                                               ref="previous_name"
+                                                               id="previous_name"
+                                                               :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
+                                                               v-model="profileTypeForm.previous_name"/>
+                                                    <jet-input-error
+                                                        :message="profileTypeForm.error('previous_name')"
+                                                        class="mt-2"/>
+                                                </div>
+                                                <div>
+                                                    <jet-label>کد ملی</jet-label>
+                                                    <jet-input tye="text"
+                                                               class="block w-full mt-3"
+                                                               name="previous_national_code"
+                                                               ref="previous_national_code"
+                                                               id="previous_national_code"
+                                                               :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
+                                                               v-model="profileTypeForm.previous_national_code"/>
+                                                    <jet-input-error
+                                                        :message="profileTypeForm.error('previous_national_code')"
+                                                        class="mt-2"/>
+                                                </div>
+                                                <div>
+                                                    <jet-label>تلفن همراه</jet-label>
+                                                    <jet-input tye="text"
+                                                               class="block w-full mt-3"
+                                                               name="previous_mobile"
+                                                               ref="previous_mobile"
+                                                               id="previous_mobile"
+                                                               :disabled="$page.user.level!=='OFFICE' && $page.user.level!=='ADMIN' && $page.user.level!=='SUPERUSER' && profile.status!=0"
+                                                               v-model="profileTypeForm.previous_mobile"/>
+                                                    <jet-input-error
+                                                        :message="profileTypeForm.error('previous_mobile')"
+                                                        class="mt-2"/>
+                                                </div>
+                                                <div>
+                                                    <p class="text-red-700 font-bold">حتما پس از ثبت اطلاعات، پرونده را
+                                                        ثبت
+                                                        نهایی نمایید.</p>
+                                                </div>
                                             </div>
                                             <div>
                                                 <div>
@@ -338,27 +339,40 @@
                                             اطلاعات کسب و کار</p>
                                         <div class="grid  grid-cols-2 md:grid-cols-8 gap-y-6">
                                             <div class="col-1 sm:col-span-1">استان</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.ostan}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business &&
+                                                profile.business.ostan}}
+                                            </div>
                                             <div class="col-1 sm:col-span-1">شهرستان</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.shahrestan}}
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business &&
+                                                profile.business.shahrestan}}
                                             </div>
                                             <div class="col-1 sm:col-span-1">بخش</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.bakhsh}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business &&
+                                                profile.business.bakhsh}}
+                                            </div>
                                             <div class="col-1 sm:col-span-1">شهر</div>
-                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business && profile.business.shahr}}</div>
+                                            <div class="col-1 sm:col-span-1 font-bold">{{profile.business &&
+                                                profile.business.shahr}}
+                                            </div>
                                             <div class="col-1 sm:col-span-2">نام</div>
-                                            <div class="col-2 sm:col-span-2 font-bold">{{profile.business && profile.business.name}}</div>
+                                            <div class="col-2 sm:col-span-2 font-bold">{{profile.business &&
+                                                profile.business.name}}
+                                            </div>
                                             <div class="col-1 sm:col-span-2">نام انگلیسی</div>
                                             <div class="col-2 sm:col-span-2 font-bold">
                                                 {{profile.business && profile.business.name_english}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">صنف مرتبط</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business && profile.business.senf}}</div>
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business &&
+                                                profile.business.senf}}
+                                            </div>
                                             <div class="col-1 sm:col-span-2">تلفن تماس</div>
-                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business && profile.business.fullPhone}}
+                                            <div class="col-1 sm:col-span-2 font-bold">{{profile.business &&
+                                                profile.business.fullPhone}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">آدرس</div>
-                                            <div class="col-5 sm:col-span-6 font-bold">{{profile.business && profile.business.address}}
+                                            <div class="col-5 sm:col-span-6 font-bold">{{profile.business &&
+                                                profile.business.address}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">کد پستی</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
@@ -366,7 +380,8 @@
                                             </div>
                                             <div class="col-1 sm:col-span-2">جواز کسب</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
-                                                {{profile.business && profile.business.has_license=='YES' ? 'دارد' : 'ندارد'}}
+                                                {{profile.business && profile.business.has_license=='YES' ? 'دارد' :
+                                                'ندارد'}}
                                             </div>
                                             <div class="col-1 sm:col-span-2">شماره جواز</div>
                                             <div class="col-1 sm:col-span-2 font-bold">
@@ -393,7 +408,8 @@
                                             </div>
                                             <div v-else
                                                  class="col-1 text-center text-indigo-600  sm:col-span-2 hover:text-indigo-400">
-                                                <a target="_blank" :href="profile.business && profile.business.esteshhadFile">
+                                                <a target="_blank"
+                                                   :href="profile.business && profile.business.esteshhadFile">
                                                     <img :src="profile.business && profile.business.esteshhadFile"
                                                          class="w-full rounded border-indigo-600 hover:border-indigo-400">
                                                     تصویر استشهادنامه
@@ -505,6 +521,16 @@
                                             <div class="col-1 sm:col-span-2 font-bold">{{profile.device ?
                                                 profile.device.guarantee_end : 'ثبت نشده'}}
                                             </div>
+                                            <div class="sm:col-span-8 border-b border-gray-200"></div>
+                                            <div class="sm:col-span-2">فیزیک دستگاه</div>
+                                            <div class="sm:col-span-2 font-bold">
+                                                {{profile.devicePhysicalStatusText}}</div>
+                                            <div class="sm:col-span-2">نحوه فروش</div>
+                                            <div class="sm:col-span-2 font-bold">{{profile.deviceSellTypeText}}</div>
+                                            <div class="sm:col-span-2">مبلغ فروش / امانت / اقساط</div>
+                                            <div class="sm:col-span-2 font-bold">{{profile.device_amount}}</div>
+                                            <div class="sm:col-span-2">شماره پرونده اقساط</div>
+                                            <div class="sm:col-span-2 font-bold">{{profile.device_dept_profile_id}}</div>
                                         </div>
                                     </div>
 
