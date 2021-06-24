@@ -59,7 +59,7 @@ class DashboardController extends Controller
             ->where(function ($profilesQuery) use ($user) {
                 $profilesQuery->where('user_id', $user->id);
 
-                if ($user->isAgent()) {
+                if ($user->isAgent() || $user->isAdmin()) {
                     $profilesQuery->orWhereHas('user', function ($query) use ($user) {
                         $query->where('parent_id', $user->id);
                     });
@@ -81,6 +81,7 @@ class DashboardController extends Controller
                 Carbon::today()->hour(23)->minute(59)->second(59)
             ]);
         }
+        $profilesQuery->count();
         return $profilesQuery->count();
     }
 
@@ -257,9 +258,9 @@ class DashboardController extends Controller
     private function getLatestNewsForDashboard($user)
     {
         if ($user->isAdmin() || $user->isSuperuser()) {
-            return Post::with('category')->orderBy('id','DESC')->limit(15)->get();
+            return Post::with('category')->orderBy('id', 'DESC')->limit(15)->get();
         }
         $userPosts = Level::where('level', $user->level)->pluck('post_id');
-        return Post::with('category')->whereIn('id', $userPosts)->orderBy('id','DESC')->limit(15)->get();
+        return Post::with('category')->whereIn('id', $userPosts)->orderBy('id', 'DESC')->limit(15)->get();
     }
 }
