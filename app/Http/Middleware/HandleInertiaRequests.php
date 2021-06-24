@@ -31,6 +31,17 @@ class HandleInertiaRequests
         });
         Inertia::share('configs', $configs);
 
+        $user = Auth::user();
+        if (!is_null($user)) {
+            $notifications = $user->notifications->take(5)->each(function ($notification) {
+                $notification->date = $notification->created_at->diffForHumans();
+            });
+            $unreadNotifications = $user->unreadNotifications;
+
+            Inertia::share('notifications', $notifications);
+            Inertia::share('unreadNotifications', $unreadNotifications);
+        }
+
         return $next($request);
     }
 }

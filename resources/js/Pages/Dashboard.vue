@@ -94,15 +94,18 @@
                                         <div>
                                             <div class="bg-blue-600 text-white p-1 text-lg">اخبار و اطلاعیه ها</div>
                                             <div class="h-80 overflow-y-auto">
-                                            <div v-for="post in posts" :key="post.id" class="my-2 mx-3">
-                                                <p>
-                                                    <inertia-link :href="route('dashboard.posts.view',{postId:post.id})">
-                                                        <span class="text-base">{{post.title}}</span>
-                                                        <span class="text-xs text-gray-500"> - {{post.category ? post.category.name : ''}}</span>
-                                                        <span class="text-xs text-gray-500"> - {{post.date}}</span>
-                                                    </inertia-link>
-                                                </p>
-                                            </div>
+                                                <div v-for="post in posts" :key="post.id" class="my-2 mx-3">
+                                                    <p>
+                                                        <inertia-link
+                                                            :href="route('dashboard.posts.view',{postId:post.id})">
+                                                            <span v-if="!post.read"
+                                                                  class="text-red-500 font-bold">*</span>
+                                                            <span :class="{'font-bold' : !post.read}" class="text-base">{{post.title}}</span>
+                                                            <span class="text-xs text-gray-500"> - {{post.category ? post.category.name : ''}}</span>
+                                                            <span class="text-xs text-gray-500"> - {{post.date}}</span>
+                                                        </inertia-link>
+                                                    </p>
+                                                </div>
                                             </div>
                                             <p class="text-left">
                                                 <inertia-link :href="route('dashboard.posts.archive')">

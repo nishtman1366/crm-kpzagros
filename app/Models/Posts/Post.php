@@ -4,6 +4,7 @@ namespace App\Models\Posts;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Morilog\Jalali\Jalalian;
 
 class Post extends Model
@@ -12,7 +13,7 @@ class Post extends Model
 
     protected $fillable = ['user_id', 'post_category_id', 'title', 'body', 'status'];
 
-    protected $appends = ['date', 'statusText'];
+    protected $appends = ['date', 'statusText', 'read'];
 
     public function getDateAttribute()
     {
@@ -29,6 +30,12 @@ class Post extends Model
                 return 'عدم انتشار';
 
         }
+    }
+
+    public function getReadAttribute()
+    {
+        $user = Auth::user();
+        return Views::where('post_id', $this->id)->where('user_id', $user->id)->exists();
     }
 
     public function category()

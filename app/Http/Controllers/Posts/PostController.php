@@ -8,11 +8,13 @@ use App\Models\Posts\File;
 use App\Models\Posts\Level;
 use App\Models\Posts\Post;
 use App\Models\Posts\Video;
+use App\Models\Posts\Views;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PostController extends Controller
 {
@@ -84,7 +86,14 @@ class PostController extends Controller
     {
         $id = $request->route('postId');
         $post = Post::with('category')->with('files')->with('videos')->find($id);
-
+        if (is_null($post)) throw new NotFoundHttpException('خبر مورد نظر یافت نشد.');
+        $user = Auth::user();
+        if (!is_null($user)) {
+            Views::create([
+                'post_id' => $post->id,
+                'user_id' => $user->id
+            ]);
+        }
         return Inertia::render('Dashboard/Posts/ViewPost', compact('post'));
     }
 
