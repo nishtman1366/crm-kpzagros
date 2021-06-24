@@ -16,9 +16,9 @@
                             </div>
                             <div v-else>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 m-3">
-                                    <div class="">
+                                    <div class="rounded shadow-sm bg-blue-200">
                                         <div
-                                            class="p-1 h-20 bg-gradient-to-l from-teal-400 to-blue-500 text-white text-2xl">
+                                            class="p-1 h-20 text-blue-700 text-2xl">
                                             <svg class="inline float-left w-15 h-15"
                                                  viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -27,15 +27,15 @@
                                             <h3 class="text-xl">پرونده های امروز</h3>
                                             <p class="text-3xl pr-5">{{profileStatus.status1 | persianDigit}} پرونده</p>
                                         </div>
-                                        <div class="h-5 bg-blue-700 text-left text-white px-3">
+                                        <div class="h-5 text-left text-blue-700 px-3">
                                             <inertia-link :href="route('dashboard.profiles.list',{statusId:1})">
                                                 مشاهده لیست
                                             </inertia-link>
                                         </div>
                                     </div>
-                                    <div class="">
+                                    <div class="rounded shadow-sm bg-green-200">
                                         <div
-                                            class="p-1 h-20 bg-gradient-to-l from-green-500 to-green-700 text-white text-2xl">
+                                            class="p-1 h-20 text-green-700 text-2xl">
                                             <svg class="inline float-left w-15 h-15"
                                                  viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -44,15 +44,15 @@
                                             <h3 class="text-xl">در انتظار نصب</h3>
                                             <p class="text-3xl pr-5">{{profileStatus.status7 | persianDigit}} دستگاه</p>
                                         </div>
-                                        <div class="h-5 bg-green-700 text-left text-white px-3">
+                                        <div class="h-5 text-left text-green-700 px-3">
                                             <inertia-link :href="route('dashboard.profiles.list',{statusId:7})">
                                                 مشاهده لیست
                                             </inertia-link>
                                         </div>
                                     </div>
-                                    <div class="">
+                                    <div class="rounded shadow-sm bg-purple-200">
                                         <div
-                                            class="p-1 h-20 bg-gradient-to-l from-purple-500 to-indigo-700 text-white text-2xl">
+                                            class="p-1 h-20 text-purple-700 text-2xl">
                                             <svg class="inline float-left w-15 h-15"
                                                  viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -61,15 +61,15 @@
                                             <h3 class="text-xl">در انتظار بررسی</h3>
                                             <p class="text-3xl pr-5">{{profileStatus.status2 | persianDigit}} پرونده</p>
                                         </div>
-                                        <div class="h-5 bg-indigo-900 text-left text-white px-3">
+                                        <div class="h-5 text-left text-purple-700 px-3">
                                             <inertia-link :href="route('dashboard.profiles.list',{statusId:2})">
                                                 مشاهده لیست
                                             </inertia-link>
                                         </div>
                                     </div>
-                                    <div class="">
+                                    <div class="rounded shadow-sm bg-red-200">
                                         <div
-                                            class="p-1 h-20 bg-gradient-to-l from-red-500 to-red-700 text-white text-2xl">
+                                            class="p-1 h-20 text-red-700 text-2xl">
                                             <svg class="inline float-left w-15 h-15"
                                                  viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -79,7 +79,7 @@
                                             <p class="text-3xl pr-5">{{profileStatus.status11 | persianDigit}}
                                                 پرونده</p>
                                         </div>
-                                        <div class="h-5 bg-red-700 text-left text-white px-3">
+                                        <div class="h-5 text-red-700 text-left  px-3">
                                             <inertia-link :href="route('dashboard.profiles.list',{statusId:11})">
                                                 مشاهده لیست
                                             </inertia-link>
@@ -93,6 +93,7 @@
                                     <div class="col-1 sm:col-span-2">
                                         <div>
                                             <div class="bg-blue-600 text-white p-1 text-lg">اخبار و اطلاعیه ها</div>
+                                            <div class="h-80 overflow-y-auto">
                                             <div v-for="post in posts" :key="post.id" class="my-2 mx-3">
                                                 <p>
                                                     <inertia-link :href="route('dashboard.posts.view',{postId:post.id})">
@@ -101,6 +102,7 @@
                                                         <span class="text-xs text-gray-500"> - {{post.date}}</span>
                                                     </inertia-link>
                                                 </p>
+                                            </div>
                                             </div>
                                             <p class="text-left">
                                                 <inertia-link :href="route('dashboard.posts.archive')">
