@@ -226,5 +226,10 @@ return [
         'reject_serial_reason' => 'علت عدم تایید',
 
         'amount' => 'مبلغ',
+
+        'device_sell_type' => 'نوع فروش',
+        'device_amount' => 'مبلغ',
+        'device_dept_profile_id' => 'شماره پرونده اقساط',
+        'device_physical_status' => 'وضعیت فیزیکی دستگاه',
     ],
 ];

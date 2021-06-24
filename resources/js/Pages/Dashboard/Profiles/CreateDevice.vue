@@ -23,6 +23,65 @@
                         <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div class="grid grid-cols-6 gap-6">
+                                    <div class="col-span-3">
+                                        <jet-label value="نحوه فروش"/>
+                                        <jet-button @click.native="deviceTypeForm.device_sell_type='cash'"
+                                                    :class="{'bg-blue-500':deviceTypeForm.device_sell_type==='cash'}"
+                                                    class="bg-blue-200 text-gray-900 hover:bg-blue-400">نقدی
+                                        </jet-button>
+                                        <jet-button @click.native="deviceTypeForm.device_sell_type='dept'"
+                                                    :class="{'bg-blue-500':deviceTypeForm.device_sell_type==='dept'}"
+                                                    class="bg-blue-200 text-gray-900 hover:bg-blue-400">امانی
+                                        </jet-button>
+                                        <jet-button @click.native="deviceTypeForm.device_sell_type='installment'"
+                                                    :class="{'bg-blue-500':deviceTypeForm.device_sell_type==='installment'}"
+                                                    class="bg-blue-200 text-gray-900 hover:bg-blue-400">اقساطی
+                                        </jet-button>
+                                        <jet-input-error :message="deviceTypeForm.error('device_sell_type')"
+                                                         class="mt-2"/>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <template v-if="deviceTypeForm.device_sell_type==='cash'">
+                                            <jet-label for="device_amount" value="مبلغ فروش"/>
+                                            <jet-input type="text" id="device_amount" name="device_amount"
+                                                       v-model="deviceTypeForm.device_amount"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_amount')"
+                                                             class="mt-2"/>
+                                        </template>
+                                        <template v-else-if="deviceTypeForm.device_sell_type==='dept'">
+                                            <jet-label for="device_amount" value="مبلغ امانت"/>
+                                            <jet-input type="text" id="device_amount" name="device_amount"
+                                                       v-model="deviceTypeForm.device_amount"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_amount')"
+                                                             class="mt-2"/>
+                                        </template>
+                                        <template v-else-if="deviceTypeForm.device_sell_type==='installment'">
+                                            <jet-label for="device_dept_profile_id" value="شماره پرونده"/>
+                                            <jet-input type="text" id="device_dept_profile_id"
+                                                       name="device_dept_profile_id"
+                                                       v-model="deviceTypeForm.device_dept_profile_id"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_dept_profile_id')"
+                                                             class="mt-2"/>
+                                            <jet-label for="device_amount" value="مبلغ قسط"/>
+                                            <jet-input type="text" id="device_amount" name="device_amount"
+                                                       v-model="deviceTypeForm.device_amount"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_amount')"
+                                                             class="mt-2"/>
+                                        </template>
+                                    </div>
+                                    <div class="col-span-6">
+                                        <jet-label value="وضعیت فیزیکی دستگاه"/>
+                                        <jet-button @click.native="deviceTypeForm.device_physical_status='new'"
+                                                    :class="{'bg-purple-500':deviceTypeForm.device_physical_status==='new'}"
+                                                    class="bg-purple-200 text-gray-900 hover:bg-purple-400">آکبند
+                                        </jet-button>
+                                        <jet-button @click.native="deviceTypeForm.device_physical_status='stock'"
+                                                    :class="{'bg-purple-500':deviceTypeForm.device_physical_status==='stock'}"
+                                                    class="bg-purple-200 text-gray-900 hover:bg-purple-400">کارکرده
+                                        </jet-button>
+                                        <jet-input-error :message="deviceTypeForm.error('device_physical_status')"
+                                                         class="mt-2"/>
+                                    </div>
                                     <div class="col-span-6">
                                         <label for="psp_id"
                                                class="block text-sm font-medium text-gray-700">
@@ -92,10 +151,13 @@
     import Dashboard from "@/Pages/Dashboard";
     import ProfileSteps from "@/Pages/Dashboard/Components/ProfileSteps";
     import JetInputError from '@/Jetstream/InputError';
+    import JetButton from '@/Jetstream/Button';
+    import JetLabel from "@/Jetstream/Label"
+    import JetInput from "@/Jetstream/Input"
 
     export default {
         name: "CreateDevice",
-        components: {Dashboard, ProfileSteps, JetInputError},
+        components: {Dashboard, ProfileSteps, JetInputError, JetButton, JetLabel, JetInput},
         props: {
             profileId: Number,
             profile: Object,
@@ -113,6 +175,10 @@
                 deviceTypeForm: this.$inertia.form({
                     '_method': 'POST',
                     profile_id: this.profileId,
+                    device_sell_type: null,
+                    device_amount: null,
+                    device_dept_profile_id: null,
+                    device_physical_status: null,
                     device_type_id: '',
                     psp_id: '',
                 }, {
@@ -127,7 +193,7 @@
         methods: {
             selectDeviceConnection(id) {
                 this.selectPsp = false;
-                if (this.deviceTypeForm.psp_id === ''){
+                if (this.deviceTypeForm.psp_id === '') {
                     this.selectPsp = true;
                     return '';
                 }

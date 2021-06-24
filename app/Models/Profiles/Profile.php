@@ -19,7 +19,8 @@ class Profile extends Model
     protected $fillable = ['type', 'user_id', 'psp_id', 'device_type_id', 'device_id',
         'multi_account', 'terminal_id', 'merchant_id', 'cancel_reason', 'change_reason', 'reject_serial_reason',
         'previous_name', 'previous_national_code', 'previous_mobile', 'new_device_type_id',
-        'new_device_id', 'status'];
+        'new_device_id', 'status',
+        'device_sell_type', 'device_amount', 'device_dept_profile_id', 'device_physical_status'];
 
     protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl', 'transferPaymentFileUrl', 'typeText'];
 

@@ -23,6 +23,80 @@
                         <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
                                 <div class="grid grid-cols-6 gap-6">
+                                    <div class="col-span-3">
+                                        <jet-label value="نحوه فروش"/>
+                                        <jet-button @click.native="deviceTypeForm.device_sell_type='cash'"
+                                                    :disabled="disableItems"
+                                                    :class="{'bg-blue-500':deviceTypeForm.device_sell_type==='cash'}"
+                                                    class="bg-blue-200 text-gray-900 hover:bg-blue-400">نقدی
+                                        </jet-button>
+                                        <jet-button @click.native="deviceTypeForm.device_sell_type='dept'"
+                                                    :disabled="disableItems"
+                                                    :class="{'bg-blue-500':deviceTypeForm.device_sell_type==='dept'}"
+                                                    class="bg-blue-200 text-gray-900 hover:bg-blue-400">امانی
+                                        </jet-button>
+                                        <jet-button @click.native="deviceTypeForm.device_sell_type='installment'"
+                                                    :disabled="disableItems"
+                                                    :class="{'bg-blue-500':deviceTypeForm.device_sell_type==='installment'}"
+                                                    class="bg-blue-200 text-gray-900 hover:bg-blue-400">اقساطی
+                                        </jet-button>
+                                        <jet-input-error :message="deviceTypeForm.error('device_sell_type')"
+                                                         class="mt-2"/>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <template v-if="deviceTypeForm.device_sell_type==='cash'">
+                                            <jet-label for="device_amount" value="مبلغ فروش"/>
+                                            <jet-input type="text" id="device_amount" name="device_amount"
+                                                       :disabled="disableItems"
+                                                       v-model="deviceTypeForm.device_amount"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_amount')"
+                                                             class="mt-2"/>
+                                        </template>
+                                        <template v-else-if="deviceTypeForm.device_sell_type==='dept'">
+                                            <jet-label for="device_amount" value="مبلغ امانت"/>
+                                            <jet-input type="text" id="device_amount" name="device_amount"
+                                                       :disabled="disableItems"
+                                                       v-model="deviceTypeForm.device_amount"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_amount')"
+                                                             class="mt-2"/>
+                                        </template>
+                                        <template v-else-if="deviceTypeForm.device_sell_type==='installment'">
+                                            <jet-label for="device_dept_profile_id" value="شماره پرونده"/>
+                                            <jet-input type="text" id="device_dept_profile_id"
+                                                       :disabled="disableItems"
+                                                       name="device_dept_profile_id"
+                                                       v-model="deviceTypeForm.device_dept_profile_id"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_dept_profile_id')"
+                                                             class="mt-2"/>
+                                            <jet-label for="device_amount" value="مبلغ قسط"/>
+                                            <jet-input type="text" id="device_amount" name="device_amount"
+                                                       :disabled="disableItems"
+                                                       v-model="deviceTypeForm.device_amount"/>
+                                            <jet-input-error :message="deviceTypeForm.error('device_amount')"
+                                                             class="mt-2"/>
+                                        </template>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <jet-label value="وضعیت فیزیکی دستگاه"/>
+                                        <jet-button @click.native="deviceTypeForm.device_physical_status='new'"
+                                                    :class="{'bg-purple-500':deviceTypeForm.device_physical_status==='new'}"
+                                                    :disabled="disableItems"
+                                                    class="bg-purple-200 text-gray-900 hover:bg-purple-400">آکبند
+                                        </jet-button>
+                                        <jet-button @click.native="deviceTypeForm.device_physical_status='stock'"
+                                                    :class="{'bg-purple-500':deviceTypeForm.device_physical_status==='stock'}"
+                                                    :disabled="disableItems"
+                                                    class="bg-purple-200 text-gray-900 hover:bg-purple-400">کارکرده
+                                        </jet-button>
+                                        <jet-input-error :message="deviceTypeForm.error('device_physical_status')"
+                                                         class="mt-2"/>
+                                    </div>
+                                    <div class="col-span-3">
+                                        <jet-button @click.native="submitDeviceType(deviceType.id)"
+                                                    :disabled="disableItems"
+                                        >ذخیره تغییرات
+                                        </jet-button>
+                                    </div>
                                     <div class="col-span-6">
                                         <label for="psp_id"
                                                class="block text-sm font-medium text-gray-700">
@@ -30,6 +104,7 @@
                                         </label>
                                         <select name="psp_id"
                                                 v-on:change="changePsp"
+                                                :disabled="disableItems"
                                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                 ref="psp_id"
                                                 id="psp_id"
@@ -47,6 +122,7 @@
                                     </div>
                                     <button v-for="connectionType in connectionTypes" :key="connectionType.id"
                                             v-on:click="selectDeviceConnection(connectionType.id)"
+                                            :disabled="disableItems"
                                             class="col-span-3 sm:col-span-2 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                         {{connectionType.name}}
                                     </button>
@@ -96,10 +172,13 @@
     import Dashboard from "@/Pages/Dashboard";
     import ProfileSteps from "@/Pages/Dashboard/Components/ProfileSteps";
     import JetInputError from '@/Jetstream/InputError';
+    import JetButton from '@/Jetstream/Button';
+    import JetLabel from "@/Jetstream/Label"
+    import JetInput from "@/Jetstream/Input"
 
     export default {
         name: "CreateDevice",
-        components: {Dashboard, ProfileSteps, JetInputError},
+        components: {Dashboard, ProfileSteps, JetInputError, JetButton, JetLabel, JetInput},
         props: {
             profileId: Number,
             profile: Object,
@@ -117,6 +196,13 @@
                 selectPsp: false,
                 deviceTypeForm: this.$inertia.form({
                     '_method': 'POST',
+                    profile_id: this.profileId,
+                    device_type_id: this.deviceType.id,
+                    psp_id: this.profile.psp_id,
+                    device_sell_type: this.profile.device_sell_type,
+                    device_amount: this.profile.device_amount,
+                    device_dept_profile_id: this.profile.device_dept_profile_id,
+                    device_physical_status: this.profile.device_physical_status,
                 }, {
                     bag: 'deviceTypeForm',
                     resetOnSuccess: false
@@ -124,16 +210,12 @@
             }
         },
         mounted() {
-            this.deviceTypeForm = this.$inertia.form({
-                '_method': 'PUT',
-                profile_id: this.profileId,
-                device_type_id: this.deviceType.id,
-                psp_id: this.profile.psp_id
-            }, {
-                bag: 'deviceTypeForm',
-                resetOnSuccess: false
-            });
             this.selectDeviceConnection(this.deviceType.device_connection_type_id);
+        },
+        computed: {
+            disableItems: function () {
+                return this.profile.status !== 0 && (this.$page.user.level === 'AGENT' || this.$page.user.level === 'MARKETER');
+            }
         },
         methods: {
             changePsp() {
@@ -167,7 +249,7 @@
             },
             submitDeviceType(id) {
                 this.deviceTypeForm.device_type_id = id;
-                this.deviceTypeForm.post(route('dashboard.profiles.devices.update', {profileId: this.profileId})).then(response => {
+                this.deviceTypeForm.put(route('dashboard.profiles.devices.update', {profileId: this.profileId})).then(response => {
 
                 })
             }

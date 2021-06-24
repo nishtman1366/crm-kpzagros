@@ -49,17 +49,30 @@ class DeviceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validateWithBag('deviceTypeForm', [
-            'psp_id' => 'required|exists:psps,id'
+        $validateArray = collect([
+            'psp_id' => 'required|exists:psps,id',
+            'device_sell_type' => 'required',
+            'device_physical_status' => 'required'
         ]);
+        $deviceSellType = $request->get('device_sell_type');
+        if ($deviceSellType === 'cash' || $deviceSellType === 'dept') {
+            $validateArray = $validateArray->merge([
+                'device_amount' => 'required'
+            ]);
+        } elseif ($deviceSellType === 'installment') {
+            $validateArray = $validateArray->merge([
+                'device_amount' => 'required',
+                'device_dept_profile_id' => 'required',
+            ]);
+        }
+
+        $request->validateWithBag('deviceTypeForm', $validateArray->toArray());
 
         $profileId = $request->route('profileId');
-
-        Profile::find($profileId)->update(
-            [
-                'psp_id' => $request->get('psp_id'),
-                'device_type_id' => $request->get('device_type_id'),
-            ]);
+        $profile = Profile::find($profileId);
+        if (is_null($profile)) throw new NotFoundHttpException('شماره پرونده یافت نشد.');
+        $profile->fill($request->all());
+        $profile->save();
 
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
     }
@@ -102,10 +115,28 @@ class DeviceController extends Controller
         if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
         $deviceType = $profile->deviceType;
         if (is_null($deviceType)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
-        Profile::find($profileId)->update([
-            'psp_id' => $request->get('psp_id'),
-            'device_type_id' => $request->get('device_type_id'),
+
+        $validateArray = collect([
+            'psp_id' => 'required|exists:psps,id',
+            'device_sell_type' => 'required',
+            'device_physical_status' => 'required'
         ]);
+        $deviceSellType = $request->get('device_sell_type');
+        if ($deviceSellType === 'cash' || $deviceSellType === 'dept') {
+            $validateArray = $validateArray->merge([
+                'device_amount' => 'required'
+            ]);
+        } elseif ($deviceSellType === 'installment') {
+            $validateArray = $validateArray->merge([
+                'device_amount' => 'required',
+                'device_dept_profile_id' => 'required',
+            ]);
+        }
+
+        $request->validateWithBag('deviceTypeForm', $validateArray->toArray());
+
+        $profile->fill($request->all());
+        $profile->save();
 
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
     }
