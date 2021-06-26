@@ -54,6 +54,12 @@ class ProfileExport implements FromCollection, WithHeadings
                 $profile->psp ? $profile->psp->name : '',
                 $profile->deviceType ? $profile->deviceType->name : '',
                 (is_null($profile->device) ? null : $profile->device->serial),
+
+                $profile->deviceSellTypeText,
+                $profile->device_amount,
+                $profile->device_dept_profile_id,
+                $profile->devicePhysicalStatusText,
+
                 $profile->terminal_id,
                 $profile->merchant_id,
                 //اطلاعات مشتری
@@ -127,6 +133,10 @@ class ProfileExport implements FromCollection, WithHeadings
             'سرویس دهنده',
             'مدل دستگاه',
             'سریال',
+            'شیوه فروش',
+            'مبلغ فروش / امانت / قسط',
+            'شماره پرونده اقساط',
+            'وضعیت فیزیک دستگاه',
             'شماره پایانه',
             'شماره پذیرنده',
             'نوع پذیرنده',
