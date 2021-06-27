@@ -106,16 +106,17 @@
     <div class="title">رسید نصب و تحویل دستگاه کارتخوان– نسخه پذیرنده</div>
     <div class="contents">
         گواهی می شود یک عدد دستگاه کارتخوان مدل <span
-            class="variables">{{$profile->deviceType->name}}</span> به صورت <span
+            class="variables">{{is_null($profile->deviceType) ? 'ثبت نشده' : $profile->deviceType->name}}</span> به صورت
+        <span
             class="variables">{{$profile->deviceSellTypeText}}</span> و متصل
         به حساب بانک <span
-            class="variables">{{toPersianNumbers($profile->accounts->first()->account->bank->name)}}</span>
-        به نام {{$profile->customer->gender==='male' ? 'آقای' : 'خانم'}}
+            class="variables">{{(!is_null($profile->accounts) && count($profile->accounts) > 0 && !is_null($profile->accounts->first()->account)) ? toPersianNumbers($profile->accounts->first()->account->bank->name) : 'ثبت نشده'}}</span>
+        به نام {{is_null($profile->customer) ? 'ثب نشده' : (($profile->customer->gender==='male') ? 'آقای' : 'خانم')}}
         <span
-            class="variables">{{$profile->customer->fullName}}</span> فرزند <span
-            class="variables">{{$profile->customer->father}}</span> با کد ملی
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> فرزند <span
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->father}}</span> با کد ملی
         <span
-            class="variables">{{toPersianNumbers($profile->customer->national_code)}}</span> که از این
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : toPersianNumbers($profile->customer->national_code)}}</span> که از این
         پس بعنوان پذیرنده شناخته می شود، مطابق جدول زیر
         واگذار گردید. این گواهی جهت تایید تحویل محصول و به عنوان سند دستگاه به نامبرده ارائه شده و فاقد هر گونه
         اعتبار دیگری می باشد.
@@ -128,7 +129,7 @@
                 <td>فیزیک دستگاه</td>
                 <td>{{$profile->devicePhysicalStatusText}}</td>
                 <td>نام فروشگاه</td>
-                <td>{{$profile->business->name}}</td>
+                <td>{{is_null($profile->business) ? 'ثب نشده' : $profile->business->name}}</td>
             </tr>
             <tr>
                 <td>کد پایانه</td>
@@ -136,11 +137,11 @@
                 <td>نوع قرارداد</td>
                 <td>{{$profile->typeText}}</td>
                 <td>سریال دستگاه</td>
-                <td>{{!is_null($profile->device) ? toPersianNumbers($profile->device->serial) : 'نامشخض'}}</td>
+                <td>{{!is_null($profile->device) ? toPersianNumbers($profile->device->serial) : 'ثبت نشده'}}</td>
             </tr>
             <tr>
                 <td>سرویس دهنده</td>
-                <td colspan="5">{{$profile->psp->name}}</td>
+                <td colspan="5">{{is_null($profile->psp) ? 'ثب نشده' : $profile->psp->name}}</td>
             </tr>
             <tr>
                 <td colspan="6" style="text-align: right">
@@ -203,10 +204,10 @@
     </div>
     <div class="contents">
         اینجانب <span
-            class="variables">{{$profile->customer->fullName}}</span> بعنوان پذیرند و
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> بعنوان پذیرند و
         با کد ملی
         <span
-            class="variables">{{toPersianNumbers($profile->customer->national_code)}}</span> ضمن مطالعه
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : toPersianNumbers($profile->customer->national_code)}}</span> ضمن مطالعه
         و دقت در تمامی موارد ذکر شده و تست دستگاه و پس از حصول اطمینان از سالم بودن
         و عملکرد صحیح آن، دستگاه مذکور را در مورخه <span
             class="variables">{{toPersianNumbers($profile->jUpdatedAt)}}</span> تحویل گرفتم.
@@ -215,7 +216,7 @@
         <table class="signs">
             <tr>
                 <td>
-                    <p>{{$profile->customer->fullName}}</p>
+                    <p>{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</p>
                     <p>امضا و اثر انگشت</p>
                 </td>
                 <td>
@@ -235,16 +236,17 @@
     <div class="title">رسید نصب و تحویل دستگاه کارتخوان– نسخه پذیرنده</div>
     <div class="contents">
         گواهی می شود یک عدد دستگاه کارتخوان مدل <span
-            class="variables">{{$profile->deviceType->name}}</span> به صورت <span
+            class="variables">{{is_null($profile->deviceType) ? 'ثبت نشده' : $profile->deviceType->name}}</span> به صورت
+        <span
             class="variables">{{$profile->deviceSellTypeText}}</span> و متصل
         به حساب بانک <span
-            class="variables">{{toPersianNumbers($profile->accounts->first()->account->bank->name)}}</span>
-        به نام {{$profile->customer->gender==='male' ? 'آقای' : 'خانم'}}
+            class="variables">{{(!is_null($profile->accounts) && count($profile->accounts) > 0 && !is_null($profile->accounts->first()->account)) ? toPersianNumbers($profile->accounts->first()->account->bank->name) : 'ثبت نشده'}}</span>
+        به نام {{is_null($profile->customer) ? 'ثب نشده' : (($profile->customer->gender==='male') ? 'آقای' : 'خانم')}}
         <span
-            class="variables">{{$profile->customer->fullName}}</span> فرزند <span
-            class="variables">{{$profile->customer->father}}</span> با کد ملی
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> فرزند <span
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->father}}</span> با کد ملی
         <span
-            class="variables">{{toPersianNumbers($profile->customer->national_code)}}</span> که از این
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : toPersianNumbers($profile->customer->national_code)}}</span> که از این
         پس بعنوان پذیرنده شناخته می شود، مطابق جدول زیر
         واگذار گردید. این گواهی جهت تایید تحویل محصول و به عنوان سند دستگاه به نامبرده ارائه شده و فاقد هر گونه
         اعتبار دیگری می باشد.
@@ -257,7 +259,7 @@
                 <td>فیزیک دستگاه</td>
                 <td>{{$profile->devicePhysicalStatusText}}</td>
                 <td>نام فروشگاه</td>
-                <td>{{$profile->business->name}}</td>
+                <td>{{is_null($profile->business) ? 'ثب نشده' : $profile->business->name}}</td>
             </tr>
             <tr>
                 <td>کد پایانه</td>
@@ -265,11 +267,11 @@
                 <td>نوع قرارداد</td>
                 <td>{{$profile->typeText}}</td>
                 <td>سریال دستگاه</td>
-                <td>{{!is_null($profile->device) ? toPersianNumbers($profile->device->serial) : 'نامشخض'}}</td>
+                <td>{{!is_null($profile->device) ? toPersianNumbers($profile->device->serial) : 'ثبت نشده'}}</td>
             </tr>
             <tr>
                 <td>سرویس دهنده</td>
-                <td colspan="5">{{$profile->psp->name}}</td>
+                <td colspan="5">{{is_null($profile->psp) ? 'ثب نشده' : $profile->psp->name}}</td>
             </tr>
             <tr>
                 <td colspan="6" style="text-align: right">
@@ -332,10 +334,10 @@
     </div>
     <div class="contents">
         اینجانب <span
-            class="variables">{{$profile->customer->fullName}}</span> بعنوان پذیرند و
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> بعنوان پذیرند و
         با کد ملی
         <span
-            class="variables">{{toPersianNumbers($profile->customer->national_code)}}</span> ضمن مطالعه
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : toPersianNumbers($profile->customer->national_code)}}</span> ضمن مطالعه
         و دقت در تمامی موارد ذکر شده و تست دستگاه و پس از حصول اطمینان از سالم بودن
         و عملکرد صحیح آن، دستگاه مذکور را در مورخه <span
             class="variables">{{toPersianNumbers($profile->jUpdatedAt)}}</span> تحویل گرفتم.
@@ -344,7 +346,7 @@
         <table class="signs">
             <tr>
                 <td>
-                    <p>{{$profile->customer->fullName}}</p>
+                    <p>{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</p>
                     <p>امضا و اثر انگشت</p>
                 </td>
                 <td>
