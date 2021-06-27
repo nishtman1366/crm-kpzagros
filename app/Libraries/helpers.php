@@ -91,6 +91,27 @@ if (!function_exists('toEnglishNumbers')) {
     }
 }
 
+if (!function_exists('toPersianNumbers')) {
+    function toPersianNumbers($string = null)
+    {
+        if (is_null($string)) return null;
+        if (is_array($string)) {
+            $x = [];
+            foreach ($string as $item) {
+                $x[] = toPersianNumbers($item);
+            }
+            return $x;
+        } else {
+            $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            $arabic = ['٩', '٨', '٧', '٦', '٥', '٤', '٣', '٢', '١', '٠'];
+
+            $num = range(0, 9);
+            $convertedPersianNums = str_replace($num, $persian, $string);
+            return str_replace($num, $arabic, $convertedPersianNums);
+        }
+    }
+}
+
 if (!function_exists('clearAddress')) {
     function clearAddress($address)
     {

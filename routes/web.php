@@ -154,6 +154,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
 
         Route::prefix('{profileId}')->group(function () {
             Route::get('view', 'ProfileController@view')->name('view');
+            Route::get('/deliveryForm', 'ProfileController@deliveryForm')->name('delivery.form');
             Route::put('', 'ProfileController@update')->name('update');
             Route::put('updateStatus', 'ProfileController@updateStatus')->name('update.status');
             Route::put('setType', 'ProfileController@setType')->name('update.type');

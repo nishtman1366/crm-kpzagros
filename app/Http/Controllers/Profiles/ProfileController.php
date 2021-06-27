@@ -19,11 +19,13 @@ use App\Rules\ChangeSerial;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
+use Mpdf\Mpdf;
+use Mpdf\MpdfException;
+use niklasravnsborg\LaravelPdf\PdfWrapper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use ZipArchive;
 
@@ -305,6 +307,48 @@ class ProfileController extends Controller
             'licenseTypes' => $licenseTypes,
             'deviceTypes' => $deviceTypes,
         ]);
+    }
+
+    public function deliveryForm(Request $request)
+    {
+        $profileId = $request->route('profileId');
+        $profile = Profile::with('customer')
+            ->with('user')
+            ->with('psp')
+            ->with('business')
+            ->with('accounts')
+            ->with('accounts.account')
+            ->with('accounts.account.bank')
+            ->with('deviceType')
+            ->with('deviceType.type')
+            ->with('device')
+            ->with('messages')
+            ->with('licenses')
+            ->with('licenses.type')
+            ->find($profileId);
+
+        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
+//        return view('pdf.profile_deliver_form', compact('profile'));
+        $pdf = new PdfWrapper();
+
+        $x = $pdf->loadView('pdf.profile_deliver_form', compact('profile'), [], [
+            'mode' => 'utf-8',
+        ]);
+        return $x->download('file.pdf');
+//
+//        $html = view('pdf.profile_deliver_form', compact('profile'));
+//        try {
+//            $x = new Mpdf($config);
+//            $x->WriteHTML($html->render());
+//            return $x->Output('file.pdf', 'D');
+//        } catch (MpdfException $e) {
+//            throw new NotFoundHttpException('خطا در ساخت فایل pdf');
+//        }
+
+//        $pdf = PDF::loadView('pdf.profile_deliver_form', compact('profile'));
+//        return $pdf->download('profile_deliver_form.pdf');
+//
+//        return view('pdf.profile_deliver_form', compact('profile'));
     }
 
     public function update(Request $request)

@@ -217,15 +217,23 @@
                                     </td>
                                     <td class="list-table-body-cell">{{profile.jCreatedAt}}</td>
                                     <td class="list-table-body-cell">{{profile.jUpdatedAt}}</td>
-                                    <td class="list-table-body-cell">
+                                    <td class="list-table-body-cell flex flex-nowrap items-center justify-center">
                                         <InertiaLink
                                             :href="route('dashboard.profiles.view',{profileId: profile.id})"
                                             class="tooltip-box text-indigo-600 hover:text-indigo-900">
                                             <button title="مشاهده پرونده"
                                                     v-b-tooltip.hover>
-                                                <i id="test" class="material-icons">folder_shared</i>
+                                                <i id="view-device-button" class="material-icons">folder_shared</i>
                                             </button>
                                         </InertiaLink>
+                                        <a target="_blank"
+                                            :href="route('dashboard.profiles.delivery.form',{profileId: profile.id})"
+                                            class="tooltip-box text-purple-600 hover:text-purple-900">
+                                            <button title="گواهی تحویل"
+                                                    v-b-tooltip.hover>
+                                                <i id="view-license-button" class="material-icons">file_download</i>
+                                            </button>
+                                        </a>
                                         <button
                                             v-if="profile.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
                                             v-on:click="updateProfileStatus(profile.id,2)"
