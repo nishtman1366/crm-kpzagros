@@ -18,7 +18,9 @@ class AgentController extends Controller
             ->orderBy('name', 'ASC')->get();
         $types = Type::orderBy('name', 'ASC')->get();
         $users = User::where(function ($query) {
-            $query->where('level', 'OFFICE')->orWhere('level', 'SUPERUSER');
+            $query->where('level', 'OFFICE')
+                ->orWhere('level', 'ADMIN')
+                ->orWhere('level', 'TECHNICAL');
         })->get();
         return Inertia::render('Dashboard/Tickets/Agents', compact('agents', 'types', 'users'));
     }
