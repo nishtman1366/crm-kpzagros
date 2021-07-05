@@ -47,11 +47,9 @@
                         </li>
                         <template v-if="$page.user.level!='TECHNICAL'">
                             <li class="header-menu" data-child="#menu-profiles">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 پذیرندگان
                             </li>
-                            <li id="menu-profiles" class="submenu hidden">
+                            <li id="menu-profiles" class="submenu">
                                 <ul class="sidebar-submenu">
                                     <li class="sidebar-dropdown">
                                         <inertia-link :href="route('dashboard.profiles.list')">
@@ -71,11 +69,9 @@
                         </template>
                         <template v-if="$page.user.level!='MARKETER'">
                             <li class="header-menu" data-child="#menu-devices">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 دستگاه ها
                             </li>
-                            <li id="menu-devices" class="submenu hidden">
+                            <li id="menu-devices" class="submenu">
                                 <ul class="sidebar-submenu">
                                     <li v-if="$page.user.level!='TECHNICAL' || $page.user.level!='MARKETER'"
                                         class="sidebar-dropdown">
@@ -101,11 +97,9 @@
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <li class="header-menu" data-child="#menu-news">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 اخبار و اطلاعیه ها
                             </li>
-                            <li id="menu-news" class="submenu hidden">
+                            <li id="menu-news" class="submenu">
                                 <ul class="sidebar-submenu">
                                     <li>
                                         <inertia-link :href="route('dashboard.posts.list')">
@@ -125,11 +119,9 @@
                         <template
                             v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
                             <li class="header-menu" data-child="#menu-users">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 کاربران
                             </li>
-                            <li id="menu-users" class="submenu hidden">
+                            <li id="menu-users" class="submenu">
                                 <ul class="sidebar-submenu">
                                     <li v-if="$page.user.level=='SUPERUSER'">
                                         <inertia-link :href="route('dashboard.users.list',{type:'admin'})">
@@ -166,11 +158,9 @@
                         </template>
                         <template>
                             <li class="header-menu" data-child="#menu-tickets">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 پشتیبانی
                             </li>
-                            <li id="menu-tickets" class="submenu hidden">
+                            <li id="menu-tickets" class="submenu">
                                 <ul class="sidebar-submenu">
                                     <li>
                                         <inertia-link :href="route('dashboard.tickets.list')">
@@ -195,11 +185,9 @@
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <li class="header-menu" data-child="#menu-reports">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 گزارشات
                             </li>
-                            <li id="menu-reports" class="submenu hidden">
+                            <li id="menu-reports" class="submenu">
                                 <ul class="sidebar-submenu">
 
                                     <li>
@@ -231,11 +219,9 @@
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                             <li class="header-menu" data-child="#menu-settings">
-                                <i class="material-icons more">expand_more</i>
-                                <i class="material-icons less hidden">expand_less</i>
                                 تنظیمات
                             </li>
-                            <li id="menu-settings" class="submenu hidden">
+                            <li id="menu-settings" class="submenu">
                                 <ul class="sidebar-submenu">
                                     <li>
                                         <inertia-link :href="route('dashboard.settings.main')">
@@ -344,33 +330,33 @@
             return {}
         },
         mounted() {
-            let headers = document.querySelectorAll('.header-menu');
-            headers.forEach(header => {
-                header.addEventListener('click', (e) => {
-                    let moreIcon = document.querySelectorAll('.more').forEach(icon => {
-                        icon.classList.remove('hidden');
-                    });
-                    let lessIcon = document.querySelectorAll('.less').forEach(icon => {
-                        icon.classList.add('hidden');
-                    })
-
-                    let menuItem = e.target;
-                    let icons = menuItem.querySelectorAll(":scope > i");
-                    icons.forEach(icon => {
-                        icon.classList.toggle('hidden');
-                    })
-                    let submenu = document.querySelector(menuItem.getAttribute('data-child'));
-                    if (submenu) {
-                        let submenuItems = document.querySelectorAll('.submenu');
-                        submenuItems.forEach(sub => {
-                            if (sub !== submenu) {
-                                sub.classList.add('hidden');
-                            }
-                        });
-                        submenu.classList.toggle('hidden');
-                    }
-                });
-            });
+            // let headers = document.querySelectorAll('.header-menu');
+            // headers.forEach(header => {
+            //     header.addEventListener('click', (e) => {
+            //         let moreIcon = document.querySelectorAll('.more').forEach(icon => {
+            //             icon.classList.remove('hidden');
+            //         });
+            //         let lessIcon = document.querySelectorAll('.less').forEach(icon => {
+            //             icon.classList.add('hidden');
+            //         })
+            //
+            //         let menuItem = e.target;
+            //         let icons = menuItem.querySelectorAll(":scope > i");
+            //         icons.forEach(icon => {
+            //             icon.classList.toggle('hidden');
+            //         })
+            //         let submenu = document.querySelector(menuItem.getAttribute('data-child'));
+            //         if (submenu) {
+            //             let submenuItems = document.querySelectorAll('.submenu');
+            //             submenuItems.forEach(sub => {
+            //                 if (sub !== submenu) {
+            //                     sub.classList.add('hidden');
+            //                 }
+            //             });
+            //             submenu.classList.toggle('hidden');
+            //         }
+            //     });
+            // });
         },
         methods: {}
     }
