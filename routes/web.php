@@ -227,6 +227,31 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::delete('{categoryId}', 'CategoryController@destroy')->name('destroy');
         });
     });
+
+    Route::prefix('tickets')->name('tickets.')->namespace('Tickets')->group(function () {
+        Route::get('', 'TicketController@index')->name('list');
+        Route::get('new', 'TicketController@create')->name('create');
+        Route::post('', 'TicketController@store')->name('store');
+        Route::get('{id}', 'TicketController@view')->name('view');
+        Route::put('{id}', 'TicketController@update')->name('update');
+        Route::delete('{id}', 'TicketController@destroy')->name('destroy');
+
+        Route::post('{id}/reply', 'ReplyController@store')->name('reply.store');
+
+        Route::prefix('types')->name('types.')->group(function () {
+            Route::get('', 'TypeController@index')->name('list');
+            Route::post('', 'TypeController@store')->name('store');
+            Route::put('{id}', 'TypeController@update')->name('update');
+            Route::delete('{id}', 'TypeController@destroy')->name('destroy');
+        });
+
+        Route::prefix('agents')->name('agents.')->group(function () {
+            Route::get('', 'AgentController@index')->name('list');
+            Route::post('', 'AgentController@store')->name('store');
+            Route::put('{id}', 'AgentController@update')->name('update');
+            Route::delete('{id}', 'AgentController@destroy')->name('destroy');
+        });
+    });
 });
 
 

@@ -46,10 +46,12 @@
                             </inertia-link>
                         </li>
                         <template v-if="$page.user.level!='TECHNICAL'">
-                            <li class="header-menu">
-                                <span>پذیرندگان</span>
+                            <li class="header-menu" data-child="#menu-profiles">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                پذیرندگان
                             </li>
-                            <li class="submenu">
+                            <li id="menu-profiles" class="submenu hidden">
                                 <ul class="sidebar-submenu">
                                     <li class="sidebar-dropdown">
                                         <inertia-link :href="route('dashboard.profiles.list')">
@@ -68,174 +70,234 @@
                             </li>
                         </template>
                         <template v-if="$page.user.level!='MARKETER'">
-                            <li class="header-menu">
-                                <span>دستگاه ها</span>
+                            <li class="header-menu" data-child="#menu-devices">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                دستگاه ها
                             </li>
-                            <li v-if="$page.user.level!='TECHNICAL' || $page.user.level!='MARKETER'"
-                                class="sidebar-dropdown">
-                                <inertia-link :href="route('dashboard.devices.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">dock</i>
-                                    لیست دستگاه ها
-                                </inertia-link>
-                            </li>
-                            <li v-if="$page.user.level!='MARKETER'" class="sidebar-dropdown">
-                                <inertia-link :href="route('dashboard.repairs.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">construction</i>
-                                    تعمیرات
-                                </inertia-link>
-                            </li>
-                            <li v-if="$page.user.level!='MARKETER'" class="sidebar-dropdown">
-                                <inertia-link :href="route('dashboard.returns.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">keyboard_return</i>
-                                    عودت دستگاه
-                                </inertia-link>
+                            <li id="menu-devices" class="submenu hidden">
+                                <ul class="sidebar-submenu">
+                                    <li v-if="$page.user.level!='TECHNICAL' || $page.user.level!='MARKETER'"
+                                        class="sidebar-dropdown">
+                                        <inertia-link :href="route('dashboard.devices.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">dock</i>
+                                            لیست دستگاه ها
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level!='MARKETER'" class="sidebar-dropdown">
+                                        <inertia-link :href="route('dashboard.repairs.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">construction</i>
+                                            تعمیرات
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level!='MARKETER'" class="sidebar-dropdown">
+                                        <inertia-link :href="route('dashboard.returns.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">keyboard_return</i>
+                                            عودت دستگاه
+                                        </inertia-link>
+                                    </li>
+                                </ul>
                             </li>
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                            <li class="header-menu">
-                                <span>اخبار  و اطلاعیه ها</span>
+                            <li class="header-menu" data-child="#menu-news">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                اخبار و اطلاعیه ها
                             </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.posts.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">article</i>
-                                    لیست اخبار
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.posts.categories.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">list</i>
-                                    دسته بندی ها
-                                </inertia-link>
+                            <li id="menu-news" class="submenu hidden">
+                                <ul class="sidebar-submenu">
+                                    <li>
+                                        <inertia-link :href="route('dashboard.posts.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">article</i>
+                                            لیست اخبار
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.posts.categories.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">list</i>
+                                            دسته بندی ها
+                                        </inertia-link>
+                                    </li>
+                                </ul>
                             </li>
                         </template>
                         <template
                             v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
-                            <li class="header-menu">
-                                <span>کاربران</span>
+                            <li class="header-menu" data-child="#menu-users">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                کاربران
                             </li>
-                            <li v-if="$page.user.level=='SUPERUSER'">
-                                <inertia-link :href="route('dashboard.users.list',{type:'admin'})">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">people</i>
-                                    مدیران سیستم
-                                </inertia-link>
+                            <li id="menu-users" class="submenu hidden">
+                                <ul class="sidebar-submenu">
+                                    <li v-if="$page.user.level=='SUPERUSER'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'admin'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">people</i>
+                                            مدیران سیستم
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'office'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
+                                            کارمندان دفتر
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'agent'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
+                                            نمایندگان
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'marketer'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">person</i>
+                                            بازاریابان
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'technical'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
+                                            کارشناسان فنی
+                                        </inertia-link>
+                                    </li>
+                                </ul>
                             </li>
-                            <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                                <inertia-link :href="route('dashboard.users.list',{type:'office'})">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
-                                    کارمندان دفتر
-                                </inertia-link>
+                        </template>
+                        <template>
+                            <li class="header-menu" data-child="#menu-tickets">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                پشتیبانی
                             </li>
-                            <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                                <inertia-link :href="route('dashboard.users.list',{type:'agent'})">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
-                                    نمایندگان
-                                </inertia-link>
-                            </li>
-                            <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'">
-                                <inertia-link :href="route('dashboard.users.list',{type:'marketer'})">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">person</i>
-                                    بازاریابان
-                                </inertia-link>
-                            </li>
-                            <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                                <inertia-link :href="route('dashboard.users.list',{type:'technical'})">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
-                                    کارشناسان فنی
-                                </inertia-link>
+                            <li id="menu-tickets" class="submenu hidden">
+                                <ul class="sidebar-submenu">
+                                    <li>
+                                        <inertia-link :href="route('dashboard.tickets.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">comment</i>
+                                            لیست درخواست ها
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.tickets.agents.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">group</i>
+                                            کاربران
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.tickets.types.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">forum</i>
+                                            واحدها
+                                        </inertia-link>
+                                    </li>
+                                </ul>
                             </li>
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                            <li class="header-menu">
-                                <span>گزارشات</span>
+                            <li class="header-menu" data-child="#menu-reports">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                گزارشات
                             </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.reports.main')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                    خلاصه
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.reports.profiles')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                    پرونده ها
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.reports.devices')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                    دستگاه ها
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.reports.repairs')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                    تعمیرات
-                                </inertia-link>
+                            <li id="menu-reports" class="submenu hidden">
+                                <ul class="sidebar-submenu">
+
+                                    <li>
+                                        <inertia-link :href="route('dashboard.reports.main')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">signal_cellular_alt</i>
+                                            خلاصه
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.reports.profiles')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">insights</i>
+                                            پرونده ها
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.reports.devices')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">query_stats</i>
+                                            دستگاه ها
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.reports.repairs')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">donut_small</i>
+                                            تعمیرات
+                                        </inertia-link>
+                                    </li>
+                                </ul>
                             </li>
                         </template>
                         <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                            <li class="header-menu">
-                                <span>تنظیمات</span>
+                            <li class="header-menu" data-child="#menu-settings">
+                                <i class="material-icons more">expand_more</i>
+                                <i class="material-icons less hidden">expand_less</i>
+                                تنظیمات
                             </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.main')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
-                                    تنظیمات سیستم
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.devices.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">developer_mode</i>
-                                    دستگاه ها
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.banks.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">attach_money</i>
-                                    بانک ها
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.psps.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">miscellaneous_services</i>
-                                    سرویس دهندگان
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.repairTypes.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">handyman</i>
-                                    دلایل خرابی
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.repairLocations.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">location_city</i>
-                                    محل های تعمیرات
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.licenses.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">content_paste</i>
-                                    ارسال مدارک
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.notifications.types.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">textsms</i>
-                                    انواع اعلان ها
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.notifications.events.list')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">sms_failed</i>
-                                    تنظیمات اعلان ها
-                                </inertia-link>
-                            </li>
-                            <li>
-                                <inertia-link :href="route('dashboard.settings.main')">
-                                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">security</i>
-                                    پشتیبان گیری / بازیابی اطلاعات
-                                </inertia-link>
+                            <li id="menu-settings" class="submenu hidden">
+                                <ul class="sidebar-submenu">
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.main')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
+                                            تنظیمات سیستم
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.devices.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">developer_mode</i>
+                                            دستگاه ها
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.banks.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">attach_money</i>
+                                            بانک ها
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.psps.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">miscellaneous_services</i>
+                                            سرویس دهندگان
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.repairTypes.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">handyman</i>
+                                            دلایل خرابی
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.repairLocations.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">location_city</i>
+                                            محل های تعمیرات
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.licenses.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">content_paste</i>
+                                            ارسال مدارک
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.notifications.types.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">textsms</i>
+                                            انواع اعلان ها
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.notifications.events.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">sms_failed</i>
+                                            تنظیمات اعلان ها
+                                        </inertia-link>
+                                    </li>
+                                    <li>
+                                        <inertia-link :href="route('dashboard.settings.main')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">security</i>
+                                            پشتیبان گیری / بازیابی اطلاعات
+                                        </inertia-link>
+                                    </li>
+                                </ul>
                             </li>
                         </template>
                     </ul>
@@ -282,39 +344,118 @@
             return {}
         },
         mounted() {
+            let headers = document.querySelectorAll('.header-menu');
+            headers.forEach(header => {
+                header.addEventListener('click', (e) => {
+                    let moreIcon = document.querySelectorAll('.more').forEach(icon => {
+                        icon.classList.remove('hidden');
+                    });
+                    let lessIcon = document.querySelectorAll('.less').forEach(icon => {
+                        icon.classList.add('hidden');
+                    })
+
+                    let menuItem = e.target;
+                    let icons = menuItem.querySelectorAll(":scope > i");
+                    icons.forEach(icon => {
+                        icon.classList.toggle('hidden');
+                    })
+                    let submenu = document.querySelector(menuItem.getAttribute('data-child'));
+                    if (submenu) {
+                        let submenuItems = document.querySelectorAll('.submenu');
+                        submenuItems.forEach(sub => {
+                            if (sub !== submenu) {
+                                sub.classList.add('hidden');
+                            }
+                        });
+                        submenu.classList.toggle('hidden');
+                    }
+                });
+            });
         },
         methods: {}
     }
 </script>
 
 <style scoped lang="scss">
-    /*.page-wrapper .sidebar-wrapper,*/
-    /*.sidebar-wrapper .sidebar-brand > a,*/
-    /*.sidebar-wrapper .sidebar-dropdown > a:after,*/
-    /*.sidebar-wrapper .sidebar-menu .sidebar-dropdown .sidebar-submenu li a:before,*/
-    /*.sidebar-wrapper ul li a i,*/
-    /*.page-wrapper .page-content,*/
-    /*.sidebar-wrapper .sidebar-search input.search-menu,*/
-    /*.sidebar-wrapper .sidebar-search .input-group-text,*/
-    /*.sidebar-wrapper .sidebar-menu ul li a,*/
-    /*#show-sidebar,*/
-    /*#close-sidebar {*/
-    /*    -webkit-transition: all 0.3s ease;*/
-    /*    -moz-transition: all 0.3s ease;*/
-    /*    -ms-transition: all 0.3s ease;*/
-    /*    -o-transition: all 0.3s ease;*/
-    /*    transition: all 0.3s ease;*/
-    /*}*/
+    .sidebar-menu {
+        @apply border-t border-gray-200 pb-2;
+
+        .header-menu {
+            @apply cursor-pointer text-white font-bold px-3 pt-3 pb-1 block;
+
+            :hover {
+                @apply text-indigo-500;
+            }
+
+            i {
+                @apply h-5 w-5 text-center text-xl leading-5 align-middle;
+            }
+        }
+
+        ul {
+            li {
+                a {
+                    @apply text-white inline-block w-full relative py-2 pr-3 pl-5;
+
+                    i {
+
+                    }
+
+                    span.badge {
+                        @apply float-left mt-2;
+                    }
+                }
+            }
+
+            li:not(.submenu):hover {
+
+                a {
+                    @apply text-white;
+
+                    i {
+                        @apply text-indigo-500;
+                    }
+                }
+            }
+        }
+
+        .sidebar-dropdown {
+
+            div {
+                @apply bg-gray-300;
+            }
+
+        }
+
+        .sidebar-submenu {
+
+            ul {
+                @apply px-1 py-0;
+            }
+
+            li {
+                @apply pl-5 text-sm;
+
+                a {
+
+                    .badge {
+                        @apply float-left mt-0;
+                    }
+
+                }
+            }
+        }
+    }
+
 
     #sidebar {
         /*background-color: #31353d;*/
     }
 
     .sidebar-content {
-        max-height: calc(100% - 30px);
-        height: calc(100% - 30px);
-        overflow-y: auto;
-        position: relative;
+        @apply overflow-y-auto relative h-full;
+        /*max-height: calc(100% - 30px);*/
+        /*height: calc(100% - 30px);*/
     }
 
     .sidebar-brand {
@@ -349,7 +490,7 @@
     }
 
     .sidebar-header {
-        border-top: 1px solid #3a3f48;
+        @apply border-t-2 border-gray-100;
     }
 
     .sidebar-content .sidebar-header {
@@ -403,121 +544,8 @@
             }
         }
 
-        /* End Sidebar header */
-        .sidebar-search {
-            border-top: 1px solid #3a3f48;
-
-            > div {
-                padding: 10px 20px;
-            }
-
-            input.search-menu {
-                background: #3a3f48;
-                color: #818896;
-                border-color: transparent;
-                box-shadow: none;
-            }
-
-            .input-group-text {
-                background: #3a3f48;
-                color: #818896;
-                border-color: transparent;
-                box-shadow: none;
-            }
-
-        }
-
-        /*End Sidebar Search */
-        .sidebar-menu {
-            border-top: 1px solid #3a3f48;
-            padding-bottom: 10px;
-
-            .header-menu {
-
-                span {
-                    color: white;
-                    font-weight: bold;
-                    font-size: 14px;
-                    padding: 15px 20px 5px 20px;
-                    display: inline-block;
-                    cursor: pointer
-                }
-
-            }
-
-            ul {
-
-                li {
-
-                    a {
-                        color: white;
-                        display: inline-block;
-                        width: 100%;
-                        text-decoration: none;
-                        position: relative;
-                        padding: 8px 10px 8px 30px;
-                        transition: all 0.3s ease;
-
-                        i {
-                            transition: all 0.3s ease;
-                        }
-
-                        span.badge {
-                            float: left;
-                            margin-top: 8px;
-                        }
-
-                    }
-                }
-
-                li:not(.submenu):hover {
-
-                    a {
-                        color: white;
-
-                        i {
-                            color: #16c7ff;
-                            text-shadow: 0 0 10px rgba(22, 199, 255, 0.5);
-                        }
-
-                    }
-                }
-            }
-
-            .sidebar-dropdown {
-
-                div {
-                    background: #3a3f48;
-                }
-
-            }
-
-            .sidebar-submenu {
-
-                ul {
-                    padding: 5px 0;
-                }
-
-                li {
-                    padding-left: 25px;
-                    font-size: 13px;
-
-                    a {
-
-                        .badge {
-                            float: left;
-                            margin-top: 0;
-                        }
-
-                    }
-                }
-            }
-        }
-
         ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
+            @apply p-0 m-0 list-none;
         }
 
         /* End Sidebar Menu */
@@ -559,17 +587,5 @@
             }
 
         }
-    }
-
-    .input-group > .form-control:not(:last-child) {
-        border-radius: 0 3px 3px 0;
-    }
-
-    .input-group > .input-group-append > .input-group-text {
-        border-radius: 3px 0 0 3px;
-    }
-
-    .input-group > .input-group-append:not(:last-child) > .input-group-text {
-        border-radius: 0 3px 3px 0;
     }
 </style>

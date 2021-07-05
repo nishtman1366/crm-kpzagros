@@ -204,7 +204,7 @@
     </div>
     <div class="contents">
         اینجانب <span
-            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> بعنوان پذیرند و
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> بعنوان پذیرنده و
         با کد ملی
         <span
             class="variables">{{is_null($profile->customer) ? 'ثب نشده' : toPersianNumbers($profile->customer->national_code)}}</span> ضمن مطالعه
@@ -233,7 +233,7 @@
 <pagebreak></pagebreak>
 <div id="container">
     <div class="pre-title">بسمه تعالی</div>
-    <div class="title">رسید نصب و تحویل دستگاه کارتخوان– نسخه پذیرنده</div>
+    <div class="title">رسید نصب و تحویل دستگاه کارتخوان– نسخه شرکت</div>
     <div class="contents">
         گواهی می شود یک عدد دستگاه کارتخوان مدل <span
             class="variables">{{is_null($profile->deviceType) ? 'ثبت نشده' : $profile->deviceType->name}}</span> به صورت
@@ -334,7 +334,7 @@
     </div>
     <div class="contents">
         اینجانب <span
-            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> بعنوان پذیرند و
+            class="variables">{{is_null($profile->customer) ? 'ثب نشده' : $profile->customer->fullName}}</span> بعنوان پذیرنده و
         با کد ملی
         <span
             class="variables">{{is_null($profile->customer) ? 'ثب نشده' : toPersianNumbers($profile->customer->national_code)}}</span> ضمن مطالعه

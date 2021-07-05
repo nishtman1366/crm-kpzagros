@@ -211,10 +211,10 @@ return [
         'payment_date' => 'تاریخ پرداخت',
 
 
-        'pattern'=>'کد الگو',
-        'notification_type_id'=>'نوع اعلان',
-        'event'=>'نوع رخداد',
-        'level'=>'دریافت کننده',
+        'pattern' => 'کد الگو',
+        'notification_type_id' => 'نوع اعلان',
+        'event' => 'نوع رخداد',
+        'level' => 'دریافت کننده',
 
         'previous_name' => 'نام پذیرنده قبلی',
         'previous_national_code' => 'کدملی پذیرنده قبلی',
@@ -231,5 +231,8 @@ return [
         'device_amount' => 'مبلغ',
         'device_dept_profile_id' => 'شماره پرونده اقساط',
         'device_physical_status' => 'وضعیت فیزیکی دستگاه',
+
+        'user_id' => 'نام کاربر',
+        'ticket_type_id' => 'واحد پشتیبانی'
     ],
 ];

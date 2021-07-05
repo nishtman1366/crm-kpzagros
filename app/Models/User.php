@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Tickets\Agent;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -62,7 +63,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'statusText', 'levelText'
+        'profile_photo_url', 'statusText', 'levelText', 'agent_id'
     ];
 
     public function getStatusTextAttribute()
@@ -99,6 +100,16 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
+    }
+
+    public function getAgentIdAttribute()
+    {
+        if ($this->isSupportAgent()) {
+            $agent = Agent::where('user_id', $this->id)->get()->first();
+            if (!is_null($agent)) return $agent->id;
+        }
+
+        return null;
     }
 
     public function parent()
@@ -140,6 +151,11 @@ class User extends Authenticatable
         if ($this->attributes['level'] == 'OFFICE') return true;
 
         return false;
+    }
+
+    public function isSupportAgent()
+    {
+        return Agent::where('user_id', $this->id)->exists();
     }
 
     protected function defaultProfilePhotoUrl()
