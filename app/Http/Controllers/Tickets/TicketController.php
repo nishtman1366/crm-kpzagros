@@ -23,7 +23,9 @@ class TicketController extends Controller
             ->with('type')
             ->with('agent')
             ->where(function ($query) use ($user) {
-                if (!$user->isAdmin() || !$user->isSuperUser()) {
+                if ($user->isAdmin() || $user->isSuperUser()) {
+
+                } else {
                     if ($user->isSupportAgent()) {
                         $query->where('agent_id', $user->agent_id)->orWhere('user_id', $user->id);
                     } else {
