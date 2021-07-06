@@ -29,4 +29,9 @@ class Reply extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'reply_id', 'id');
+    }
 }

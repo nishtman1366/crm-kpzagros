@@ -72,4 +72,9 @@ class Ticket extends Model
     {
         return $this->hasMany(Event::class, 'ticket_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(File::class, 'ticket_id', 'id');
+    }
 }

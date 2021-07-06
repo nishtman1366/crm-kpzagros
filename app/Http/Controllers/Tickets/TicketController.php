@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Tickets;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tickets\File;
 use App\Models\Tickets\Reply;
 use App\Models\Tickets\Ticket;
 use App\Models\Tickets\Type;
@@ -63,6 +64,10 @@ class TicketController extends Controller
 
         $request->merge(['code' => $this->createTicketCode()]);
         $ticket = Ticket::create($request->all());
+        if ($request->hasFile('files')) {
+            $files = $request->file('files', []);
+            FileController::upload($files, $ticket->id, null);
+        }
         EventController::store($ticket, $user);
         return redirect()->route('dashboard.tickets.list');
     }
@@ -72,10 +77,12 @@ class TicketController extends Controller
         $id = (int)$request->route('id');
         $ticket = Ticket::with('user')
             ->with('type')
+            ->with('files')
             ->with('events')
             ->with('agent')
             ->with('replies')
             ->with('replies.user')
+            ->with('replies.files')
             ->find($id);
         if (is_null($ticket)) throw new NotFoundHttpException('درخواست مورد نظر یافت نشد.');
 

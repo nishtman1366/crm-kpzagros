@@ -58,7 +58,9 @@
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         {{ticket.type && ticket.type.name}}
                                     </td>
-                                    <td class="px-6 py-4 text-center">{{ticket.code | persianDigit}} - {{ticket.title}}</td>
+                                    <td class="px-6 py-4 text-center">{{ticket.code | persianDigit}} -
+                                        {{ticket.title}}
+                                    </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         <span
                                             :class="statusColors(ticket.status)"
@@ -123,6 +125,24 @@
                                       class="w-full block form-input rounded-md shadow-sm"/>
                             <jet-input-error :message="ticketForm.error('body')"/>
                         </div>
+                        <div class="mt-3 text-left">
+                            <jet-button @click.native="$refs.files.click()">انتخاب فایل پیوست</jet-button>
+                            <input class="hidden" ref="files" type="file" multiple name="files" id="files" @change="handleTicketFiles"/>
+                            <jet-input-error :message="ticketForm.error('files')"/>
+                        </div>
+                        <div class="mt-3" v-if="ticketForm.files.length > 0">
+                            <div class="rounded border border-gray-200 m-1 px-2 py-1 h-16 overflow-y-auto">
+                                <ul>
+                                    <li v-for="(file,index) in ticketForm.files" :key="file"
+                                        class="w-full flex justify-between">
+                                        <span class="w-3/4 truncate">{{file.name}}</span>
+                                        <span class="text-left" style="direction:ltr">{{file.size}} bytes</span>
+                                        <span @click="deleteFile(index)"
+                                              class="text-red-500 hover:text-red-400 cursor-pointer">حذف</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </template>
                 <template #footer>
@@ -167,7 +187,17 @@
         },
         methods: {
             newTicket() {
+                this.ticketForm.reset();
                 this.newTicketModal = true;
+            },
+            handleTicketFiles(e) {
+                let files = e.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    this.ticketForm.files.push(files[i]);
+                }
+            },
+            deleteFile(index) {
+                this.ticketForm.files.splice(index, 1);
             },
             submitNewTicket() {
                 this.ticketForm.post(route('dashboard.tickets.store'))

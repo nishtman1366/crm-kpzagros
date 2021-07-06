@@ -33,6 +33,17 @@ Route::middleware('auth:sanctum')->prefix('dashboard')->namespace('App\\Http\\Co
 
     Route::prefix('profiles')->namespace('Profiles')->group(function () {
         Route::get('', 'ProfileController@index');
+        Route::post('create', 'ProfileController@create');
+
+        Route::post('{profileId}/customers/store', 'CustomerController@store');
+
+        Route::get('{profileId}/businesses/create','BusinessController@create');
+        Route::post('{profileId}/businesses/store','BusinessController@store');
+
+        Route::get('{profileId}/accounts','AccountController@index');
+        Route::get('{profileId}/accounts/create','AccountController@create');
+        Route::post('{profileId}/accounts/store','AccountController@store');
+
     });
 });
 

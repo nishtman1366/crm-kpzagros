@@ -25,7 +25,7 @@
                             </div>
                             <div class="m-3 text-left">
                                 <jet-button @click.native="newReply"
-                                            v-if="ticket.status!==99"
+                                            v-if="replyButtonStatus"
                                             class="bg-green-500 hover:bg-green-400">ارسال
                                     پاسخ
                                 </jet-button>
@@ -55,6 +55,14 @@
                                 <div class="p-3 w-full">
                                     <div class="text-lg font-bold my-3">{{ticket.title}}</div>
                                     <div class="my-3">{{ticket.body}}</div>
+                                    <div class="border-t border-gray-200" v-if="ticket.files.length > 0">
+                                        <p class="font-bold">پیوست ها:</p>
+                                        <div class="mt-1 text-blue-500 hover:text-blue-400 flex justify-between"
+                                             v-for="file in ticket.files" :key="file.id">
+                                            <span class="w-3/4 truncate"><a :href="file.url" target="_blank">{{file.name}}</a></span>
+                                            <span>{{Math.round(file.size / 1024)}} کیلوبایت</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div v-for="reply in ticket.replies" class="flex border border-gray-200 rounded mx-2 my-3">
@@ -67,6 +75,14 @@
                                 </div>
                                 <div class="p-3 w-full">
                                     <div class="my-3">{{reply.body}}</div>
+                                    <div class="border-t border-gray-200" v-if="reply.files.length > 0">
+                                        <p class="font-bold">پیوست ها:</p>
+                                        <div class="mt-1 text-blue-500 hover:text-blue-400 flex justify-between"
+                                             v-for="file in reply.files" :key="file.id">
+                                            <span class="w-3/4 truncate"><a :href="file.url" target="_blank">{{file.name}}</a></span>
+                                            <span>{{Math.round(file.size / 1024)}} کیلوبایت</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -83,6 +99,25 @@
                             <textarea v-model="replyForm.body" id="body"
                                       class="w-full block form-input rounded-md shadow-sm"/>
                             <jet-input-error :message="replyForm.error('body')"/>
+                        </div>
+                        <div class="mt-3 text-left">
+                            <jet-button @click.native="$refs.files.click()">انتخاب فایل پیوست</jet-button>
+                            <input class="hidden" ref="files" type="file" multiple name="files" id="files"
+                                   @change="handleTicketFiles"/>
+                            <jet-input-error :message="replyForm.error('files')"/>
+                        </div>
+                        <div class="mt-3" v-if="replyForm.files.length > 0">
+                            <div class="rounded border border-gray-200 m-1 px-2 py-1 h-16 overflow-y-auto">
+                                <ul>
+                                    <li v-for="(file,index) in replyForm.files" :key="file"
+                                        class="w-full flex justify-between">
+                                        <span class="w-3/4 truncate">{{file.name}}</span>
+                                        <span class="text-left" style="direction:ltr">{{file.size}} bytes</span>
+                                        <span @click="deleteFile(index)"
+                                              class="text-red-500 hover:text-red-400 cursor-pointer">حذف</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -154,6 +189,7 @@
                 transferModal: false,
                 replyForm: this.$inertia.form({
                     body: null,
+                    files: [],
                 }),
                 ticketForm: this.$inertia.form({
                     status: null,
@@ -161,10 +197,29 @@
                 })
             }
         },
+        computed: {
+            replyButtonStatus: function () {
+                let isAgent = this.$page.user.level === 'SUPERUSER' || this.$page.user.level === 'ADMIN' || this.$page.user.agent_id !== null;
+                let isUser = this.$page.user.level === 'AGENT' || this.$page.user.level === 'MARKETER';
+                if (this.ticket.status === 99) return false;
+                if (!isAgent && (this.ticket.status === 0 || this.ticket.status === 1 || this.ticket.status === 4)) return false;
+                if (isUser && !(this.ticket.status === 2 || this.ticket.status === 3)) return false;
+                return true;
+            }
+        },
         methods: {
             newReply() {
                 this.replyForm.reset();
                 this.newReplyModal = true;
+            },
+            handleTicketFiles(e) {
+                let files = e.target.files;
+                for (let i = 0; i < files.length; i++) {
+                    this.replyForm.files.push(files[i]);
+                }
+            },
+            deleteFile(index) {
+                this.replyForm.files.splice(index, 1);
             },
             submitNewReply() {
                 this.replyForm.post(route('dashboard.tickets.reply.store', {id: this.ticket.id}))
