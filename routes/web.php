@@ -252,6 +252,16 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::delete('{id}', 'AgentController@destroy')->name('destroy');
         });
     });
+
+    Route::prefix('notifications')->name('notifications.')->namespace('Notifications')->group(function () {
+        Route::get('', 'BatchNotificationController@index')->name('list');
+        Route::post('', 'BatchNotificationController@store')->name('store');
+        Route::put('{id}', 'BatchNotificationController@update')->name('update');
+        Route::delete('{id}', 'BatchNotificationController@destroy')->name('destroy');
+
+        Route::post('{id}/receptions', 'NotificationReceptionController@store')->name('receptions.store');
+        Route::get('{id}/send', 'BatchNotificationController@send')->name('send');
+    });
 });
 
 

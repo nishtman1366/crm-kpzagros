@@ -180,6 +180,12 @@
                                             واحدها
                                         </inertia-link>
                                     </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.notifications.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">forum</i>
+                                            اعلان های گروهی
+                                        </inertia-link>
+                                    </li>
                                 </ul>
                             </li>
                         </template>

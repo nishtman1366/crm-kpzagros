@@ -233,6 +233,8 @@ return [
         'device_physical_status' => 'وضعیت فیزیکی دستگاه',
 
         'user_id' => 'نام کاربر',
-        'ticket_type_id' => 'واحد پشتیبانی'
+        'ticket_type_id' => 'واحد پشتیبانی',
+
+        'parameters'=>'متغیرها'
     ],
 ];
