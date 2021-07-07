@@ -186,8 +186,13 @@
     import AppLayout from '@/Layouts/AppLayout'
     import Welcome from '@/Jetstream/Welcome'
     import JetButton from '@/Jetstream/Button'
+    import JetLabel from '@/Jetstream/Label'
+    import JetInput from '@/Jetstream/Input'
+    import JetDialog from '@/Jetstream/DialogModal'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
     import BarChart from "@/Pages/Dashboard/Components/Charts/BarChart";
     import PieChart from "@/Pages/Dashboard/Components/Charts/PieChart";
+    import Loading from "@/Pages/Dashboard/Components/Loading";
     import VuePersianDigit from 'vue-persian-digit';
 
     export default {
@@ -195,6 +200,11 @@
             AppLayout,
             Welcome,
             JetButton,
+            Loading,
+            JetInput,
+            JetLabel,
+            JetDialog,
+            JetSecondaryButton,
             BarChart,
             PieChart,
             VuePersianDigit,
@@ -250,6 +260,15 @@
             slotIsLoaded() {
                 return this.$slots.dashboardContent;
             }
+        },
+        mounted() {
+
+        },
+        methods: {
+
         }
     }
 </script>
+<style scoped>
+
+</style>

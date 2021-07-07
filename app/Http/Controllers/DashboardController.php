@@ -6,6 +6,7 @@ use App\Models\Posts\Level;
 use App\Models\Posts\Post;
 use App\Models\Profiles\Profile;
 use App\Models\Profiles\ProfileMessage;
+use App\Models\Repairs\Repair;
 use App\Models\User;
 use App\Models\Variables\Device;
 use App\Models\Variables\DeviceType;
@@ -270,5 +271,116 @@ class DashboardController extends Controller
             ->orderBy('id', 'DESC')
             ->limit(15)
             ->get();
+    }
+
+    public function searchProfiles(Request $request)
+    {
+        $searchQuery = $request->get('query');
+        $profiles = Profile::with('customer')
+            ->with('business')
+            ->with('user')
+            ->with('device')
+            ->whereHas('customer')
+            ->where(function ($query) use ($searchQuery) {
+                $query->where('terminal_id', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('merchant_id', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('reject_serial_reason', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('change_reason', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('cancel_reason', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('previous_name', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('previous_mobile', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('previous_national_code', 'LIKE', '%' . $searchQuery . '%');
+                $query->orWhereHas('customer', function ($query) use ($searchQuery) {
+                    $query->where('first_name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('last_name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('father', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('national_code', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('id_code', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('mobile', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('company_name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('reg_code', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('company_national_code', 'LIKE', '%' . $searchQuery . '%');
+                });
+                $query->orWhereHas('business', function ($query) use ($searchQuery) {
+                    $query->where('senf', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('address', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('postal_code', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('phone', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('tax_code', 'LIKE', '%' . $searchQuery . '%');
+                });
+                $query->orWhereHas('accounts', function ($query) use ($searchQuery) {
+                    $query->whereHas('account', function ($query) use ($searchQuery) {
+                        $query->where('account_number', 'LIKE', '%' . $searchQuery . '%')
+                            ->orWhere('sheba_code', 'LIKE', '%' . $searchQuery . '%')
+                            ->orWhere('branch', 'LIKE', '%' . $searchQuery . '%');
+                        $query->orWhereHas('bank', function ($query) use ($searchQuery) {
+                            $query->where('name', 'LIKE', '%' . $searchQuery . '%');
+                        });
+                    });
+                });
+                $query->orWhereHas('device', function ($query) use ($searchQuery) {
+                    $query->where('serial', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
+                });
+                $query->orWhereHas('deviceType', function ($query) use ($searchQuery) {
+                    $query->where('name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
+                });
+            })
+            ->where('status', '!=', 0)
+            ->limit(30)
+            ->orderBy('id', 'DESC')
+            ->paginate();
+        return response()->json($profiles);
+    }
+
+    public function searchDevices(Request $request)
+    {
+        $searchQuery = $request->get('query');
+        $devices = Device::with('deviceType')
+            ->with('user')
+            ->where(function ($query) use ($searchQuery) {
+                $query->where('serial', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
+
+                $query->orWhereHas('user', function ($query) use ($searchQuery) {
+                    $query->where('name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('mobile', 'LIKE', '%' . $searchQuery . '%');
+                });
+                $query->orWhereHas('deviceType', function ($query) use ($searchQuery) {
+                    $query->where('name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
+                });
+            })
+            ->orderBy('id', 'DESC')
+            ->limit(30)
+            ->paginate();
+        return response()->json($devices);
+    }
+
+    public function searchRepairs(Request $request)
+    {
+        $searchQuery = $request->get('query');
+        $repairs = Repair::with('deviceType')
+            ->where(function ($query) use ($searchQuery) {
+                $query->where('serial', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('name', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('mobile', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('national_code', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('description', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('tracking_code', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('new_serial', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('loan_serial', 'LIKE', '%' . $searchQuery . '%')
+                    ->orWhere('business_name', 'LIKE', '%' . $searchQuery . '%');
+                $query->orWhereHas('deviceType', function ($query) use ($searchQuery) {
+                    $query->where('name', 'LIKE', '%' . $searchQuery . '%')
+                        ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
+                });
+            })
+            ->orderBy('id', 'DESC')
+            ->limit(30)
+            ->paginate();
+        return response()->json($repairs);
     }
 }

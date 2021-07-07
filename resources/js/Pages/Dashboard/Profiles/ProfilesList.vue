@@ -1327,15 +1327,5 @@
 </script>
 
 <style scoped>
-    .list-table-header-cell {
-        @apply py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider;
-    }
 
-    .list-table-body-cell {
-        @apply py-4 text-center text-gray-900;
-    }
-
-    .sub-text {
-        @apply text-sm text-indigo-600
-    }
 </style>
