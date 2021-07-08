@@ -275,6 +275,7 @@ class DashboardController extends Controller
 
     public function searchProfiles(Request $request)
     {
+        $user = Auth::user();
         $searchQuery = $request->get('query');
         $profiles = Profile::with('customer')
             ->with('business')
@@ -328,6 +329,29 @@ class DashboardController extends Controller
                         ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
                 });
             })
+            ->where(function ($query) use ($user) {
+                if (!$user->isSuperuser()) {
+                    $query->where('user_id', $user->id);
+
+                    if ($user->isAgent() || $user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
+                        });
+                    }
+
+                    if ($user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user.parent', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
+                        });
+                    }
+
+                    if ($user->isOffice()) {
+                        $query->orWhere('user_id', $user->parent_id);
+                    }
+                }
+            })
             ->where('status', '!=', 0)
             ->limit(30)
             ->orderBy('id', 'DESC')
@@ -337,6 +361,7 @@ class DashboardController extends Controller
 
     public function searchDevices(Request $request)
     {
+        $user = Auth::user();
         $searchQuery = $request->get('query');
         $devices = Device::with('deviceType')
             ->with('user')
@@ -353,6 +378,29 @@ class DashboardController extends Controller
                         ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
                 });
             })
+            ->where(function ($query) use ($user) {
+                if (!$user->isSuperuser()) {
+                    $query->where('user_id', $user->id);
+
+                    if ($user->isAgent() || $user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
+                        });
+                    }
+
+                    if ($user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user.parent', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
+                        });
+                    }
+
+                    if ($user->isOffice()) {
+                        $query->orWhere('user_id', $user->parent_id);
+                    }
+                }
+            })
             ->orderBy('id', 'DESC')
             ->limit(30)
             ->paginate();
@@ -361,6 +409,7 @@ class DashboardController extends Controller
 
     public function searchRepairs(Request $request)
     {
+        $user = Auth::user();
         $searchQuery = $request->get('query');
         $repairs = Repair::with('deviceType')
             ->where(function ($query) use ($searchQuery) {
@@ -377,6 +426,29 @@ class DashboardController extends Controller
                     $query->where('name', 'LIKE', '%' . $searchQuery . '%')
                         ->orWhere('description', 'LIKE', '%' . $searchQuery . '%');
                 });
+            })
+            ->where(function ($query) use ($user) {
+                if (!$user->isSuperuser()) {
+                    $query->where('user_id', $user->id);
+
+                    if ($user->isAgent() || $user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
+                        });
+                    }
+
+                    if ($user->isAdmin() || $user->isOffice()) {
+                        $id = $user->isOffice() ? $user->parent_id : $user->id;
+                        $query->orWhereHas('user.parent', function ($query) use ($id) {
+                            $query->where('parent_id', $id);
+                        });
+                    }
+
+                    if ($user->isOffice()) {
+                        $query->orWhere('user_id', $user->parent_id);
+                    }
+                }
             })
             ->orderBy('id', 'DESC')
             ->limit(30)

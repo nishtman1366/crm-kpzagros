@@ -32,7 +32,7 @@
                     <div class="relative h-full w-1/2 hidden md:flex py-2 px-2 items-center justify-start">
                         <input type="text"
                                class="w-full h-12 border-l-0 border border-blue-500 text-lg focus:bg-gray-50"
-                               placeholder="جستجوی جامع"
+                               placeholder="جستجوی جامع (/ + ctrl)"
                                id="searchQuery"
                                v-model="searchQuery"
                                @keyup.enter="submitSearch"
@@ -77,12 +77,22 @@
                                     <p>تلفن تماس</p>
                                     <p>آدرس و کد پستی</p>
                                     <p>کد مالیاتی</p>
+                                    <p class="font-bold">اطلاعات دستگاه ها</p>
+                                    <p>سریال دستگاه</p>
+                                    <p>مدل</p>
+                                    <p>توضیحات</p>
                                 </div>
                                 <div>
                                     <p class="font-bold">اطلاعات حساب بانکی</p>
                                     <p>شماره حساب</p>
                                     <p>شماره شبا</p>
                                     <p>نام بانک و کد شعبه</p>
+                                    <p class="font-bold">پرونده های تعمیرات</p>
+                                    <p>سریال دستگاه</p>
+                                    <p>نام مالک</p>
+                                    <p>مدل</p>
+                                    <p>توضیحات</p>
+                                    <p>سریال دستگاه</p>
                                 </div>
                             </div>
                         </div>
