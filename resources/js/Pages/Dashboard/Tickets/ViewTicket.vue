@@ -143,18 +143,33 @@
                     <jet-secondary-button @click.native="eventsModal=false">بستن</jet-secondary-button>
                 </template>
             </jet-dialog>
+
             <jet-dialog :show="transferModal" @close="transferModal=false">
                 <template #title>انتقال درخواست</template>
                 <template #content>
-                    <div class="">
-                        <jet-label value="واحد پشتیبانی" for="ticket_type_id"/>
-                        <select class="form-input pr-8"
-                                id="ticket_type_id"
-                                name="ticket_type_id"
-                                v-model="ticketForm.ticket_type_id">
-                            <option v-text="'انتخاب کنید:'"/>
-                            <option v-for="type in types" :key="type.id" :value="type.id" v-text="type.name"/>
-                        </select>
+                    <div class="flex justify-starty">
+                        <div class="w-1/2 ml-1">
+                            <jet-label value="واحد پشتیبانی" for="ticket_type_id"/>
+                            <select id="ticket_type_id"
+                                    name="ticket_type_id"
+                                    class="w-full pr-8 block form-input rounded-md shadow-sm"
+                                    v-model="ticketType">
+                                <option v-text="'انتخاب کنید:'"/>
+                                <option v-for="type in types" :key="type.id" :value="type.id" v-text="type.name"/>
+                            </select>
+                            <jet-input-error :message="ticketForm.error('ticket_type_id')"/>
+                        </div>
+                        <div class="w-1/2 mr-1">
+                            <jet-label for="agent_id" value="کاربر پشتیبانی"/>
+                            <select name="agent_id" id="agent_id"
+                                    v-model="ticketForm.agent_id"
+                                    class="w-full pr-8 block form-input rounded-md shadow-sm">
+                                <option value=""/>
+                                <option v-for="agent in agentsList" :key="agent.id" :value="agent.id"
+                                        v-text="agent.name"/>
+                            </select>
+                            <jet-input-error :message="ticketForm.error('agent_id')"/>
+                        </div>
                     </div>
                 </template>
                 <template #footer>
@@ -180,7 +195,8 @@
         components: {Dashboard, JetButton, JetDialog, JetSecondaryButton, JetLabel, JetInputError},
         props: {
             ticket: Object,
-            types: Array
+            types: Array,
+            agents: Array,
         },
         data() {
             return {
@@ -191,9 +207,14 @@
                     body: null,
                     files: [],
                 }),
+                ticketType: null,
+                agentsList: [],
                 ticketForm: this.$inertia.form({
                     status: null,
+                    agent_id: this.ticket.agent_id,
                     ticket_type_id: this.ticket.ticket_type_id,
+                }, {
+                    bag: 'ticketForm'
                 })
             }
         },
@@ -205,6 +226,14 @@
                 if (!isAgent && (this.ticket.status === 0 || this.ticket.status === 1 || this.ticket.status === 4)) return false;
                 if (isUser && !(this.ticket.status === 2 || this.ticket.status === 3)) return false;
                 return true;
+            }
+        },
+        watch: {
+            ticketType: function (val) {
+                this.ticketForm.ticket_type_id = val;
+                this.agentsList = this.agents.filter(agent => {
+                    return agent.ticket_type_id === val;
+                });
             }
         },
         methods: {
@@ -237,6 +266,7 @@
                     })
             },
             transferTicket() {
+                this.ticketForm.reset();
                 this.transferModal = true;
             },
         }

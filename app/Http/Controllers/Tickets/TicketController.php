@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Tickets;
 
 use App\Http\Controllers\Controller;
+use App\Models\Tickets\Agent;
 use App\Models\Tickets\File;
 use App\Models\Tickets\Reply;
 use App\Models\Tickets\Ticket;
 use App\Models\Tickets\Type;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -41,8 +43,16 @@ class TicketController extends Controller
             });
 
         $types = Type::where('status', true)->get();
-
-        return Inertia::render('Dashboard/Tickets/List', compact('tickets', 'types'));
+        $agents = Agent::orderBy('id', 'ASC')->get();
+        $userTypes = [
+            ['id' => 'ADMIN', 'name' => 'مدیر سیستم'],
+            ['id' => 'AGENT', 'name' => 'نمایندگان'],
+            ['id' => 'MARKETER', 'name' => 'بازاریابان'],
+            ['id' => 'OFFICE', 'name' => 'کاربران اداری'],
+            ['id' => 'TECHNICAL', 'name' => 'کاربران فنی'],
+        ];
+        $users = User::orderBy('name', 'ASC')->get();
+        return Inertia::render('Dashboard/Tickets/List', compact('tickets', 'types', 'agents', 'userTypes', 'users'));
     }
 
     public function store(Request $request)
@@ -50,17 +60,22 @@ class TicketController extends Controller
         $request->validateWithBag('ticketForm', [
             'title' => 'required',
             'ticket_type_id' => 'required',
+            'agent_id' => 'required',
             'body' => 'required'
         ]);
+
         $user = Auth::user();
-
-        $request->merge(['user_id' => $user->id]);
-        $ticketTypeId = (int)$request->get('ticket_type_id');
-        $agent = AgentController::setTicketAgent($ticketTypeId);
-
-        if (!is_null($agent)) {
-            $request->merge(['agent_id' => $agent->id]);
+        if ($user->isSuperUser() || $user->isAdmin() || $user->isSupportAgent()) {
+            $request->merge(['status' => 2]);
+        } else {
+            $request->merge(['user_id' => $user->id]);
         }
+//        $ticketTypeId = (int)$request->get('ticket_type_id');
+//        $agent = AgentController::setTicketAgent($ticketTypeId);
+//
+//        if (!is_null($agent)) {
+//            $request->merge(['agent_id' => $agent->id]);
+//        }
 
         $request->merge(['code' => $this->createTicketCode()]);
         $ticket = Ticket::create($request->all());
@@ -87,7 +102,8 @@ class TicketController extends Controller
         if (is_null($ticket)) throw new NotFoundHttpException('درخواست مورد نظر یافت نشد.');
 
         $types = Type::where('status', true)->orderBy('id', 'ASC')->get();
-        return Inertia::render('Dashboard/Tickets/ViewTicket', compact('ticket', 'types'));
+        $agents = Agent::orderBy('id', 'ASC')->get();
+        return Inertia::render('Dashboard/Tickets/ViewTicket', compact('ticket', 'types', 'agents'));
     }
 
     public function update(Request $request)
@@ -97,14 +113,20 @@ class TicketController extends Controller
         if (is_null($ticket)) throw new NotFoundHttpException('درخواست مورد نظر یافت نشد.');
         $user = Auth::user();
         $status = (int)$request->get('status');
-        $ticketTypeId = (int)$request->get('ticket_type_id');
-        if ($status === 4) {
-            $agent = AgentController::setTicketAgent($ticketTypeId);
-
-            if (!is_null($agent)) {
-                $request->merge(['agent_id' => $agent->id]);
-            }
+        if ($status == 4) {
+            $request->validateWithBag('ticketForm', [
+                'ticket_type_id' => 'required',
+                'agent_id' => 'required'
+            ]);
         }
+        $ticketTypeId = (int)$request->get('ticket_type_id');
+//        if ($status === 4) {
+//            $agent = AgentController::setTicketAgent($ticketTypeId);
+//
+//            if (!is_null($agent)) {
+//                $request->merge(['agent_id' => $agent->id]);
+//            }
+//        }
 
         $ticket->fill($request->all());
         $ticket->save();

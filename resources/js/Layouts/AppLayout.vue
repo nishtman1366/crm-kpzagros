@@ -99,19 +99,35 @@
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-4 flex items-center md:mr-auto">
-                            <button
-                                class="relative bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                                <span class="sr-only">View notifications</span>
-                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                                </svg>
-                                <!--                                <div v-if="$page.user.notifications && $page.user.notifications.length > 0" style="top: -12px;left:12px"-->
-                                <!--                                     class="absolute rounded-full bg-red-500 text-white w-6 h-6 flex items-center justify-center">-->
-                                <!--                                    <div class="font-bold">{{$page.user.notifications && $page.user.notifications.length}}</div>-->
-                                <!--                                </div>-->
-                            </button>
+                            <jet-dropdown align="left" width="64" v-if="$page.userTickets && $page.userTickets.length > 0">
+                                <template #trigger>
+                                    <button
+                                        class="relative bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                                        <span class="sr-only">درخواست های پشتیبانی</span>
+                                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                        </svg>
+
+                                        <div style="top: -12px;left:12px"
+                                             class="absolute rounded-full bg-red-500 text-white w-6 h-6 flex items-center justify-center">
+                                            <div class="font-bold">{{$page.userTickets && $page.userTickets.length}}
+                                            </div>
+                                        </div>
+                                    </button>
+                                </template>
+                                <template #content>
+                                    <jet-dropdown-link v-for="ticket in $page.userTickets"
+                                                       :key="ticket.id"
+                                                       :href="route('dashboard.tickets.view',{id:ticket.id})">
+                                        <p class="text-sm">{{ticket.title}} - {{ticket.date}}</p>
+                                        <p class="text-xs text-gray-400">
+                                            {{ticket.events[ticket.events.length-1].body}}</p>
+                                    </jet-dropdown-link>
+                                </template>
+                            </jet-dropdown>
                             <button @click="logout"
                                     class="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                                 <i class="material-icons h-6 w-6">exit_to_app</i>

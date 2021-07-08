@@ -104,15 +104,53 @@
                 <template #title>ثبت درخواست جدید</template>
                 <template #content>
                     <div class="">
-                        <div class="mt-3">
-                            <jet-label for="ticket_type_id" value="واحد پشتیبانی"/>
-                            <select name="ticket_type_id" id="ticket_type_id"
-                                    v-model="ticketForm.ticket_type_id"
-                                    class="w-full pr-8 block form-input rounded-md shadow-sm">
-                                <option value=""/>
-                                <option v-for="type in types" :key="type.id" :value="type.id" v-text="type.name"/>
-                            </select>
-                            <jet-input-error :message="ticketForm.error('ticket_type_id')"/>
+                        <div v-if="$page.user.agent_id" class="mt-3 flex justify-start">
+                            <div class="w-1/2 ml-1">
+                                <jet-label for="user_type" value="نوع کاربر"/>
+                                <select name="user_type" id="user_type"
+                                        v-model="userTypeId"
+                                        class="w-full pr-8 block form-input rounded-md shadow-sm">
+                                    <option value=""/>
+                                    <option v-for="type in userTypes" :key="type.id" :value="type.id"
+                                            v-text="type.name"/>
+                                </select>
+                            </div>
+                            <div class="w-1/2 ml-1">
+                                <jet-label for="user_id" value="انتخاب کاربر"/>
+                                <select name="user_id" id="user_id"
+                                        v-model="ticketForm.user_id"
+                                        class="w-full pr-8 block form-input rounded-md shadow-sm">
+                                    <option value=""/>
+                                    <option v-for="user in usersList" :key="user.id" :value="user.id"
+                                            v-text="user.name"/>
+                                </select>
+                                <jet-input-error :message="ticketForm.error('user_id')"/>
+                            </div>
+                        </div>
+                        <div class="mt-3 flex justify-start">
+                            <div class="w-1/2 ml-1">
+                                <jet-label for="ticket_type_id" value="واحد پشتیبانی"/>
+                                <select name="ticket_type_id" id="ticket_type_id"
+                                        v-model="ticketType"
+                                        :disabled="$page.user.ticket_type_id"
+                                        class="w-full pr-8 block form-input rounded-md shadow-sm">
+                                    <option value=""/>
+                                    <option v-for="type in types" :key="type.id" :value="type.id" v-text="type.name"/>
+                                </select>
+                                <jet-input-error :message="ticketForm.error('ticket_type_id')"/>
+                            </div>
+                            <div class="w-1/2 mr-1">
+                                <jet-label for="agent_id" value="کاربر پشتیبانی"/>
+                                <select name="agent_id" id="agent_id"
+                                        :disabled="$page.user.agent_id"
+                                        v-model="ticketForm.agent_id"
+                                        class="w-full pr-8 block form-input rounded-md shadow-sm">
+                                    <option value=""/>
+                                    <option v-for="agent in agentsList" :key="agent.id" :value="agent.id"
+                                            v-text="agent.name"/>
+                                </select>
+                                <jet-input-error :message="ticketForm.error('agent_id')"/>
+                            </div>
                         </div>
                         <div class="mt-3">
                             <jet-label for="title" value="موضوع"/>
@@ -127,7 +165,8 @@
                         </div>
                         <div class="mt-3 text-left">
                             <jet-button @click.native="$refs.files.click()">انتخاب فایل پیوست</jet-button>
-                            <input class="hidden" ref="files" type="file" multiple name="files" id="files" @change="handleTicketFiles"/>
+                            <input class="hidden" ref="files" type="file" multiple name="files" id="files"
+                                   @change="handleTicketFiles"/>
                             <jet-input-error :message="ticketForm.error('files')"/>
                         </div>
                         <div class="mt-3" v-if="ticketForm.files.length > 0">
@@ -169,20 +208,48 @@
         props: {
             tickets: Array,
             types: Array,
+            agents: Array,
+            userTypes: Array,
+            users: Array,
         },
         data() {
             return {
                 newTicketModal: false,
-
+                userTypeId: null,
+                ticketType: this.$page.user.ticket_type_id,
+                agentsList: [],
+                usersList: [],
                 ticketForm: this.$inertia.form({
+                    user_id: null,
                     title: null,
-                    ticket_type_id: null,
+                    ticket_type_id: this.$page.user.ticket_type_id,
+                    agent_id: this.$page.user.agent_id,
                     body: null,
                     files: []
                 }, {
                     bag: 'ticketForm',
                     resetOnSuccess: true
                 }),
+            }
+        },
+        mounted() {
+            if (this.ticketType) {
+                this.agentsList = this.agents.filter(agent => {
+                    return agent.ticket_type_id === this.ticketType;
+                });
+            }
+        },
+        watch: {
+            ticketType: function (val) {
+                this.ticketForm.ticket_type_id = val;
+                this.agentsList = this.agents.filter(agent => {
+                    return agent.ticket_type_id === val;
+                });
+            },
+            userTypeId: function (val) {
+                this.usersList = this.users.filter(user => {
+                    return user.level === val;
+                });
             }
         },
         methods: {

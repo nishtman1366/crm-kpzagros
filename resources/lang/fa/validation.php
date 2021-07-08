@@ -234,6 +234,7 @@ return [
 
         'user_id' => 'نام کاربر',
         'ticket_type_id' => 'واحد پشتیبانی',
+        'agent_id' => 'کاربر پشتیبانی',
 
         'parameters'=>'متغیرها'
     ],

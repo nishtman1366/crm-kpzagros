@@ -63,7 +63,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = [
-        'profile_photo_url', 'statusText', 'levelText', 'agent_id'
+        'profile_photo_url', 'statusText', 'levelText', 'agent_id', 'ticket_type_id'
     ];
 
     public function getStatusTextAttribute()
@@ -107,6 +107,17 @@ class User extends Authenticatable
         if ($this->isSupportAgent()) {
             $agent = Agent::where('user_id', $this->id)->get()->first();
             if (!is_null($agent)) return $agent->id;
+        }
+
+        return null;
+    }
+
+
+    public function getTicketTypeIdAttribute()
+    {
+        if ($this->isSupportAgent()) {
+            $agent = Agent::where('user_id', $this->id)->get()->first();
+            if (!is_null($agent)) return $agent->ticket_type_id;
         }
 
         return null;
