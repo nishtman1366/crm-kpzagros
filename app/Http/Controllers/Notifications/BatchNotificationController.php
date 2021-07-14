@@ -99,11 +99,12 @@ class BatchNotificationController extends Controller
                 }
             }
         } elseif ($batchNotification->type === 'club') {
-            $batchNotification->receptions()->chunk(500, function ($receptions) use ($batchNotification) {
+            $batchNotification->receptions()->chunk(10000, function ($receptions) use ($batchNotification) {
                 $list = [];
                 foreach ($receptions as $reception) {
                     $list[] = $reception->reception;
                 }
+//                Log::channel('notifications')->info('count: ' . count($list));
                 dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, '', $list, 'club'))
                     ->onQueue('notificationsQueue');
             });
