@@ -20,7 +20,7 @@ class IpPanel
      * @param $apiKey
      * @param $originator
      */
-    public function __construct($apiKey = 'nu6BzocZfeV8m0j20nMoyKwIS-8BLliWHEi0uhHWQ14=', $originator = '+985000125475')
+    public function __construct($apiKey = 'XXXXXXnu6BzocZfeV8m0j20nMoyKwIS-8BLliWHEi0uhHWQ14=', $originator = '+985000125475')
     {
         $this->apiKey = systemConfig('SMS_API_TOKEN', $apiKey);
         $this->originator = systemConfig('SMS_ORIGINATOR', $originator);

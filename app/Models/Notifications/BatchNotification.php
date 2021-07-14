@@ -10,7 +10,7 @@ class BatchNotification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'pattern', 'parameters', 'status'];
+    protected $fillable = ['title', 'pattern', 'parameters', 'type', 'body', 'status'];
 
     protected $appends = ['parametersList', 'statusText', 'createDate', 'updateDate'];
 

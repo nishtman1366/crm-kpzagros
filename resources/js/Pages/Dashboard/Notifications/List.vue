@@ -26,7 +26,7 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        کد الگو
+                                        نوع اعلان
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -52,7 +52,7 @@
                                         {{notification.title}}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{notification.pattern}}
+                                        {{notification.type=='pattern' ? 'الگو' : 'باشگاه مشتریان'}}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         <span
@@ -112,25 +112,58 @@
                     <div class="">
                         <div class="mt-3">
                             <jet-label for="title" value="عنوان"/>
-                            <jet-input type="text" name="title" id="title" v-model="notificationForm.title"/>
+                            <jet-input type="text" class="w-full" name="title" id="title"
+                                       v-model="notificationForm.title"/>
                             <jet-input-error :message="notificationForm.error('title')"/>
                         </div>
                         <div class="mt-3">
-                            <jet-label for="pattern" value="کد الگو"/>
-                            <jet-input type="text" name="pattern" id="pattern" v-model="notificationForm.pattern"/>
-                            <jet-input-error :message="notificationForm.error('pattern')"/>
+                            <jet-label for="type" value="نوع اعلان"/>
+                            <jet-button class="hover:bg-blue-400"
+                                        @click.native="notificationForm.type='pattern'"
+                                        :class="notificationForm.type=='pattern' ? 'bg-blue-500' : 'bg-blue-100 text-blue-500'">
+                                الگو
+                            </jet-button>
+                            <jet-button class="hover:bg-blue-400"
+                                        @click.native="notificationForm.type='club'"
+                                        :class="notificationForm.type=='club' ? 'bg-blue-500' : 'bg-blue-100 text-blue-500'">
+                                باشگاه مشتریان
+                            </jet-button>
+                            <jet-input-error :message="notificationForm.error('type')"/>
                         </div>
-                        <div class="mt-3">
-                            <jet-label for="parameters" value="متغیرها"/>
-                            <textarea class="w-full form-input"
-                                      name="parameters"
-                                      id="parameters"
-                                      v-model="notificationForm.parameters"
-                                      placeholder="value1=مقدار ۱,value2=مقدار ۲..."
-                            />
-                            <span>در این بخش پارامترهای موجود در پترن را مااند نمونه وارد نمایید: نام متغیر=مقدار متغیر و هر جفت را با ویرگول انگلیسی (,) از هم جدا کنید.</span>
-                            <jet-input-error :message="notificationForm.error('parameters')"/>
-                        </div>
+                        <template v-if="notificationForm.type==='pattern'">
+                            <div class="mt-3">
+                                <jet-label for="pattern" value="کد الگو"/>
+                                <jet-input type="text" name="pattern" id="pattern" v-model="notificationForm.pattern"/>
+                                <jet-input-error :message="notificationForm.error('pattern')"/>
+                            </div>
+                            <div class="mt-3">
+                                <jet-label for="parameters" value="متغیرها"/>
+                                <textarea class="w-full form-input"
+                                          name="parameters"
+                                          id="parameters"
+                                          v-model="notificationForm.parameters"
+                                          placeholder="value1=مقدار ۱,value2=مقدار ۲..."
+                                />
+                                <span>در این بخش پارامترهای موجود در پترن را مااند نمونه وارد نمایید: نام متغیر=مقدار متغیر و هر جفت را با ویرگول انگلیسی (,) از هم جدا کنید.</span>
+                                <jet-input-error :message="notificationForm.error('parameters')"/>
+                            </div>
+                        </template>
+                        <template v-if="notificationForm.type==='club'">
+                            <div class="mt-3">
+                                <jet-label for="body" value="متن پیام"/>
+                                <textarea class="w-full form-input"
+                                          name="body"
+                                          id="body"
+                                          v-model="notificationForm.body"
+                                          placeholder="متن پیام"
+                                />
+                                <div class="flex justify-between font-bold">
+                                    <span>{{notificationForm.body.length}} کاراکتر</span>
+                                    <span>{{notificationPageCount}} پیامک</span>
+                                </div>
+                                <jet-input-error :message="notificationForm.error('body')"/>
+                            </div>
+                        </template>
                     </div>
                 </template>
                 <template #footer>
@@ -166,18 +199,22 @@
                         </div>
                         <div class="h-64 overflow-y-auto border border-gray-200 rounded p-1">
                             <div class="font-bold">گیرندگان این اعلان:</div>
-                            <div class="flex justify-between" v-for="reception in notification.receptions"
-                                 :key="reception.id">
-                                <div>{{reception.reception}}</div>
-                                <div class="cursor-pointer text-red-500 hover:text-red-400"
-                                     @click="deleteReception(reception.id)">حذف
-                                </div>
-                            </div>
+                            <div>{{notification.receptions_count}} شماره</div>
+                            <!--                            <div class="flex justify-between" v-for="reception in notification.receptions"-->
+                            <!--                                 :key="reception.id">-->
+                            <!--                                <div>{{reception.reception}}</div>-->
+                            <!--                                <div class="cursor-pointer text-red-500 hover:text-red-400"-->
+                            <!--                                     @click="deleteReception(reception.id)">حذف-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                         </div>
                     </div>
                 </template>
                 <template #footer>
-                    <jet-button class="bg-green-500 hover:bg-green-400" @click.native="submitNewReceptions">ارسال
+                    <jet-button class="bg-green-500 hover:bg-green-400"
+                                :class="{'opacity-25':receptionsForm.processing}"
+                                :disable="receptionsForm.processing"
+                                @click.native="submitNewReceptions">ارسال
                     </jet-button>
                     <jet-secondary-button @click.native="viewReceptionsModal=false">انصراف</jet-secondary-button>
                 </template>
@@ -188,19 +225,22 @@
                     <div class="">
                         <div class="mt-3">
                             <p>آیا از ارسال این اعلان مطمئن هستید؟</p>
-                            <p>عنوان: {{notification.title}}</p>
-                            <p>کد الگو: {{notification.pattern}}</p>
-                            <p>تعداد گیرندگان: {{notification.receptions.length}}</p>
+                            <p>عنوان: <span class="font-bold">{{notification.title}}</span></p>
+                            <p v-if="notification.type==='pattern'">کد الگو: <span class="font-bold">{{notification.pattern}}</span>
+                            </p>
+                            <p v-else-if="notification.type==='club'" class="my-1">متن اعلان: <span class="font-bold">{{notification.body}}</span>
+                            </p>
+                            <p>تعداد گیرندگان: <span class="font-bold">{{notification.receptions_count}}</span></p>
                         </div>
                     </div>
                 </template>
                 <template #footer>
-                    <inertia-link :href="route('dashboard.notifications.send',{id:notification.id})">
-                        <jet-button class="bg-green-500 hover:bg-green-400"
-                                    @click.native="sendNotification">
-                            ارسال
-                        </jet-button>
-                    </inertia-link>
+                    <jet-button :disable="sendNotificationForm.processing"
+                                :class="{'opacity-25':sendNotificationForm.processing}"
+                                class="bg-green-500 hover:bg-green-400"
+                                @click.native="submitSendNotification">
+                        ارسال
+                    </jet-button>
                     <jet-secondary-button @click.native="viewSendNotificationModal=false">انصراف</jet-secondary-button>
                 </template>
             </jet-dialog>
@@ -230,6 +270,8 @@
                     title: null,
                     pattern: null,
                     parameters: null,
+                    body: null,
+                    type: null,
                 }, {
                     bag: 'notificationForm'
                 }),
@@ -244,6 +286,14 @@
                     bag: 'receptionsForm'
                 }),
                 viewSendNotificationModal: false,
+                sendNotificationForm: this.$inertia.form({})
+            }
+        },
+        computed: {
+            notificationPageCount: function () {
+                let length = Math.round(this.notificationForm.body.length / 67);
+                if (length < 1) return 1;
+                return length;
             }
         },
         methods: {
@@ -281,6 +331,8 @@
             editNotification(notification) {
                 this.notificationId = notification.id;
                 this.notificationForm.title = notification.title;
+                this.notificationForm.type = notification.type;
+                this.notificationForm.body = notification.body;
                 this.notificationForm.pattern = notification.pattern;
                 this.notificationForm.status = notification.status;
                 this.notificationForm.parameters = notification.parameters;
@@ -298,6 +350,13 @@
             sendNotification(notification) {
                 this.notification = notification;
                 this.viewSendNotificationModal = true;
+            },
+            submitSendNotification() {
+                this.sendNotificationForm.post(route('dashboard.notifications.send', {id: this.notification.id}), {
+                    onSuccess: () => {
+                        this.viewSendNotificationModal = false;
+                    }
+                })
             },
             statusColors(status) {
                 switch (status) {

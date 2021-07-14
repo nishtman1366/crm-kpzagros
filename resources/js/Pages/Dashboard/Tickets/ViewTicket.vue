@@ -222,9 +222,14 @@
             replyButtonStatus: function () {
                 let isAgent = this.$page.user.level === 'SUPERUSER' || this.$page.user.level === 'ADMIN' || this.$page.user.agent_id !== null;
                 let isUser = this.$page.user.level === 'AGENT' || this.$page.user.level === 'MARKETER';
-                if (this.ticket.status === 99) return false;
-                if (!isAgent && (this.ticket.status === 0 || this.ticket.status === 1 || this.ticket.status === 4)) return false;
-                if (isUser && !(this.ticket.status === 2 || this.ticket.status === 3)) return false;
+                let userId = this.$page.user.id;
+                let ticketId = this.ticket.user_id;
+                let isOwner = ticketId === userId;
+                let status = this.ticket.status;
+
+                if (status === 99) return false;
+                if (!isAgent && (status === 0 || status === 1 || status === 4)) return false;
+                if (isUser && !(status === 2 || status === 3)) return false;
                 return true;
             }
         },

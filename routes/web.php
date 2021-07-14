@@ -260,7 +260,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::delete('{id}', 'BatchNotificationController@destroy')->name('destroy');
 
         Route::post('{id}/receptions', 'NotificationReceptionController@store')->name('receptions.store');
-        Route::get('{id}/send', 'BatchNotificationController@send')->name('send');
+        Route::post('{id}/send', 'BatchNotificationController@send')->name('send');
     });
 });
 
