@@ -6,6 +6,7 @@ use App\Exports\Profiles\ProfileExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Requests\Profiles\Profile\UpdateTerminal;
+use App\Imports\Profiles\CustomImport;
 use App\Imports\Profiles\ProfileImport;
 use App\Models\Profiles\Profile;
 use App\Models\Profiles\LicenseType;
@@ -210,7 +211,11 @@ class ProfileController extends Controller
             })
             ->get();
 
-        if ($request->wantsJson()) return response()->json($profiles);
+        if ($request->wantsJson()) return response()->json([
+            'profiles' => $profiles,
+            'psps' => $psps,
+            'statuses' => $statuses
+        ]);
 //        dd([$fromDate, $toDate]);
         return Inertia::render('Dashboard/Profiles/ProfilesList',
             [
@@ -244,6 +249,8 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profile = Profile::create(['user_id' => $user->id]);
+
+        if ($request->wantsJson()) return response()->json(['profileId' => $profile->id]);
 
         return redirect()->route('dashboard.profiles.customers.create', ['profileId' => $profile->id]);
     }
@@ -926,7 +933,7 @@ class ProfileController extends Controller
             'file' => 'required|file'
         ]);
         $file = $request->file('file')->store('temp/excel/profiles');
-        Excel::import(new ProfileImport($user), $file);
+        Excel::import(new CustomImport(), $file);
         return redirect()->route('dashboard.profiles.list');
     }
 }
