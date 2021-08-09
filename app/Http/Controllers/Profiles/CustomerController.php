@@ -29,6 +29,11 @@ class CustomerController extends Controller
         $profile = Profile::find($profileId);
         if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
 
+//        if ($request->wantsJson()) return response()->json([
+//            'profileId' => (int)$profile->id,
+//            'profile' => $profile,
+//        ]);
+
         return Inertia::render('Dashboard/Profiles/CreateCustomer', [
             'profile' => $profile,
             'profileId' => (int)$profileId
@@ -44,29 +49,34 @@ class CustomerController extends Controller
         $profile = Profile::find($profileId);
         if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
 
+        $profileExisted = Customer::where('profile_id', $profileId)->exists();
+        if ($profileExisted) throw new NotFoundHttpException('شماره پرونده تکراری است.');
+
         $request->merge(['user_id' => $user->id]);
 
         $request->merge(['profile_id' => $profile->id]);
         $customer = Customer::create($request->all());
 
         if ($request->hasFile('national_card_file_1')) {
-            LicenseController::upload($request->file('national_card_file_1'),'national_card_file_1', $profileId);
+            LicenseController::upload($request->file('national_card_file_1'), 'national_card_file_1', $profileId);
         }
         if ($request->hasFile('national_card_file_2')) {
-            LicenseController::upload($request->file('national_card_file_2'),'national_card_file_2', $profileId);
+            LicenseController::upload($request->file('national_card_file_2'), 'national_card_file_2', $profileId);
         }
         if ($request->hasFile('id_file')) {
-            LicenseController::upload($request->file('id_file'),'id_file', $profileId);
+            LicenseController::upload($request->file('id_file'), 'id_file', $profileId);
         }
         if ($request->hasFile('asasname_file')) {
-            LicenseController::upload($request->file('asasname_file'),'asasname_file', $profileId);
+            LicenseController::upload($request->file('asasname_file'), 'asasname_file', $profileId);
         }
         if ($request->hasFile('agahi_file_1')) {
-            LicenseController::upload($request->file('agahi_file_1'),'agahi_file_1', $profileId);
+            LicenseController::upload($request->file('agahi_file_1'), 'agahi_file_1', $profileId);
         }
         if ($request->hasFile('agahi_file_2')) {
-            LicenseController::upload($request->file('agahi_file_2'),'agahi_file_2', $profileId);
+            LicenseController::upload($request->file('agahi_file_2'), 'agahi_file_2', $profileId);
         }
+
+//        if ($request->wantsJson()) return response()->json([]);
 
         return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profile->id]);
     }
@@ -104,22 +114,22 @@ class CustomerController extends Controller
         $customer->save();
 
         if ($request->hasFile('national_card_file_1')) {
-            LicenseController::upload($request->file('national_card_file_1'),'national_card_file_1', $profileId);
+            LicenseController::upload($request->file('national_card_file_1'), 'national_card_file_1', $profileId);
         }
         if ($request->hasFile('national_card_file_2')) {
-            LicenseController::upload($request->file('national_card_file_2'),'national_card_file_2', $profileId);
+            LicenseController::upload($request->file('national_card_file_2'), 'national_card_file_2', $profileId);
         }
         if ($request->hasFile('id_file')) {
-            LicenseController::upload($request->file('id_file'),'id_file', $profileId);
+            LicenseController::upload($request->file('id_file'), 'id_file', $profileId);
         }
         if ($request->hasFile('asasname_file')) {
-            LicenseController::upload($request->file('asasname_file'),'asasname_file', $profileId);
+            LicenseController::upload($request->file('asasname_file'), 'asasname_file', $profileId);
         }
         if ($request->hasFile('agahi_file_1')) {
-            LicenseController::upload($request->file('agahi_file_1'),'agahi_file_1', $profileId);
+            LicenseController::upload($request->file('agahi_file_1'), 'agahi_file_1', $profileId);
         }
         if ($request->hasFile('agahi_file_2')) {
-            LicenseController::upload($request->file('agahi_file_2'),'agahi_file_2', $profileId);
+            LicenseController::upload($request->file('agahi_file_2'), 'agahi_file_2', $profileId);
         }
 
         return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);

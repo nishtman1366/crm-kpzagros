@@ -250,7 +250,7 @@ class ProfileController extends Controller
         $user = Auth::user();
         $profile = Profile::create(['user_id' => $user->id]);
 
-        if ($request->wantsJson()) return response()->json(['profileId' => $profile->id]);
+//        if ($request->wantsJson()) return response()->json(['profileId' => $profile->id]);
 
         return redirect()->route('dashboard.profiles.customers.create', ['profileId' => $profile->id]);
     }
