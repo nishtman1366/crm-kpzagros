@@ -261,6 +261,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
 
         Route::post('{id}/receptions', 'NotificationReceptionController@store')->name('receptions.store');
         Route::post('{id}/send', 'BatchNotificationController@send')->name('send');
+        Route::get('{id}/details', 'BatchNotificationController@details')->name('details');
     });
 });
 
