@@ -177,7 +177,17 @@ class RepairController extends Controller
         $repairTypes = Type::where('status', 1)->orderBy('name', 'ASC')->get();
         $banks = Bank::where('status', 1)->orderBy('name', 'ASC')->get();
         $accessories = Accessory::where('status', 1)->get();
-
+        $statuses = [
+            ['id' => 0, 'name' => 'ثبت موقت'],
+            ['id' => 1, 'name' => 'ثبت شده'],
+            ['id' => 2, 'name' => 'دریافت شده توسط واحد فنی'],
+            ['id' => 3, 'name' => 'در صف تعمیر'],
+            ['id' => 4, 'name' => 'تعمیر شده'],
+            ['id' => 5, 'name' => 'در انتظار پرداخت'],
+            ['id' => 6, 'name' => 'پرداخت شده'],
+            ['id' => 7, 'name' => 'عودت شده'],
+            ['id' => 8, 'name' => 'غیرقابل تعمیر']
+        ];
         return Inertia::render('Dashboard/Repairs/View', [
             'repair' => $repair,
             'repairTypesList' => $repairTypesList,
@@ -187,6 +197,7 @@ class RepairController extends Controller
             'banks' => $banks,
             'repairTypes' => $repairTypes,
             'accessories' => $accessories,
+            'statuses' => $statuses
         ]);
     }
 
@@ -359,5 +370,17 @@ class RepairController extends Controller
 
 
         return view('print.repairs.faktor', compact('repair', 'repairTypesList'));
+    }
+
+    public function updateStatusByAdmin(Request $request)
+    {
+        $id = $request->route('repairId');
+        $repair = Repair::find($id);
+        if (is_null($repair)) return response()->json(['message' => 'اطلاعات درخواست یافت نشد'], 404);
+        $status = $request->get('status');
+        $repair->status = $status;
+        $repair->save();
+
+        return redirect()->route('dashboard.repairs.list');
     }
 }

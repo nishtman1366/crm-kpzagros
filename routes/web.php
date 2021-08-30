@@ -134,6 +134,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('{repairId}', 'RepairController@view')->name('view');
         Route::get('{repairId}/print', 'RepairController@print')->name('print');
         Route::put('{repairId}', 'RepairController@update')->name('update');
+        Route::put('{repairId}/updateStatusByAdmin', 'RepairController@updateStatusByAdmin')->name('updateStatusByAdmin');
         Route::get('excel', 'RepairController@downloadExcel')->name('downloadExcel');
     });
 
