@@ -20,7 +20,12 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $i = 1;
+
+        $typeId = $request->query('typeId');
+        $statusId = $request->query('statusId', 255);
+        $agentId = $request->query('agentId');
+        $searchQuery = $request->query('query');
+
         $tickets = Ticket::orderBy('id', 'DESC')
             ->with('user')
             ->with('type')
@@ -30,17 +35,21 @@ class TicketController extends Controller
 
                 } else {
                     if ($user->isSupportAgent()) {
-                        $query->where('agent_id', $user->agent_id)->orWhere('user_id', $user->id);
+                        $query->where('agent_id', $user->agent_id)
+                            ->orWhere('user_id', $user->id);
                     } else {
                         $query->where('user_id', $user->id);
                     }
                 }
             })
-            ->get()
-            ->each(function ($ticket) use (&$i) {
-                $ticket->no = $i;
-                $i++;
-            });
+            ->where(function ($query) use ($typeId, $statusId, $agentId, $searchQuery) {
+                if (!is_null($typeId) && $typeId != 0) $query->where('ticket_type_id', $typeId);
+                if (!is_null($agentId) && $agentId != 0) $query->where('user_id', $agentId);
+                if ($statusId != 255) $query->where('status', $statusId);
+                if (!is_null($searchQuery)) $query->where('code', 'LIKE', '%' . $searchQuery . '%');
+            })
+            ->paginate(30);
+        $paginatedLinks = paginationLinks($tickets->appends($request->query->all()));
 
         $types = Type::where('status', true)->get();
         $agents = Agent::orderBy('id', 'ASC')->get();
@@ -52,7 +61,31 @@ class TicketController extends Controller
             ['id' => 'TECHNICAL', 'name' => 'کاربران فنی'],
         ];
         $users = User::orderBy('name', 'ASC')->get();
-        return Inertia::render('Dashboard/Tickets/List', compact('tickets', 'types', 'agents', 'userTypes', 'users'));
+        $statuses = [
+            0 => 'ثبت شده',
+            1 => 'در حال بررسی',
+            2 => 'پاسخ داده شده',
+            3 => 'پاسخ کاربر',
+            4 => 'منتقل شده',
+            99 => 'پایان یافته',
+        ];
+        $agentUsers = User::where('level', 'AGENT')->get();
+        return Inertia::render('Dashboard/Tickets/List', [
+            'tickets' => $tickets,
+            'types' => $types,
+            'statuses' => $statuses,
+            'agentUsers' => $agentUsers,
+
+            'typeId' => (int)$typeId,
+            'statusId' => (int)$statusId,
+            'agentId' => (int)$agentId,
+            'searchQuery' => $searchQuery,
+
+            'agents' => $agents,
+            'userTypes' => $userTypes,
+            'users' => $users,
+            'paginatedLinks' => $paginatedLinks,
+        ]);
     }
 
     public function store(Request $request)
