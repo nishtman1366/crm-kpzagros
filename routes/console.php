@@ -1,9 +1,13 @@
 <?php
 
+use App\Exceptions\NotificationException;
 use App\Libraries\TemplateEngine;
 use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use IPPanel\Client;
+use IPPanel\Errors\Error;
+use IPPanel\Errors\HttpException;
 
 /*
 |--------------------------------------------------------------------------
@@ -108,7 +112,33 @@ Artisan::command('setProfileId', function () {
 });
 
 Artisan::command('sms', function () {
-    $user = User::find(1);
+//    $notification = \App\Models\Notifications\BatchNotification::with('receptions')
+//        ->find(3);
+//    $x = $notification->receptions()->chunk(50, function ($receptions) {
+//        print_r($receptions->count());
+//        print(PHP_EOL);
+//    });
+//    $job = dispatch(new \App\Jobs\Notifications\SendNotification($notification, '', 'club'))
+//        ->onQueue('notificationsQueue');
+//    print_r($job);
+    $client = new  Client('RwoB81G8VWdrZ4xc-GmNp96xPlk1rvdcYmUGnSCvWZY=');
+    $d = $client->fetchStatuses('209076264');
+    print_r($d);
+});
 
-    $user->notifyNow(new \App\Notifications\Profiles\AdminNotification(1, ['order_id' => '12334']));
+Artisan::command('transfer', function () {
+    $directories = \Illuminate\Support\Facades\Storage::disk('public')->directories('profiles');
+    foreach ($directories as $directory) {
+        \Illuminate\Support\Facades\Storage::disk('licenses')->makeDirectory($directory);
+        print(sprintf('Directory %s created', $directory) . PHP_EOL);
+        $files = \Illuminate\Support\Facades\Storage::disk('public')->files($directory);
+        foreach ($files as $file) {
+            $stream = \Illuminate\Support\Facades\Storage::disk('public')->readStream($file);
+            \Illuminate\Support\Facades\Storage::disk('licenses')->writeStream($file, $stream);
+            print(sprintf('File %s created', $file) . PHP_EOL);
+        }
+        print(sprintf('directory %s fully coped to new disk', $directory) . PHP_EOL);
+        print('#####################################################' . PHP_EOL);
+    }
+    print('All directories successfully copied to new disk' . PHP_EOL);
 });
