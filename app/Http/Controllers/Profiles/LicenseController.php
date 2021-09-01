@@ -181,7 +181,7 @@ class LicenseController extends Controller
         foreach ($licenses as $license) {
             $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
             $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
-            \Illuminate\Support\Facades\Storage::disk('public')->writeStream($fileItem, $stream);
+            \Illuminate\Support\Facades\Storage::writeStream($fileItem, $stream);
             $files[] = $fileItem;
         }
 
