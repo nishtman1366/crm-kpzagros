@@ -45,9 +45,10 @@ return [
         'licenses' => [
             'driver' => 'ftp',
             'host' => 'backup11.irandns.com',
-            'username' => 'vm10817411291',
-            'password' => 'sW6-Av!/b!',
-            'root' => 'domains/vm-108174-11291.com/public_html/licenses/'
+            'username' => 'v142139',
+            'password' => 'D2@bx59Ih7ASg[',
+            'root' => 'domains/v142139.backup11.irandns.com/public_html/licenses/',
+            'url' => 'http://storage.kpzagros-crm.com/~v142139/licenses',
         ],
 
         's3' => [
