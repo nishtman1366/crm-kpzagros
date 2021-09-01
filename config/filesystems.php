@@ -38,8 +38,16 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
+        ],
+
+        'licenses' => [
+            'driver' => 'ftp',
+            'host' => 'backup11.irandns.com',
+            'username' => 'vm10817411291',
+            'password' => 'sW6-Av!/b!',
+            'root' => 'domains/vm-108174-11291.com/public_html/licenses/'
         ],
 
         's3' => [
