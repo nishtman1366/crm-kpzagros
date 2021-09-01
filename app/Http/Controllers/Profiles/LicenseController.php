@@ -177,8 +177,12 @@ class LicenseController extends Controller
 
         $licenses = License::where('profile_id', $profileId)->get();
         $files = [];
+
         foreach ($licenses as $license) {
-            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
+            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
+            $fileItem = storage_path(sprintf('app/temp/archives/%s', $license->file));
+            \Illuminate\Support\Facades\Storage::disk('licenses')->writeStream($fileItem, $stream);
+            $files[] = $fileItem;
         }
 
         if (count($files) > 0) {
@@ -198,7 +202,8 @@ class LicenseController extends Controller
                 throw new Exception("Could not close zip file: " . $archive->getStatusString());
             }
 
-            return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])->deleteFileAfterSend(true);
+            return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])
+                ->deleteFileAfterSend(true);
         }
 
         throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");
