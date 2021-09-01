@@ -57,13 +57,12 @@ class LicenseController extends Controller
         $type = LicenseType::where('key', $key)->get()->first();
         $extension = $file->getClientOriginalExtension();
 
-
         if (is_null($type->file_name)) {
             $fileName = $type->key . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         } else {
             $fileName = $type->file_name . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         }
-        $file->storeAs('profiles/' . $profileId, $fileName, 'public');
+        $file->storeAs('profiles/' . $profileId, $fileName, 'licenses');
 
         if (is_null($accountId)) {
             License::updateOrCreate(
