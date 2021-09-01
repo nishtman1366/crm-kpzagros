@@ -202,6 +202,8 @@ class LicenseController extends Controller
                 throw new Exception("Could not close zip file: " . $archive->getStatusString());
             }
 
+            \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profileId));
+
             return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])
                 ->deleteFileAfterSend(true);
         }
