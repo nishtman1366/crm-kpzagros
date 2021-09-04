@@ -62,7 +62,7 @@ class LicenseController extends Controller
         } else {
             $fileName = $type->file_name . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         }
-        $file->storeAs('profiles/' . $profileId, $fileName, 'licenses');
+        $file->storeAs('profiles/' . $profileId, $fileName, 'public');
 
         if (is_null($accountId)) {
             License::updateOrCreate(
@@ -179,10 +179,12 @@ class LicenseController extends Controller
         $files = [];
 
         foreach ($licenses as $license) {
-            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
-            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
-            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
-            $files[] = $fileItem;
+            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
+
+//            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
+//            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
+//            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
+//            $files[] = $fileItem;
         }
 
         if (count($files) > 0) {
@@ -202,7 +204,7 @@ class LicenseController extends Controller
                 throw new Exception("Could not close zip file: " . $archive->getStatusString());
             }
 
-            \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profileId));
+//            \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profileId));
 
             return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])
                 ->deleteFileAfterSend(true);
