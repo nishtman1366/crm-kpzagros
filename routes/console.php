@@ -128,6 +128,7 @@ Artisan::command('sms', function () {
 
 Artisan::command('transfer', function () {
     $array = ['11123',
+        '11122',
         '11121',
         '11119',
         '11118',
