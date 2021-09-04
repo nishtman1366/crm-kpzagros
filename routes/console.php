@@ -127,18 +127,22 @@ Artisan::command('sms', function () {
 });
 
 Artisan::command('transfer', function () {
-    $directories = \Illuminate\Support\Facades\Storage::disk('public')->directories('profiles');
+    $directories = \Illuminate\Support\Facades\Storage::disk('licenses')->directories('profiles');
     foreach ($directories as $directory) {
-        \Illuminate\Support\Facades\Storage::disk('licenses')->makeDirectory($directory);
-        print(sprintf('Directory %s created', $directory) . PHP_EOL);
-        $files = \Illuminate\Support\Facades\Storage::disk('public')->files($directory);
-        foreach ($files as $file) {
-            $stream = \Illuminate\Support\Facades\Storage::disk('public')->readStream($file);
-            \Illuminate\Support\Facades\Storage::disk('licenses')->writeStream($file, $stream);
-            print(sprintf('File %s created', $file) . PHP_EOL);
+        $directoryNameList = explode('/', $directory);
+        $dirName = (int)$directoryNameList[count($directoryNameList) - 1];
+        if ($dirName > 10000) {
+            \Illuminate\Support\Facades\Storage::disk('backup')->makeDirectory($directory);
+            print(sprintf('Directory %s created', $directory) . PHP_EOL);
+            $files = \Illuminate\Support\Facades\Storage::disk('licenses')->files($directory);
+            foreach ($files as $file) {
+                $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream($file);
+                \Illuminate\Support\Facades\Storage::disk('backup')->writeStream($file, $stream);
+                print(sprintf('File %s created', $file) . PHP_EOL);
+            }
+            print(sprintf('directory %s fully coped to new disk', $directory) . PHP_EOL);
+            print('#####################################################' . PHP_EOL);
         }
-        print(sprintf('directory %s fully coped to new disk', $directory) . PHP_EOL);
-        print('#####################################################' . PHP_EOL);
     }
     print('All directories successfully copied to new disk' . PHP_EOL);
 });

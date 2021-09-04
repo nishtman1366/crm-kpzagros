@@ -51,6 +51,15 @@ return [
             'url' => 'http://storage.kpzagros-crm.com/~v142139/licenses',
         ],
 
+        'backup' => [
+            'driver' => 'ftp',
+            'host' => 'backup11.irandns.com',
+            'username' => 'vm10817411291',
+            'password' => 'sW6-Av!/b!',
+            'root' => 'domains/vm-108174-11291.com/public_html/licenses/',
+            'url' => 'http://storage.kpzagros-crm.com/~v142139/licenses',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
