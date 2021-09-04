@@ -132,12 +132,12 @@ Artisan::command('transfer', function () {
         $directoryNameList = explode('/', $directory);
         $dirName = (int)$directoryNameList[count($directoryNameList) - 1];
         if ($dirName > 10000) {
-            \Illuminate\Support\Facades\Storage::disk('backup')->makeDirectory($directory);
+            \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory($directory);
             print(sprintf('Directory %s created', $directory) . PHP_EOL);
             $files = \Illuminate\Support\Facades\Storage::disk('licenses')->files($directory);
             foreach ($files as $file) {
                 $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream($file);
-                \Illuminate\Support\Facades\Storage::disk('backup')->writeStream($file, $stream);
+                \Illuminate\Support\Facades\Storage::disk('public')->writeStream($file, $stream);
                 print(sprintf('File %s created', $file) . PHP_EOL);
             }
             print(sprintf('directory %s fully coped to new disk', $directory) . PHP_EOL);
