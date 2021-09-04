@@ -222,7 +222,7 @@ Artisan::command('transfer', function () {
     foreach ($directories as $directory) {
         $directoryNameList = explode('/', $directory);
         $dirName = $directoryNameList[count($directoryNameList) - 1];
-        if (is_array($dirName, $array)) {
+        if (in_array($dirName, $array)) {
             \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory($directory);
             print(sprintf('Directory %s created', $directory) . PHP_EOL);
             $files = \Illuminate\Support\Facades\Storage::disk('licenses')->files($directory);
