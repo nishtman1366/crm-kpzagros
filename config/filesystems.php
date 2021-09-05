@@ -44,13 +44,15 @@ return [
 
         'licenses' => [
             'driver' => 'ftp',
-            'host' => 'storage.kpzagros-crm.com',
+            'host' => '185.255.90.105',
+//            'host' => 'storage.kpzagros-crm.com',
             'username' => 'zagros@storage.kpzagros-crm.com',
             'password' => 'Nil00f@r1869',
             'root' => 'public_html/licenses/',
             'url' => 'http://storage.kpzagros-crm.com/licenses',
             'passive' => false,
             'ignorePassiveAddress' => true,
+            'ssl' => false,
             'port' => 21,
         ],
 
