@@ -62,7 +62,7 @@ class LicenseController extends Controller
         } else {
             $fileName = $type->file_name . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         }
-        $file->storeAs('profiles/' . $profileId, $fileName, 'licenses');
+        $file->storeAs('profiles/' . $profileId, $fileName, 'public');
 
         if (is_null($accountId)) {
             License::updateOrCreate(
@@ -179,12 +179,12 @@ class LicenseController extends Controller
         $files = [];
 
         foreach ($licenses as $license) {
-//            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
+            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
 
-            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
-            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
-            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
-            $files[] = $fileItem;
+//            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
+//            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
+//            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
+//            $files[] = $fileItem;
         }
 
         if (count($files) > 0) {

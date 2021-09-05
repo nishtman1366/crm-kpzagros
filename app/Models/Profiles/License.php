@@ -19,9 +19,8 @@ class License extends Model
     public function getUrlAttribute()
     {
         $version = $this->updated_at->timestamp;
-        return Storage::disk('licenses')->url(sprintf('profiles/%s/%s?ver=%s', $this->attributes['profile_id'], $this->attributes['file'], $version));
-//        return  'http://backup11.irandns.com/~vm10817411291/licenses/profiles/' . $this->attributes['profile_id'] . '/' . $this->attributes['file'] . '?ver=' . $version;
-//        return url('storage') . '/profiles/' . $this->attributes['profile_id'] . '/' . $this->attributes['file'] . '?ver=' . $version;
+//        return Storage::disk('licenses')->url(sprintf('profiles/%s/%s?ver=%s', $this->attributes['profile_id'], $this->attributes['file'], $version));
+        return url('storage') . '/profiles/' . $this->attributes['profile_id'] . '/' . $this->attributes['file'] . '?ver=' . $version;
     }
 
     public function type()
