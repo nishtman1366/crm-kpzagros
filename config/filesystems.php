@@ -49,6 +49,7 @@ return [
             'password' => 'Nil00f@r1869',
             'root' => 'domains/storage.kpzagros-crm.com/public_html/licenses/',
             'url' => 'http://storage.kpzagros-crm.com/licenses',
+            'passive' => 'false',
         ],
 
         's3' => [
