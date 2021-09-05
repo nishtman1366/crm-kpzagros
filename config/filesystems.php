@@ -44,7 +44,7 @@ return [
 
         'licenses' => [
             'driver' => 'ftp',
-            'host' => 'storage.kpzagros-crm.com',
+            'host' => '185.255.90.105',
             'username' => 'storagek',
             'password' => 'Nil00f@r1869',
             'root' => 'domains/storage.kpzagros-crm.com/public_html/licenses/',
