@@ -62,7 +62,7 @@ class LicenseController extends Controller
         } else {
             $fileName = $type->file_name . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         }
-        $file->storeAs('profiles/' . $profileId, $fileName, 'public');
+        $file->storeAs('profiles/' . $profileId, $fileName, 'licenses');
 
         if (is_null($accountId)) {
             License::updateOrCreate(
@@ -162,7 +162,7 @@ class LicenseController extends Controller
         $license = License::find($licenseId);
         if (!is_null($license)) {
             if ($license->profile_id !== $profileId) throw new UnprocessableEntityHttpException('شما اجازه دسترسی به این پرونده را ندارید');
-            Storage::disk('public')->delete('profiles/' . $license->profile_id . '/' . $license->file);
+            Storage::disk('licenses')->delete('profiles/' . $license->profile_id . '/' . $license->file);
             $license->delete();
         }
 
@@ -179,12 +179,12 @@ class LicenseController extends Controller
         $files = [];
 
         foreach ($licenses as $license) {
-            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
+//            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
 
-//            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
-//            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
-//            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
-//            $files[] = $fileItem;
+            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
+            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
+            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
+            $files[] = $fileItem;
         }
 
         if (count($files) > 0) {
