@@ -111,6 +111,13 @@ class ProfileController extends Controller
             });
         }
 
+        $licenseStatus = $request->query('licenseStatus', null);
+        if (!is_null($licenseStatus)) {
+            $profilesQuery->where(function ($query) use ($licenseStatus) {
+                $query->where('licenses_status', $licenseStatus);
+            });
+        }
+
         $marketers = [];
         $agentId = $request->query('agentId', null);
         if (!is_null($agentId)) {
@@ -226,6 +233,8 @@ class ProfileController extends Controller
 
                 'statusId' => $statusId,
                 'statuses' => $statuses,
+
+                'licenseStatus' => $licenseStatus,
 
                 'agents' => $agents,
                 'agentId' => $agentId,
@@ -935,5 +944,21 @@ class ProfileController extends Controller
         $file = $request->file('file')->store('temp/excel/profiles');
         Excel::import(new CustomImport(), $file);
         return redirect()->route('dashboard.profiles.list');
+    }
+
+    public function confirmLicenses(Request $request)
+    {
+        $profileId = (int)$request->route('profileId');
+        $profile = Profile::with('customer')->find($profileId);
+        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+
+        $status = $request->get('status');
+        $message = $request->get('message');
+
+        $profile->licenses_status = $status;
+        $profile->licenses_message = $message;
+        $profile->save();
+
+        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'وضعیت مدارک با موفقیت ثبت شد.']);
     }
 }

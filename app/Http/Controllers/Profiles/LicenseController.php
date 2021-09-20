@@ -212,4 +212,41 @@ class LicenseController extends Controller
 
         throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");
     }
+
+    public function confirmLicenses(Request $request)
+    {
+        $profileId = (int)$request->route('profileId');
+        $profile = Profile::find($profileId);
+        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
+
+        $user = Auth::user();
+        if (!$user->isSuperUser() && !$user->isAdmin() && !$user->isOffice()) throw new UnauthorizedHttpException('شما اجازه انجام این عملیات را ندارید.');
+
+//        $status = (int)$request->get('status');
+//        License::where('profile_id', $profileId)->update(['status' => $status]);
+
+        return redirect()->route('profiles.list')->with('message', 'عملیات گروهی با موفقیت انجام شد.');
+
+    }
+
+    public function confirm(Request $request)
+    {
+        $licenseId = (int)$request->route('licenseId');
+        $profileId = (int)$request->route('profileId');
+        $profile = Profile::find($profileId);
+        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
+
+        $user = Auth::user();
+
+
+        $license = License::find($licenseId);
+        if (!is_null($license)) {
+            $status = (int)$request->get('status');
+            if ($status === 0) {
+
+            } elseif ($status === 1) {
+
+            }
+        }
+    }
 }

@@ -16,6 +16,8 @@ Vue.use(PortalVue);
 import { VBTooltip } from 'bootstrap-vue'
 Vue.directive('b-tooltip', VBTooltip)
 
+import 'material-icons/iconfont/material-icons.css';
+
 const app = document.getElementById('app');
 
 new Vue({

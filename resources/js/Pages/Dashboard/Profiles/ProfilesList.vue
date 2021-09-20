@@ -66,7 +66,7 @@
                                             class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option :value="null">سرویس دهنده</option>
                                         <option v-for="psp in psps" :key="psp.id"
-                                                :value="psp.id">{{psp.name}}
+                                                :value="psp.id">{{ psp.name }}
                                         </option>
                                     </select>
                                     <select id="status_id"
@@ -80,7 +80,7 @@
                                             class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option :value="null">وضعیت پرونده</option>
                                         <option v-for="statusItem in statuses" :key="statusItem.id"
-                                                :value="statusItem.id">{{statusItem.name}}
+                                                :value="statusItem.id">{{ statusItem.name }}
                                         </option>
                                     </select>
                                     <select
@@ -96,7 +96,7 @@
                                         class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option :value="null">نماینده</option>
                                         <option v-for="agent in agents" :key="agent.id"
-                                                :value="agent.id">{{agent.name}}
+                                                :value="agent.id">{{ agent.name }}
                                         </option>
                                     </select>
                                     <select v-if="$page.user.level!=='MARKETER'" id="marketer_id"
@@ -110,7 +110,7 @@
                                             class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option :value="null">بازاریاب</option>
                                         <option v-for="marketer in marketers" :key="marketer.id"
-                                                :value="marketer.id">{{marketer.name}}
+                                                :value="marketer.id">{{ marketer.name }}
                                         </option>
                                     </select>
                                     <select id="profile_type"
@@ -126,6 +126,20 @@
                                         <option value="REGISTER">پرونده جدید</option>
                                         <option value="TRANSFER">انتقال مالکیت</option>
                                         <option value="EDIT">تغییر مشخصات</option>
+                                    </select>
+                                    <select id="license_status"
+                                            name="license_status"
+                                            ref="license_status"
+                                            v-model="license_status"
+                                            autocomplete="license_status"
+                                            v-on:change="submitSearchForm"
+                                            title="فیلتر بر اساس وضعیت مدارک"
+                                            v-b-tooltip.hover
+                                            class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option :value="null">وضعیت مدارک</option>
+                                        <option :value="0">تایید نشده</option>
+                                        <option :value="1">تایید موقت</option>
+                                        <option :value="2">تایید نهایی</option>
                                     </select>
                                 </div>
                                 <!--                                <div class="col-1 md:col-span-4">-->
@@ -190,33 +204,33 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="profile in profiles.data" :key="profile.id">
                                     <td class="list-table-body-cell">
-                                        {{profile.customer.fullName}}
+                                        {{ profile.customer.fullName }}
                                         <p
-                                            class="text-indigo-600">({{profile.customer.national_code}})</p>
+                                            class="text-indigo-600">({{ profile.customer.national_code }})</p>
                                     </td>
                                     <td class="list-table-body-cell">
-                                        {{profile.typeText}}
+                                        {{ profile.typeText }}
                                     </td>
                                     <td class="list-table-body-cell">
                                         دستگاه کارتخوان
                                         <p
-                                            class="sub-text">({{profile.psp ? profile.psp.name : 'نامشخص'}})</p>
+                                            class="sub-text">({{ profile.psp ? profile.psp.name : 'نامشخص' }})</p>
                                     </td>
                                     <td class="list-table-body-cell">
-                                        <p>{{profile.user.name}}</p>
+                                        <p>{{ profile.user.name }}</p>
                                         <p class="sub-text">
-                                            {{profile.user.parent ? 'نماینده: '+profile.user.parent.name : ''}}
+                                            {{ profile.user.parent ? 'نماینده: ' + profile.user.parent.name : '' }}
                                         </p>
                                     </td>
                                     <td class="list-table-body-cell">
                                         <span
                                             :class="statusColors(profile.status)"
                                             class="badge">
-                                          {{profile.statusText}}
+                                          {{ profile.statusText }}
                                         </span>
                                     </td>
-                                    <td class="list-table-body-cell">{{profile.jCreatedAt}}</td>
-                                    <td class="list-table-body-cell">{{profile.jUpdatedAt}}</td>
+                                    <td class="list-table-body-cell">{{ profile.jCreatedAt }}</td>
+                                    <td class="list-table-body-cell">{{ profile.jUpdatedAt }}</td>
                                     <td class="list-table-body-cell flex flex-nowrap items-center justify-center">
                                         <InertiaLink
                                             :href="route('dashboard.profiles.view',{profileId: profile.id})"
@@ -227,8 +241,8 @@
                                             </button>
                                         </InertiaLink>
                                         <a target="_blank"
-                                            :href="route('dashboard.profiles.delivery.form',{profileId: profile.id})"
-                                            class="tooltip-box text-purple-600 hover:text-purple-900">
+                                           :href="route('dashboard.profiles.delivery.form',{profileId: profile.id})"
+                                           class="tooltip-box text-purple-600 hover:text-purple-900">
                                             <button title="گواهی تحویل"
                                                     v-b-tooltip.hover>
                                                 <i id="view-license-button" class="material-icons">file_download</i>
@@ -319,9 +333,7 @@
                                 :urlsArray="paginatedLinks"
                                 :totalRows="profiles.total"
                                 :previousPageUrl="profiles.prev_page_url"
-                                :nextPageUrl="profiles.next_page_url"
-                            >
-                            </pagination>
+                                :nextPageUrl="profiles.next_page_url"/>
                         </div>
                     </div>
                 </div>
@@ -336,7 +348,7 @@
                         <div v-if="rejectSerialReason"
                              class="w-full bg-red-200 text-red-500 rounded border border-red-500 m-2 px-3 py-1">
                             <p class="font-bold">علت عدم تایید سریال:</p>
-                            <p>{{rejectSerialReason}}</p>
+                            <p>{{ rejectSerialReason }}</p>
                         </div>
                         <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                             <input type="text"
@@ -376,13 +388,13 @@
                                     <tbody class="bg-white divide-y divide-gray-200">
                                     <tr v-for="device in search.results" :key="device.id">
                                         <td class="px-6 py-4 text-center text-gray-900">
-                                            {{device.serial}}
+                                            {{ device.serial }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
-                                            {{device.device_type.name}}
+                                            {{ device.device_type.name }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
-                                            {{device.physicalStatusText}}
+                                            {{ device.physicalStatusText }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
                                             <button type="button"
@@ -414,10 +426,11 @@
 
                     <div class="mt-4">
                         <p class="float-left">
-                            مدل دستگاه: <span class="text-red-400 font-bold mx-3">{{selectedDevice.device_type ? selectedDevice.device_type.name : ''}}</span>
+                            مدل دستگاه: <span
+                            class="text-red-400 font-bold mx-3">{{ selectedDevice.device_type ? selectedDevice.device_type.name : '' }}</span>
                         </p>
                         <p class="float-right">
-                            سریال دستگاه: <span class="text-green-400 font-bold mx-3">{{selectedDevice.serial}}</span>
+                            سریال دستگاه: <span class="text-green-400 font-bold mx-3">{{ selectedDevice.serial }}</span>
                         </p>
                     </div>
                 </template>
@@ -466,8 +479,12 @@
                             </div>
                         </div>
                         <div>
-                            <p>مدل دستگاه: <span class="font-bold">{{selectedProfile && selectedProfile.device_type && selectedProfile.device_type.name}}</span></p>
-                            <p>سریال: <span class="font-bold">{{selectedProfile && selectedProfile.device && selectedProfile.device.serial}}</span></p>
+                            <p>مدل دستگاه: <span
+                                class="font-bold">{{ selectedProfile && selectedProfile.device_type && selectedProfile.device_type.name }}</span>
+                            </p>
+                            <p>سریال: <span
+                                class="font-bold">{{ selectedProfile && selectedProfile.device && selectedProfile.device.serial }}</span>
+                            </p>
                         </div>
                     </div>
                 </template>
@@ -556,7 +573,7 @@
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                         <div class="my-3 p-2 bg-yellow-300 border-r-4 border-yellow-500">
                             <p class="text-lg">علت درخواست فسخ</p>
-                            <p class="text-md">{{cancelReason}}</p>
+                            <p class="text-md">{{ cancelReason }}</p>
                         </div>
                         <div class="flex">
                             <jet-button
@@ -632,7 +649,7 @@
                                             stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round"/>
                                     </svg>
-                                    <h1 class="text-md">{{deviceType.name}}</h1>
+                                    <h1 class="text-md">{{ deviceType.name }}</h1>
                                     <button type="submit"
                                             :disabled="oldDeviceTypeId==deviceType.id"
                                             :class="oldDeviceTypeId==deviceType.id ? 'text-gray-400 bg-gray-200' : 'text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'"
@@ -671,10 +688,10 @@
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                         <div class="my-3 p-2 bg-yellow-300 border-r-4 border-yellow-500">
                             <p class="text-lg">علت درخواست جابجایی</p>
-                            <p class="text-md">{{changeReason}}</p>
+                            <p class="text-md">{{ changeReason }}</p>
                         </div>
                         <div class="my-3 p-2">
-                            <p class="text-lg">مدل انتخاب شده:{{newDeviceType.name}}</p>
+                            <p class="text-lg">مدل انتخاب شده:{{ newDeviceType.name }}</p>
                         </div>
                         <div>
                             <input type="text"
@@ -710,10 +727,10 @@
                                     <tbody class="bg-white divide-y divide-gray-200">
                                     <tr v-for="device in search.results" :key="device.id">
                                         <td class="px-6 py-4 text-center text-gray-900">
-                                            {{device.serial}}
+                                            {{ device.serial }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
-                                            {{device.physicalStatusText}}
+                                            {{ device.physicalStatusText }}
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
                                             <button type="button"
@@ -752,7 +769,7 @@
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                         <div class="my-3 p-2 bg-yellow-300 border-r-4 border-yellow-500">
                             <p class="text-lg">علت درخواست جابجایی</p>
-                            <p class="text-md">{{changeReason}}</p>
+                            <p class="text-md">{{ changeReason }}</p>
                         </div>
                         <div class="my-3 p-2">
                             <p class="text-lg">دستگاه انتخاب شده جدید:</p>
@@ -787,12 +804,12 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr>
-                                    <td class="text-center">{{newDevice.device_type.name}}</td>
-                                    <td class="text-center">{{newDevice.serial}}</td>
-                                    <td class="text-center">{{newDevice.physicalStatusText}}</td>
-                                    <td class="text-center">{{newDevice.transportStatusText}}</td>
-                                    <td class="text-center">{{newDevice.pspStatusText}}</td>
-                                    <td class="text-center">{{newDevice.statusText}}</td>
+                                    <td class="text-center">{{ newDevice.device_type.name }}</td>
+                                    <td class="text-center">{{ newDevice.serial }}</td>
+                                    <td class="text-center">{{ newDevice.physicalStatusText }}</td>
+                                    <td class="text-center">{{ newDevice.transportStatusText }}</td>
+                                    <td class="text-center">{{ newDevice.pspStatusText }}</td>
+                                    <td class="text-center">{{ newDevice.statusText }}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -878,452 +895,456 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from '@/Jetstream/Button'
-    import {Inertia} from "@inertiajs/inertia";
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-    import JetDangerButton from '@/Jetstream/DangerButton';
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-    import JetInputError from '@/Jetstream/InputError';
-    import JetInput from '@/Jetstream/Input';
-    import Pagination from "@/Pages/Dashboard/Components/Pagination";
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from '@/Jetstream/Button'
+import {Inertia} from "@inertiajs/inertia";
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
+import JetDangerButton from '@/Jetstream/DangerButton';
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import JetInputError from '@/Jetstream/InputError';
+import JetInput from '@/Jetstream/Input';
+import Pagination from "@/Pages/Dashboard/Components/Pagination";
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
 
-    export default {
-        name: "ProfilesList",
-        components: {
-            Dashboard,
-            JetButton,
-            JetConfirmationModal,
-            JetDangerButton,
-            JetSecondaryButton,
-            JetInputError,
-            JetInput,
-            Pagination,
-            datePicker: VuePersianDatetimePicker,
-        },
-        props: {
-            searchQuery: String,
+export default {
+    name: "ProfilesList",
+    components: {
+        Dashboard,
+        JetButton,
+        JetConfirmationModal,
+        JetDangerButton,
+        JetSecondaryButton,
+        JetInputError,
+        JetInput,
+        Pagination,
+        datePicker: VuePersianDatetimePicker,
+    },
+    props: {
+        searchQuery: String,
 
-            profiles: Object,
+        profiles: Object,
 
-            psps: Array,
-            pspId: String,
+        psps: Array,
+        pspId: String,
 
-            statuses: Array,
-            statusId: String,
+        statuses: Array,
+        statusId: String,
 
-            agents: Array,
-            agentId: String,
+        agents: Array,
+        agentId: String,
 
-            marketers: Array,
-            marketerId: String,
+        marketers: Array,
+        marketerId: String,
 
-            profileType: String,
+        profileType: String,
 
-            fromDate: String,
-            toDate: String,
+        licenseStatus: String,
 
-            paginatedLinks: Array
-        },
-        data() {
-            return {
-                status_id: null,
-                psp_id: null,
-                agent_id: null,
-                marketer_id: null,
-                profile_type: null,
-                from_date: null,
-                to_date: null,
-                query: null,
-                selectedProfile: null,
+        fromDate: String,
+        toDate: String,
 
-                profileForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    status: '',
-                }, {
-                    bag: 'profileForm',
-                    resetOnSuccess: true
-                }),
+        paginatedLinks: Array
+    },
+    data() {
+        return {
+            status_id: null,
+            psp_id: null,
+            agent_id: null,
+            marketer_id: null,
+            profile_type: null,
+            from_date: null,
+            to_date: null,
+            query: null,
+            selectedProfile: null,
 
-                viewSearchModal: false,
-                search: {
-                    serial: '',
-                    results: []
-                },
-                devices: [],
-                selectedDevice: '',
-                confirmSerial: false,
-                profileId: '',
-                serialForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    device_id: '',
-                    device_type_id: '',
-                }, {
-                    bag: 'serialForm',
-                    resetOnSuccess: true
-                }),
-                viewTerminalModal: false,
-                terminalForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    terminal_id: '',
-                    merchant_id: '',
-                }, {
-                    bag: 'terminalForm',
-                    resetOnSuccess: true
-                }),
-                rejectSerialModal: false,
+            profileForm: this.$inertia.form({
+                '_method': 'PUT',
+                status: '',
+            }, {
+                bag: 'profileForm',
+                resetOnSuccess: true
+            }),
+
+            viewSearchModal: false,
+            search: {
+                serial: '',
+                results: []
+            },
+            devices: [],
+            selectedDevice: '',
+            confirmSerial: false,
+            profileId: '',
+            serialForm: this.$inertia.form({
+                '_method': 'PUT',
+                device_id: '',
+                device_type_id: '',
+            }, {
+                bag: 'serialForm',
+                resetOnSuccess: true
+            }),
+            viewTerminalModal: false,
+            terminalForm: this.$inertia.form({
+                '_method': 'PUT',
+                terminal_id: '',
+                merchant_id: '',
+            }, {
+                bag: 'terminalForm',
+                resetOnSuccess: true
+            }),
+            rejectSerialModal: false,
 
 
-                viewCancelRequestModal: false,
-                cancelRequestForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    cancel_reason: '',
-                }, {
-                    bag: 'cancelRequestForm',
-                    resetOnSuccess: true
-                }),
+            viewCancelRequestModal: false,
+            cancelRequestForm: this.$inertia.form({
+                '_method': 'PUT',
+                cancel_reason: '',
+            }, {
+                bag: 'cancelRequestForm',
+                resetOnSuccess: true
+            }),
 
-                viewConfirmCancelModal: false,
-                cancelReason: '',
-                confirmCancelForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    message: '',
-                    confirmCancelMessage: false,
-                }, {
-                    bag: 'confirmCancelForm',
-                    resetOnSuccess: true
-                }),
+            viewConfirmCancelModal: false,
+            cancelReason: '',
+            confirmCancelForm: this.$inertia.form({
+                '_method': 'PUT',
+                message: '',
+                confirmCancelMessage: false,
+            }, {
+                bag: 'confirmCancelForm',
+                resetOnSuccess: true
+            }),
 
-                viewUploadExcelModal: false,
-                uploadExcelForm: this.$inertia.form({
-                    '_method': 'POST',
-                    file: '',
-                }, {
-                    bag: 'uploadExcelForm',
-                    resetOnSuccess: true
-                }),
+            viewUploadExcelModal: false,
+            uploadExcelForm: this.$inertia.form({
+                '_method': 'POST',
+                file: '',
+            }, {
+                bag: 'uploadExcelForm',
+                resetOnSuccess: true
+            }),
 
-                viewChangeSerialRequestModal: false,
-                deviceTypes: [],
-                oldDeviceTypeId: '',
-                newDeviceTypeId: '',
-                changeSerialRequestForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    change_reason: '',
-                    new_device_type_id: '',
-                }, {
-                    bag: 'changeSerialRequestForm',
-                    resetOnSuccess: true
-                }),
+            viewChangeSerialRequestModal: false,
+            deviceTypes: [],
+            oldDeviceTypeId: '',
+            newDeviceTypeId: '',
+            changeSerialRequestForm: this.$inertia.form({
+                '_method': 'PUT',
+                change_reason: '',
+                new_device_type_id: '',
+            }, {
+                bag: 'changeSerialRequestForm',
+                resetOnSuccess: true
+            }),
 
-                viewSelectNewSerialModal: false,
-                newDeviceType: {
-                    name: '',
-                },
-                selectNewSerialForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    new_device_id: '',
-                }, {
-                    bag: 'selectNewSerialForm',
-                    resetOnSuccess: true
-                }),
+            viewSelectNewSerialModal: false,
+            newDeviceType: {
+                name: '',
+            },
+            selectNewSerialForm: this.$inertia.form({
+                '_method': 'PUT',
+                new_device_id: '',
+            }, {
+                bag: 'selectNewSerialForm',
+                resetOnSuccess: true
+            }),
 
-                viewConfirmChangeSerialModal: false,
-                changeReason: '',
-                newDevice: {
-                    device_type: {},
-                },
-                confirmChangeSerialForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    change_message: '',
-                    confirmChangeMessage: false,
-                }, {
-                    bag: 'confirmChangeSerialForm',
-                    resetOnSuccess: true
-                }),
+            viewConfirmChangeSerialModal: false,
+            changeReason: '',
+            newDevice: {
+                device_type: {},
+            },
+            confirmChangeSerialForm: this.$inertia.form({
+                '_method': 'PUT',
+                change_message: '',
+                confirmChangeMessage: false,
+            }, {
+                bag: 'confirmChangeSerialForm',
+                resetOnSuccess: true
+            }),
 
-                rejectSerialReason: null,
-                viewRejectSerialModal: false,
-                rejectSerialForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    reject_serial_reason: '',
-                }, {
-                    bag: 'rejectSerialForm',
-                    resetOnSuccess: true
-                }),
+            rejectSerialReason: null,
+            viewRejectSerialModal: false,
+            rejectSerialForm: this.$inertia.form({
+                '_method': 'PUT',
+                reject_serial_reason: '',
+            }, {
+                bag: 'rejectSerialForm',
+                resetOnSuccess: true
+            }),
+        }
+    },
+    mounted() {
+        this.query = this.searchQuery;
+        this.psp_id = this.pspId;
+        this.status_id = this.statusId;
+        this.agent_id = this.agentId;
+        this.marketer_id = this.marketerId;
+        this.profile_type = this.profileType;
+        this.license_status = this.licenseStatus;
+        this.from_date = this.fromDate;
+        this.to_date = this.toDate;
+    },
+    methods: {
+        statusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'badge-yellow';
+                case 1:
+                    return 'badge-green';
+                case 2:
+                    return 'badge-yellow';
+                case 3:
+                    return 'badge-green';
+                case 4:
+                    return 'badge-green';
+                case 5:
+                    return 'badge-green';
+                case 6:
+                    return 'badge-yellow';
+                case 7:
+                    return 'badge-green';
+                case 8:
+                    return 'badge-green';
+                case 9:
+                    return 'badge-gray';
+                case 10:
+                    return 'badge-red';
+                case 11:
+                    return 'badge-red';
+                case 12:
+                    return 'badge-yellow';
+                case 13:
+                    return 'badge-red';
+                case 14:
+                    return 'badge-yellow';
+                case 15:
+                    return 'badge-yellow';
+                case 16:
+                    return 'badge-red';
             }
         },
-        mounted() {
-            this.query = this.searchQuery;
-            this.psp_id = this.pspId;
-            this.status_id = this.statusId;
-            this.agent_id = this.agentId;
-            this.marketer_id = this.marketerId;
-            this.profile_type = this.profileType;
-            this.from_date = this.fromDate;
-            this.to_date = this.toDate;
+        updateProfileStatus(id, status) {
+            this.profileForm.status = status;
+            this.profileForm.post(route('dashboard.profiles.update', {profileId: id}))
+                .then(response => {
+
+                })
         },
-        methods: {
-            statusColors(status) {
-                switch (status) {
-                    case 0:
-                        return 'badge-yellow';
-                    case 1:
-                        return 'badge-green';
-                    case 2:
-                        return 'badge-yellow';
-                    case 3:
-                        return 'badge-green';
-                    case 4:
-                        return 'badge-green';
-                    case 5:
-                        return 'badge-green';
-                    case 6:
-                        return 'badge-yellow';
-                    case 7:
-                        return 'badge-green';
-                    case 8:
-                        return 'badge-green';
-                    case 9:
-                        return 'badge-gray';
-                    case 10:
-                        return 'badge-red';
-                    case 11:
-                        return 'badge-red';
-                    case 12:
-                        return 'badge-yellow';
-                    case 13:
-                        return 'badge-red';
-                    case 14:
-                        return 'badge-yellow';
-                    case 15:
-                        return 'badge-yellow';
-                    case 16:
-                        return 'badge-red';
+        viewDevicesModal(profile) {
+            this.seletcedProfile = profile;
+            this.rejectSerialReason = profile.reject_serial_reason;
+            this.search.results = [];
+            this.devices = [];
+            this.viewSearchModal = true;
+            this.profileId = profile.id;
+            axios.get('dashboard/devices/' + profile.id)
+                .then(response => {
+                    this.devices = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        searchDeviceSerials() {
+            let serial = this.$refs.search_serial.value;
+            var condition = new RegExp(serial);
+            let selected = this.devices.filter(function (device) {
+                return condition.test(device.serial);
+            });
+            this.search.results = selected;
+        },
+        selectDevice(device) {
+            this.serialForm.device_type_id = device.device_type_id;
+            this.serialForm.device_id = device.id;
+            this.selectedDevice = device;
+            this.confirmSerial = true;
+        },
+        submitSerial() {
+            this.serialForm.post(route('dashboard.profiles.update.serial', {profileId: this.profileId}))
+                .then(response => {
+                    if (!this.serialForm.hasErrors()) {
+                        this.confirmSerial = false;
+                        this.viewSearchModal = false;
+                        this.$refs.search_serial.value = '';
+                        this.search.serial = '';
+                        this.profileId = '';
+                        this.selectedProfile = null;
+                        this.search.results = [];
+                    }
+                })
+        },
+        selectTerminal(profile) {
+            this.selectedProfile = profile;
+            this.profileId = profile.id;
+            this.viewTerminalModal = true;
+        },
+        submitTerminal() {
+            this.terminalForm.post(route('dashboard.profiles.update.terminal', {profileId: this.profileId}))
+                .then(response => {
+                    if (!this.terminalForm.hasErrors()) {
+                        this.viewTerminalModal = false;
+                        this.profileId = '';
+                    }
+                })
+        },
+        submitRejectSerialForm() {
+            this.rejectSerialForm.post(route('dashboard.profiles.update.rejectSerial', {profileId: this.profileId}))
+                .then(response => {
+                    if (!this.rejectSerialForm.hasErrors()) {
+                        this.viewTerminalModal = false;
+                        this.viewRejectSerialModal = false;
+                        this.profileId = '';
+                    }
+                })
+        },
+        cancelRequest(profileId) {
+            this.profileId = profileId;
+            this.viewCancelRequestModal = true;
+        },
+        submitCancelRequest() {
+            this.cancelRequestForm.post(route('dashboard.profiles.update.cancelRequest', {profileId: this.profileId}))
+                .then(response => {
+                    if (!this.cancelRequestForm.hasErrors()) {
+                        this.viewCancelRequestModal = false;
+                        this.profileId = '';
+                    }
+                })
+        },
+        confirmCancel(profileId, cancelReason) {
+            this.profileId = profileId;
+            this.cancelReason = cancelReason;
+            this.viewConfirmCancelModal = true;
+        },
+        submitCancel() {
+            this.confirmCancelForm.post(route('dashboard.profiles.update.cancelConfirm', {profileId: this.profileId}))
+                .then(response => {
+                    if (!this.confirmCancelForm.hasErrors()) {
+                        this.viewConfirmCancelModal = false;
+                        this.profileId = '';
+                    }
+                })
+        },
+        changeSerialRequest(profileId, oldDeviceTypeId) {
+            this.viewChangeSerialRequestModal = true;
+            this.profileId = profileId;
+            this.oldDeviceTypeId = oldDeviceTypeId;
+            this.changeSerialRequestForm.new_device_type_id = oldDeviceTypeId;
+            axios.get('dashboard/deviceTypes/' + profileId)
+                .then(response => {
+                    this.deviceTypes = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        selectNewDeviceType(newDeviceTypeId) {
+            this.oldDeviceTypeId = newDeviceTypeId;
+            this.changeSerialRequestForm.new_device_type_id = newDeviceTypeId;
+        },
+        submitChangeSerialRequest() {
+            this.changeSerialRequestForm.post(route('dashboard.profiles.update.changeRequest', {profileId: this.profileId}))
+                .then(response => {
+                    if (!this.changeSerialRequestForm.hasErrors()) {
+                        this.viewChangeSerialRequestModal = false;
+                        this.profileId = '';
+                        this.oldDeviceTypeId = '';
+                    }
+                })
+        },
+        selectNewSerial(profileId, changeReason) {
+            axios.get('dashboard/profiles/' + profileId + '/newDeviceType')
+                .then(response => {
+                    this.newDeviceType = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            axios.get('dashboard/newDevices/' + profileId)
+                .then(response => {
+                    this.devices = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            this.profileId = profileId;
+            this.changeReason = changeReason;
+            this.viewSelectNewSerialModal = true;
+        },
+        submitSelectNewSerial() {
+            this.selectNewSerialForm.post(route('dashboard.profiles.update.newSerial', {profileId: this.profileId})).then(response => {
+                if (!this.selectNewSerialForm.hasErrors()) {
+                    this.viewSelectNewSerialModal = false;
+                    this.profileId = '';
                 }
-            },
-            updateProfileStatus(id, status) {
-                this.profileForm.status = status;
-                this.profileForm.post(route('dashboard.profiles.update', {profileId: id}))
-                    .then(response => {
-
-                    })
-            },
-            viewDevicesModal(profile) {
-                this.seletcedProfile = profile;
-                this.rejectSerialReason = profile.reject_serial_reason;
-                this.search.results = [];
-                this.devices = [];
-                this.viewSearchModal = true;
-                this.profileId = profile.id;
-                axios.get('dashboard/devices/' + profile.id)
-                    .then(response => {
-                        this.devices = response.data;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
-            searchDeviceSerials() {
-                let serial = this.$refs.search_serial.value;
-                var condition = new RegExp(serial);
-                let selected = this.devices.filter(function (device) {
-                    return condition.test(device.serial);
+            })
+        },
+        searchDeviceSerials2() {
+            let serial = this.$refs.search_serial2.value;
+            var condition = new RegExp(serial);
+            let selected = this.devices.filter(function (device) {
+                return condition.test(device.serial);
+            });
+            this.search.results = selected;
+        },
+        confirmChangeSerial(profileId, changeReason) {
+            axios.get('dashboard/profiles/' + profileId + '/newDevice')
+                .then(response => {
+                    this.newDevice = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
                 });
-                this.search.results = selected;
-            },
-            selectDevice(device) {
-                this.serialForm.device_type_id = device.device_type_id;
-                this.serialForm.device_id = device.id;
-                this.selectedDevice = device;
-                this.confirmSerial = true;
-            },
-            submitSerial() {
-                this.serialForm.post(route('dashboard.profiles.update.serial', {profileId: this.profileId}))
-                    .then(response => {
-                        if (!this.serialForm.hasErrors()) {
-                            this.confirmSerial = false;
-                            this.viewSearchModal = false;
-                            this.$refs.search_serial.value = '';
-                            this.search.serial = '';
-                            this.profileId = '';
-                            this.selectedProfile = null;
-                            this.search.results = [];
-                        }
-                    })
-            },
-            selectTerminal(profile) {
-                this.selectedProfile = profile;
-                this.profileId = profile.id;
-                this.viewTerminalModal = true;
-            },
-            submitTerminal() {
-                this.terminalForm.post(route('dashboard.profiles.update.terminal', {profileId: this.profileId}))
-                    .then(response => {
-                        if (!this.terminalForm.hasErrors()) {
-                            this.viewTerminalModal = false;
-                            this.profileId = '';
-                        }
-                    })
-            },
-            submitRejectSerialForm() {
-                this.rejectSerialForm.post(route('dashboard.profiles.update.rejectSerial', {profileId: this.profileId}))
-                    .then(response => {
-                        if (!this.rejectSerialForm.hasErrors()) {
-                            this.viewTerminalModal = false;
-                            this.viewRejectSerialModal = false;
-                            this.profileId = '';
-                        }
-                    })
-            },
-            cancelRequest(profileId) {
-                this.profileId = profileId;
-                this.viewCancelRequestModal = true;
-            },
-            submitCancelRequest() {
-                this.cancelRequestForm.post(route('dashboard.profiles.update.cancelRequest', {profileId: this.profileId}))
-                    .then(response => {
-                        if (!this.cancelRequestForm.hasErrors()) {
-                            this.viewCancelRequestModal = false;
-                            this.profileId = '';
-                        }
-                    })
-            },
-            confirmCancel(profileId, cancelReason) {
-                this.profileId = profileId;
-                this.cancelReason = cancelReason;
-                this.viewConfirmCancelModal = true;
-            },
-            submitCancel() {
-                this.confirmCancelForm.post(route('dashboard.profiles.update.cancelConfirm', {profileId: this.profileId}))
-                    .then(response => {
-                        if (!this.confirmCancelForm.hasErrors()) {
-                            this.viewConfirmCancelModal = false;
-                            this.profileId = '';
-                        }
-                    })
-            },
-            changeSerialRequest(profileId, oldDeviceTypeId) {
-                this.viewChangeSerialRequestModal = true;
-                this.profileId = profileId;
-                this.oldDeviceTypeId = oldDeviceTypeId;
-                this.changeSerialRequestForm.new_device_type_id = oldDeviceTypeId;
-                axios.get('dashboard/deviceTypes/' + profileId)
-                    .then(response => {
-                        this.deviceTypes = response.data;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-            },
-            selectNewDeviceType(newDeviceTypeId) {
-                this.oldDeviceTypeId = newDeviceTypeId;
-                this.changeSerialRequestForm.new_device_type_id = newDeviceTypeId;
-            },
-            submitChangeSerialRequest() {
-                this.changeSerialRequestForm.post(route('dashboard.profiles.update.changeRequest', {profileId: this.profileId}))
-                    .then(response => {
-                        if (!this.changeSerialRequestForm.hasErrors()) {
-                            this.viewChangeSerialRequestModal = false;
-                            this.profileId = '';
-                            this.oldDeviceTypeId = '';
-                        }
-                    })
-            },
-            selectNewSerial(profileId, changeReason) {
-                axios.get('dashboard/profiles/' + profileId + '/newDeviceType')
-                    .then(response => {
-                        this.newDeviceType = response.data;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-                axios.get('dashboard/newDevices/' + profileId)
-                    .then(response => {
-                        this.devices = response.data;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-                this.profileId = profileId;
-                this.changeReason = changeReason;
-                this.viewSelectNewSerialModal = true;
-            },
-            submitSelectNewSerial() {
-                this.selectNewSerialForm.post(route('dashboard.profiles.update.newSerial', {profileId: this.profileId})).then(response => {
-                    if (!this.selectNewSerialForm.hasErrors()) {
-                        this.viewSelectNewSerialModal = false;
-                        this.profileId = '';
+            this.profileId = profileId;
+            this.changeReason = changeReason;
+            this.viewConfirmChangeSerialModal = true;
+        },
+        submitConfirmChangeSerial() {
+            this.confirmChangeSerialForm.post(route('dashboard.profiles.update.changeConfirm', {profileId: this.profileId})).then(response => {
+                if (!this.confirmChangeSerialForm.hasErrors()) {
+                    this.viewConfirmChangeSerialModal = false;
+                    this.profileId = '';
+                }
+            })
+        },
+        uploadExcel() {
+            this.viewUploadExcelModal = true;
+        },
+        onProfilesExcelFileChange(e) {
+            const file = e.target.files[0];
+            this.uploadExcelForm.file = e.target.files[0];
+        },
+        submitUploadExcel() {
+            this.uploadExcelForm.post(route('dashboard.profiles.uploadExcel'))
+                .then(response => {
+                    if (!this.uploadExcelForm.hasErrors()) {
+                        this.viewUploadExcelModal = false;
                     }
-                })
-            },
-            searchDeviceSerials2() {
-                let serial = this.$refs.search_serial2.value;
-                var condition = new RegExp(serial);
-                let selected = this.devices.filter(function (device) {
-                    return condition.test(device.serial);
                 });
-                this.search.results = selected;
-            },
-            confirmChangeSerial(profileId, changeReason) {
-                axios.get('dashboard/profiles/' + profileId + '/newDevice')
-                    .then(response => {
-                        this.newDevice = response.data;
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
-                this.profileId = profileId;
-                this.changeReason = changeReason;
-                this.viewConfirmChangeSerialModal = true;
-            },
-            submitConfirmChangeSerial() {
-                this.confirmChangeSerialForm.post(route('dashboard.profiles.update.changeConfirm', {profileId: this.profileId})).then(response => {
-                    if (!this.confirmChangeSerialForm.hasErrors()) {
-                        this.viewConfirmChangeSerialModal = false;
-                        this.profileId = '';
-                    }
-                })
-            },
-            uploadExcel() {
-                this.viewUploadExcelModal = true;
-            },
-            onProfilesExcelFileChange(e) {
-                const file = e.target.files[0];
-                this.uploadExcelForm.file = e.target.files[0];
-            },
-            submitUploadExcel() {
-                this.uploadExcelForm.post(route('dashboard.profiles.uploadExcel'))
-                    .then(response => {
-                        if (!this.uploadExcelForm.hasErrors()) {
-                            this.viewUploadExcelModal = false;
-                        }
-                    });
-            },
-            submitSearchForm() {
-                Inertia.visit(route('dashboard.profiles.list'), {
-                    method: 'get',
-                    data: {
-                        query: this.query,
-                        pspId: this.psp_id,
-                        statusId: this.status_id,
-                        agentId: this.agent_id,
-                        marketerId: this.marketer_id,
-                        profileType: this.profile_type,
-                        fromDate: this.from_date,
-                        toDate: this.to_date,
-                    },
-                })
-            },
-            submitFromDate(e) {
-                this.submitSearchForm();
-            },
-            submitToDate(e) {
-                this.submitSearchForm();
-            }
+        },
+        submitSearchForm() {
+            Inertia.visit(route('dashboard.profiles.list'), {
+                method: 'get',
+                data: {
+                    query: this.query,
+                    pspId: this.psp_id,
+                    statusId: this.status_id,
+                    agentId: this.agent_id,
+                    marketerId: this.marketer_id,
+                    profileType: this.profile_type,
+                    licenseStatus: this.license_status,
+                    fromDate: this.from_date,
+                    toDate: this.to_date,
+                },
+            })
+        },
+        submitFromDate(e) {
+            this.submitSearchForm();
+        },
+        submitToDate(e) {
+            this.submitSearchForm();
         }
     }
+}
 </script>
 
 <style scoped>

@@ -7,8 +7,6 @@
 
     <title>{{ systemConfig('PAGE_TITLE', 'app.name') }}</title>
 
-    <!-- Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Icons">
     <!-- Styles -->
 {{--    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{$version[1]}}">--}}
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
