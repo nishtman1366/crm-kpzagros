@@ -614,8 +614,8 @@
                                     <div class="col-span-8 m-3 rounded border border-gray-600 py-1 px-3">
                                         <p class="text-lg py-1">وضعیت مدارک:
                                             <span class="rounded py-1 px-2"
-                                            :class="licensesStatusColor(profile.licenses_status)">
-                                            {{profile.licensesStatusText }}
+                                                  :class="licensesStatusColor(profile.licenses_status)">
+                                            {{ profile.licensesStatusText }}
                                         </span>
                                         </p>
                                         {{ profile.licenses_message }}
@@ -1174,7 +1174,7 @@ export default {
     },
     computed: {
         canEditLicenses() {
-            return (this.profile.status == 0 || this.profile.status == 10 || this.profile.status == 11) || this.$page.user.level === 'ADMIN' || this.$page.user.level === 'OFFICE' || this.$page.user.level === 'SUPERUSER'
+            return this.profile.licenses_status === 0 || this.profile.licenses_status === 1 || this.profile.licenses_status === 3 || this.$page.user.level === 'ADMIN' || this.$page.user.level === 'OFFICE' || this.$page.user.level === 'SUPERUSER'
         }
     }
 }
