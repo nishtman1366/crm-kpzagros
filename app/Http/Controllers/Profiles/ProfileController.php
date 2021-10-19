@@ -844,6 +844,7 @@ class ProfileController extends Controller
 
     public function downloadExcel(Request $request)
     {
+        dd($request->query->all());
         $user = Auth::user();
         $profilesQuery = Profile::with('customer')
             ->withCount('accounts')
