@@ -909,7 +909,7 @@ class ProfileController extends Controller
         $searchQuery = $request->query('query', null);
 
         $profilesListCount = $profilesQuery->count();
-        dd($profilesListCount);
+//        dd($profilesListCount);
         $jDate = Jalalian::forge(now())->format('Y.m.d');
         if ($profilesListCount > 1000) {
             $i = 1;
