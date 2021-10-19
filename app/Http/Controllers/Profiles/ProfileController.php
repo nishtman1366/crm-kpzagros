@@ -844,7 +844,6 @@ class ProfileController extends Controller
 
     public function downloadExcel(Request $request)
     {
-        dd($request->query->all());
         $user = Auth::user();
         $profilesQuery = Profile::with('customer')
             ->withCount('accounts')
@@ -900,7 +899,7 @@ class ProfileController extends Controller
         }
 
 
-        $licenseStatus = $request->query('licenseStatus', null);
+        $licenseStatus = $request->query('licenseStatus');
         if (!is_null($licenseStatus)) {
             $profilesQuery->where(function ($query) use ($licenseStatus) {
                 $query->where('licenses_status', $licenseStatus);
@@ -910,6 +909,7 @@ class ProfileController extends Controller
         $searchQuery = $request->query('query', null);
 
         $profilesListCount = $profilesQuery->count();
+        dd($profilesListCount);
         $jDate = Jalalian::forge(now())->format('Y.m.d');
         if ($profilesListCount > 1000) {
             $i = 1;
