@@ -891,8 +891,22 @@ class ProfileController extends Controller
             });
         }
 
+        $profileType = $request->query('profileType', null);
+        if (!is_null($profileType)) {
+            $profilesQuery->where(function ($query) use ($profileType) {
+                $query->where('type', $profileType);
+            });
+        }
+
+
+        $licenseStatus = $request->query('licenseStatus', null);
+        if (!is_null($licenseStatus)) {
+            $profilesQuery->where(function ($query) use ($licenseStatus) {
+                $query->where('licenses_status', $licenseStatus);
+            });
+        }
+
         $searchQuery = $request->query('query', null);
-//        if()
 
         $profilesListCount = $profilesQuery->count();
         $jDate = Jalalian::forge(now())->format('Y.m.d');

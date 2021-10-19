@@ -41,9 +41,14 @@
                                        target="_blank"
                                        :href="route('dashboard.profiles.downloadExcel',{
                                                 query: query,
+                                                pspId: psp_id,
                                                 statusId: status_id,
                                                 agentId: agent_id,
                                                 marketerId: marketer_id,
+                                                profileType: profile_type,
+                                                licenseStatus: license_status,
+                                                fromDate: from_date,
+                                                toDate: toDate,
                                             })">
                                         <jet-button class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
                                             <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
