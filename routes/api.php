@@ -75,3 +75,8 @@ Route::middleware('auth:sanctum')->get('logout', function (Request $request) {
     Auth::user()->currentAccessToken()->delete();
     return response()->json(['success' => true]);
 });
+
+Route::get('domain',function(){
+    $domain = \Illuminate\Support\Facades\Request::root();
+    return response()->json($domain);
+});
