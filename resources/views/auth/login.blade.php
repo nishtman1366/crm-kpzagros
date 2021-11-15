@@ -43,15 +43,18 @@
                     {{--                        {{ __('Forgot your password?') }}--}}
                     {{--                    </a>--}}
                 @endif
-
-                <div>
-                    <a class="text-blue-500 hover:text-blue-400" href="https://www.kpzagros.ir/agency-admission-form/" target="_blank">درخواست نمایندگی</a>
-                </div>
-                <div>
-                    <a class="text-blue-500 hover:text-blue-400" href="https://www.kpzagros.ir/about-us/" target="_blank">
-                        درباره ما
-                    </a>
-                </div>
+                @if(request()->getHttpHost()==='kpzagros-crm.com')
+                    <div>
+                        <a class="text-blue-500 hover:text-blue-400"
+                           href="https://www.kpzagros.ir/agency-admission-form/" target="_blank">درخواست نمایندگی</a>
+                    </div>
+                    <div>
+                        <a class="text-blue-500 hover:text-blue-400" href="https://www.kpzagros.ir/about-us/"
+                           target="_blank">
+                            درباره ما
+                        </a>
+                    </div>
+                @endif
                 <x-jet-button class="ml-4">
                     {{ __('ورود') }}
                 </x-jet-button>
