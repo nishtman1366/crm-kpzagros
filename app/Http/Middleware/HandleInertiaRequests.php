@@ -28,7 +28,14 @@ class HandleInertiaRequests
         }
 
         $configs = [];
-        $settings = Setting::orderBy('id', 'ASC')->get()->each(function ($item) use (&$configs) {
+        $domain = request()->getHttpHost();
+        $settings = Setting::orderBy('id', 'ASC')
+            ->where(function ($query)use($domain){
+                $query->where('domain', $domain)
+                    ->orWhere('domain','kpzagros-crm.com');
+            })
+            ->get()
+            ->each(function ($item) use (&$configs) {
             $configs[Str::camel(strtolower($item->key))] = $item->value;
         });
         Inertia::share('configs', $configs);
