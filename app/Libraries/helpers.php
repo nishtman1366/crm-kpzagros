@@ -63,7 +63,15 @@ if (!function_exists('generateRandomColor')) {
 if (!function_exists('systemConfig')) {
     function systemConfig($key, $default = null)
     {
-        $value = \App\Models\Setting::where('key', $key)->get()->first();
+        $domain = request()->getHttpHost();
+        $value = \App\Models\Setting::where('key', $key)
+            ->where(function ($query)use($domain){
+                $query->where('domain', $domain)
+                    ->orWhere('domain','kpzagros-crm.com');
+            })
+            ->where('domain', $domain)
+            ->get()
+            ->first();
         if (is_null($value)) return $default;
 
         return $value->value;
