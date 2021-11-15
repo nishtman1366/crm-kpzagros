@@ -77,6 +77,6 @@ Route::middleware('auth:sanctum')->get('logout', function (Request $request) {
 });
 
 Route::get('domain',function(){
-    $domain = \Illuminate\Support\Facades\Request::root();
+    $domain = request()->getHttpHost();
     return response()->json($domain);
 });
