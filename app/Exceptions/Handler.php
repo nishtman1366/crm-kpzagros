@@ -43,7 +43,8 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         if ($e instanceof NotFoundHttpException) {
-            return response()->view('errors.404', ['message' => $e->getMessage()]);
+            if ($request->wantsJson()) return response()->json(['message' => $e->getMessage()], 404);
+            else return response()->view('errors.404', ['message' => $e->getMessage()]);
         }
         if ($e instanceof UnauthorizedHttpException) {
             return response()->view('errors.404', ['message' => $e->getMessage()]);

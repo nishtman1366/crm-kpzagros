@@ -76,7 +76,9 @@ Route::middleware('auth:sanctum')->get('logout', function (Request $request) {
     return response()->json(['success' => true]);
 });
 
-Route::get('domain',function(){
+Route::get('domain', function () {
     $domain = request()->getHttpHost();
     return response()->json($domain);
 });
+
+Route::get('devices/{serial}', [\App\Http\Controllers\DeviceController::class, 'getDeviceByApi']);
