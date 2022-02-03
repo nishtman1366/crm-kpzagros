@@ -20,6 +20,7 @@ use App\Rules\ChangeSerial;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -37,30 +38,30 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        $userIdList = collect([]);
-        if ($user->isAdmin() || $user->isAgent() || $user->isMarketer() || $user->isOffice()) {
-            $userIdList->push($user->id);
-        }
-
-        if ($user->isAdmin() || $user->isAgent() || $user->isOffice()) {
-            if ($user->isOffice()) {
-                $userIdList->push($user->parent_id);
-                $childrenId = User::where('parent_id', $user->parent_id)->pluck('id');
-            } else {
-                $childrenId = User::where('parent_id', $user->id)->pluck('id');
-            }
-            $userIdList = $userIdList->merge($childrenId);
-        }
-
-        if ($user->isAdmin() || $user->isOffice()) {
-            if ($user->isOffice()) {
-                $parentsLis = User::where('parent_id', $user->parent_id)->pluck('id');
-            } else {
-                $parentsLis = User::where('parent_id', $user->id)->pluck('id');
-            }
-            $childrenId = User::whereIn('parent_id', $parentsLis)->pluck('id');
-            $userIdList = $userIdList->merge($childrenId);
-        }
+//        $userIdList = collect([]);
+//        if ($user->isAdmin() || $user->isAgent() || $user->isMarketer() || $user->isOffice()) {
+//            $userIdList->push($user->id);
+//        }
+//
+//        if ($user->isAdmin() || $user->isAgent() || $user->isOffice()) {
+//            if ($user->isOffice()) {
+//                $userIdList->push($user->parent_id);
+//                $childrenId = User::where('parent_id', $user->parent_id)->pluck('id');
+//            } else {
+//                $childrenId = User::where('parent_id', $user->id)->pluck('id');
+//            }
+//            $userIdList = $userIdList->merge($childrenId);
+//        }
+//
+//        if ($user->isAdmin() || $user->isOffice()) {
+//            if ($user->isOffice()) {
+//                $parentsLis = User::where('parent_id', $user->parent_id)->pluck('id');
+//            } else {
+//                $parentsLis = User::where('parent_id', $user->id)->pluck('id');
+//            }
+//            $childrenId = User::whereIn('parent_id', $parentsLis)->pluck('id');
+//            $userIdList = $userIdList->merge($childrenId);
+//        }
 
 //        DB::enableQueryLog();
         $profilesQuery = Profile::with('customer')
@@ -118,18 +119,29 @@ class ProfileController extends Controller
             });
         }
 
-        $marketers = [];
+//        $marketers = [];
         $agentId = $request->query('agentId', null);
-        if (!is_null($agentId)) {
-            $profilesQuery->where(function ($query) use ($agentId) {
-                $query->where('user_id', $agentId);
-            });
-
-            $marketers = User::where('level', 'MARKETER')->where('parent_id', $agentId)->get();
-        }
+//        if (!is_null($agentId)) {
+//            $profilesQuery->where(function ($query) use ($agentId) {
+//                $query->where('user_id', $agentId);
+//            });
+//
+////            $marketers = User::where('level', 'MARKETER')->where('parent_id', $agentId)->get();
+//        }
+//
 
         $marketerId = $request->query('marketerId', null);
-        if (!is_null($marketerId)) {
+
+        if (!is_null($agentId)) {
+            $profilesQuery->where(function ($query) use ($agentId, $marketerId) {
+                $query->where('user_id', $agentId);
+                if (!is_null($marketerId)) {
+                    $query->orWhere('user_id', $marketerId);
+                }
+            });
+        }
+
+        if (is_null($agentId) && !is_null($marketerId)) {
             $profilesQuery->where(function ($query) use ($marketerId) {
                 $query->where('user_id', $marketerId);
             });
@@ -167,7 +179,7 @@ class ProfileController extends Controller
             ->paginate(30);
 
         $paginatedLinks = paginationLinks($profiles->appends($request->query->all()));
-
+//        dd($profiles);
 
         /*
          * متغیرهای مورد نیاز
@@ -877,15 +889,29 @@ class ProfileController extends Controller
             $profilesQuery->where('status', '>=', 1);
         }
 
+//        $marketers = [];
         $agentId = $request->query('agentId', null);
+//        if (!is_null($agentId)) {
+//            $profilesQuery->where(function ($query) use ($agentId) {
+//                $query->where('user_id', $agentId);
+//            });
+//
+////            $marketers = User::where('level', 'MARKETER')->where('parent_id', $agentId)->get();
+//        }
+//
+
+        $marketerId = $request->query('marketerId', null);
+
         if (!is_null($agentId)) {
-            $profilesQuery->where(function ($query) use ($agentId) {
+            $profilesQuery->where(function ($query) use ($agentId, $marketerId) {
                 $query->where('user_id', $agentId);
+                if (!is_null($marketerId)) {
+                    $query->orWhere('user_id', $marketerId);
+                }
             });
         }
 
-        $marketerId = $request->query('marketerId', null);
-        if (!is_null($marketerId)) {
+        if (is_null($agentId) && !is_null($marketerId)) {
             $profilesQuery->where(function ($query) use ($marketerId) {
                 $query->where('user_id', $marketerId);
             });
