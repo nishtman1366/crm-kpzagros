@@ -134,8 +134,12 @@ class ProfileController extends Controller
 
         if (!is_null($agentId)) {
             $profilesQuery->where(function ($query) use ($agentId, $marketerId) {
-                $query->where('user_id', $agentId);
-                if (!is_null($marketerId)) {
+                if(is_null($marketerId)) {
+                    $query->where('user_id', $agentId)
+                        ->orWhereHas('user', function ($userQuery) use ($agentId) {
+                            $userQuery->where('parent_id', $agentId);
+                        });
+                }else {
                     $query->orWhere('user_id', $marketerId);
                 }
             });
@@ -904,8 +908,12 @@ class ProfileController extends Controller
 
         if (!is_null($agentId)) {
             $profilesQuery->where(function ($query) use ($agentId, $marketerId) {
-                $query->where('user_id', $agentId);
-                if (!is_null($marketerId)) {
+                if(is_null($marketerId)) {
+                    $query->where('user_id', $agentId)
+                        ->orWhereHas('user', function ($userQuery) use ($agentId) {
+                            $userQuery->where('parent_id', $agentId);
+                        });
+                }else {
                     $query->orWhere('user_id', $marketerId);
                 }
             });
