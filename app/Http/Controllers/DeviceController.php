@@ -430,22 +430,4 @@ class DeviceController extends Controller
 
         return redirect()->route('dashboard.devices.list')->with('message', 'عملیات گروهی با موفقیت انجام شد.');
     }
-
-    public function getDeviceByApi(Request $request)
-    {
-        $serial = $request->route('serial');
-        $device = Device::with('user')
-            ->with('deviceType')
-            ->where('serial', $serial)
-            ->get()
-            ->first();
-        if (is_null($device)) throw new NotFoundHttpException('سریال وارد شده اشتباه است.');
-
-        return response()->json([
-            'guarantee_end' => $device->guarantee_end,
-            'model' => $device->deviceType ? $device->deviceType->name : null,
-            'owner' => $device->user ? $device->user->name : null,
-        ]);
-
-    }
 }

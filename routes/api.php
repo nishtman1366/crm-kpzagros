@@ -81,4 +81,6 @@ Route::get('domain', function () {
     return response()->json($domain);
 });
 
-Route::get('devices/{serial}', [\App\Http\Controllers\DeviceController::class, 'getDeviceByApi']);
+
+Route::get('devices/{serial}', [\App\Http\Controllers\ServiceController::class, 'getDeviceBySerial']);
+Route::get('profile/{terminal}', [\App\Http\Controllers\ServiceController::class, 'getProfileByTerminal']);
