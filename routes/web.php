@@ -277,3 +277,9 @@ Route::get('listSerials', function () {
             echo '<p style="direction: rtl">' . $profile->id . ',' . $profile->customer->fullName . ',' . $profile->customer->national_code . ',' . $profile->device_id . ',' . (!is_null($profile->device) ? $profile->device->serial : '') . ',' . $profile->new_device_id . ',' . (!is_null($newDevice) ? $newDevice->serial : '') . '</p>';
         });
 });
+
+
+Route::get('ipg', function (\Illuminate\Http\Request $request) {
+    $referenceCode = $request->query('referenceCode');
+    return view('ipg', ['referenceCode' => $referenceCode]);
+});
