@@ -16,6 +16,8 @@ class UpdateTerminal extends FormRequest
         return true;
     }
 
+    protected $errorBag = 'terminalForm';
+
     /**
      * Get the validation rules that apply to the request.
      *
