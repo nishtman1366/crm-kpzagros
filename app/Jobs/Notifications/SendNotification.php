@@ -48,8 +48,7 @@ class SendNotification implements ShouldQueue
      *
      * @return void
      */
-    public
-    function handle()
+    public function handle()
     {
         if ($this->type === 'pattern') {
             $this->sendByPattern();
@@ -58,8 +57,7 @@ class SendNotification implements ShouldQueue
         }
     }
 
-    private
-    function sendByPattern()
+    private function sendByPattern()
     {
         $client = new  Client($this->apiCode);
         try {
@@ -77,6 +75,8 @@ class SendNotification implements ShouldQueue
         $client = new  Client($this->apiCode);
         try {
             $bulkId = $client->send('+98club', $this->receptions, $this->notification->body);
+            $this->notification->bulk_id = $bulkId;
+            $this->notification->save();
             Log::channel('notifications')->info('Bulk Id:' . $bulkId . ' - - - - Receptions count: ' . count($this->receptions) . ' - - - - id: ' . $this->notification->id);
         } catch (Error $e) {
             Log::channel('notifications')->error('Error: ' . json_encode($e->unwrap()));

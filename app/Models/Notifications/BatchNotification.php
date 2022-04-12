@@ -16,8 +16,27 @@ class BatchNotification extends Model
 
     public function getStatusTextAttribute()
     {
-        if ($this->attributes['status']) return 'فعال';
-        return 'غیرفعال';
+        switch ($this->attributes['status']) {
+            case 0:
+                return 'ثبت شده';
+                break;
+            case 1:
+                return 'ارسال شده';
+                break;
+            case 2:
+                return 'در انتظار تایید';
+                break;
+            case 3:
+                return 'در حال ارسال';
+                break;
+            case 4:
+                return 'پایان یافته';
+                break;
+            case 5:
+                return 'لغو شده';
+                break;
+        }
+        return 'نام مشخص';
     }
 
     public function getCreateDateAttribute()
