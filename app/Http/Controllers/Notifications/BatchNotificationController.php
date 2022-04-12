@@ -127,7 +127,7 @@ class BatchNotificationController extends Controller
 
         $notification = BatchNotification::withCount('receptions')->find($id);
         if (is_null($notification)) throw new NotFoundHttpException('اعلان گروهی یافت نشد.');
-        $apiKey = systemConfig('SMS_API_TOKEN');
+        $apiKey = 'RwoB81G8VWdrZ4xc-GmNp96xPlk1rvdcYmUGnSCvWZY=';
         $client = new Client($apiKey);
         try {
             $data = $client->getMessage($notification->bulk_id);
@@ -148,7 +148,7 @@ class BatchNotificationController extends Controller
         }
 
         try {
-            $list = $client->fetchStatuses('209076264', ($page === 0 ? 0 : $page - 1), $limit);
+            $list = $client->fetchStatuses($notification->bulk_id, ($page === 0 ? 0 : $page - 1), $limit);
             $receptions = $list[0];
             $pagination = $list[1];
         } catch (Error $e) {

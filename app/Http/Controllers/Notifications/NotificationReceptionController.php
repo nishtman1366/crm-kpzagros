@@ -18,7 +18,11 @@ class NotificationReceptionController extends Controller
         $batchNotification = BatchNotification::find($id);
         if (is_null($batchNotification)) throw new NotFoundHttpException('اعلام گروهی یافت نشد.');
 
-        if ($request->has('body')) {
+        if ($request->has('delete_old_numbers') && $request->get('delete_old_numbers') == true) {
+            Reception::where('batch_notification_id', $batchNotification->id)->delete();
+        }
+
+        if ($request->has('body') && trim($request->get('body') != '')) {
             $body = $request->get('body');
             $numbers = explode(',', $body);
             foreach ($numbers as $number) {

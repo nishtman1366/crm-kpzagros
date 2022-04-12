@@ -4,6 +4,7 @@ namespace App\Imports\Notifications;
 
 use App\Models\Notifications\Reception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToModel;
 
 class Receptions implements ToModel
@@ -22,6 +23,7 @@ class Receptions implements ToModel
     public function model(array $row)
     {
         $row[0] = (string)$row[0];
+
         if (trim($row[0]) != null && $row[0] != '') {
             $number = $row[0];
             if ($number[0] != '0') {

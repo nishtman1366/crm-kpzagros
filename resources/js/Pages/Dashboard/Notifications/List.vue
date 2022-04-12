@@ -34,11 +34,11 @@
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        تاریخ درخواست
+                                        تاریخ ثبت
                                     </th>
                                     <th scope="col"
                                         class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        آخرین تغییر وضعیت
+                                        تاریخ ارسال
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50">عملیات</th>
                                 </tr>
@@ -46,35 +46,44 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <tr v-for="notification in list" :key="notification.id">
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{notification.no}}
+                                        {{ notification.no }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{notification.title}}
+                                        {{ notification.title }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{notification.type=='pattern' ? 'الگو' : 'باشگاه مشتریان'}}
+                                        {{ notification.type == 'pattern' ? 'الگو' : 'باشگاه مشتریان' }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         <span
                                             :class="statusColors(notification.status)"
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                                          {{notification.statusText}}
+                                          {{ notification.statusText }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{notification.createDate}}
+                                        {{ notification.createDate }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{notification.updateDate}}
+                                        {{ notification.sentDate }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        <button class="text-indigo-600 hover:text-indigo-900"
+                                        <button v-if="notification.status==0"
+                                                class="text-indigo-600 hover:text-indigo-900"
                                                 @click="editNotification(notification)">
                                             <svg style="display:inline;width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                       d="M23.5,17L18.5,22L15,18.5L16.5,17L18.5,19L22,15.5L23.5,17M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,17C12.5,17 12.97,16.93 13.42,16.79C13.15,17.5 13,18.22 13,19V19.45L12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5C17,4.5 21.27,7.61 23,12C22.75,12.64 22.44,13.26 22.08,13.85C21.18,13.31 20.12,13 19,13C18.22,13 17.5,13.15 16.79,13.42C16.93,12.97 17,12.5 17,12A5,5 0 0,0 12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17Z"/>
                                             </svg>
                                         </button>
+                                        <inertia-link v-else
+                                                      class="text-indigo-600 hover:text-indigo-900"
+                                                      :href="route('dashboard.notifications.details',{id:notification.id})">
+                                            <svg style="display:inline;width:24px;height:24px" viewBox="0 0 24 24">
+                                                <path fill="currentColor"
+                                                      d="M23.5,17L18.5,22L15,18.5L16.5,17L18.5,19L22,15.5L23.5,17M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,17C12.5,17 12.97,16.93 13.42,16.79C13.15,17.5 13,18.22 13,19V19.45L12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5C17,4.5 21.27,7.61 23,12C22.75,12.64 22.44,13.26 22.08,13.85C21.18,13.31 20.12,13 19,13C18.22,13 17.5,13.15 16.79,13.42C16.93,12.97 17,12.5 17,12A5,5 0 0,0 12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17Z"/>
+                                            </svg>
+                                        </inertia-link>
                                         <button class="text-green-600 hover:text-green-900"
                                                 @click.nativ="viewReceptions(notification)">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -158,8 +167,8 @@
                                           placeholder="متن پیام"
                                 />
                                 <div class="flex justify-between font-bold">
-                                    <span>{{notificationForm.body.length}} کاراکتر</span>
-                                    <span>{{notificationPageCount}} پیامک</span>
+                                    <span>{{ notificationForm.body && notificationForm.body.length }} کاراکتر</span>
+                                    <span>{{ notificationPageCount }} پیامک</span>
                                 </div>
                                 <jet-input-error :message="notificationForm.error('body')"/>
                             </div>
@@ -196,10 +205,16 @@
                                 <span>در این بخش میتوانید شماره گیرندگان را به صورت پشت هم نوشته و با یک ویرگول (,) از هم جدا کنید.</span>
                                 <jet-input-error :message="receptionsForm.error('body')"/>
                             </div>
+                            <div class="mt-3 flex items-center justify-start">
+                                <input type="checkbox" id="delete_old_numbers" name="delete_old_numbers"
+                                       class="border border-gray-200 ml-1"
+                                       v-model="receptionsForm.delete_old_numbers">
+                                <jet-label for="delete_old_numbers" value="حذف شماره های قدیمی"/>
+                            </div>
                         </div>
                         <div class="h-64 overflow-y-auto border border-gray-200 rounded p-1">
                             <div class="font-bold">گیرندگان این اعلان:</div>
-                            <div>{{notification.receptions_count}} شماره</div>
+                            <div>{{ notification.receptions_count }} شماره</div>
                             <!--                            <div class="flex justify-between" v-for="reception in notification.receptions"-->
                             <!--                                 :key="reception.id">-->
                             <!--                                <div>{{reception.reception}}</div>-->
@@ -225,12 +240,14 @@
                     <div class="">
                         <div class="mt-3">
                             <p>آیا از ارسال این اعلان مطمئن هستید؟</p>
-                            <p>عنوان: <span class="font-bold">{{notification.title}}</span></p>
-                            <p v-if="notification.type==='pattern'">کد الگو: <span class="font-bold">{{notification.pattern}}</span>
+                            <p>عنوان: <span class="font-bold">{{ notification.title }}</span></p>
+                            <p v-if="notification.type==='pattern'">کد الگو: <span
+                                class="font-bold">{{ notification.pattern }}</span>
                             </p>
-                            <p v-else-if="notification.type==='club'" class="my-1">متن اعلان: <span class="font-bold">{{notification.body}}</span>
+                            <p v-else-if="notification.type==='club'" class="my-1">متن اعلان: <span
+                                class="font-bold">{{ notification.body }}</span>
                             </p>
-                            <p>تعداد گیرندگان: <span class="font-bold">{{notification.receptions_count}}</span></p>
+                            <p>تعداد گیرندگان: <span class="font-bold">{{ notification.receptions_count }}</span></p>
                         </div>
                     </div>
                 </template>
@@ -249,125 +266,130 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from "@/Jetstream/Button";
-    import JetSecondaryButton from "@/Jetstream/SecondaryButton";
-    import JetDialog from "@/Jetstream/DialogModal"
-    import JetLabel from "@/Jetstream/Label";
-    import JetInput from "@/Jetstream/Input";
-    import JetInputError from "@/Jetstream/InputError";
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from "@/Jetstream/Button";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetDialog from "@/Jetstream/DialogModal"
+import JetLabel from "@/Jetstream/Label";
+import JetInput from "@/Jetstream/Input";
+import JetInputError from "@/Jetstream/InputError";
 
-    export default {
-        name: "List",
-        components: {Dashboard, JetButton, JetSecondaryButton, JetDialog, JetLabel, JetInput, JetInputError},
-        props: {
-            list: Array
-        },
-        data() {
-            return {
-                viewNotificationModal: false,
-                notificationForm: this.$inertia.form({
-                    title: null,
-                    pattern: null,
-                    parameters: null,
-                    body: null,
-                    type: null,
-                }, {
-                    bag: 'notificationForm'
-                }),
-                viewReceptionsModal: false,
-                notification: {id: null, title: null, pattern: null},
-                notificationId: null,
-                receptionsForm: this.$inertia.form({
-                    batch_notification_id: null,
-                    file: null,
-                    body: null
-                }, {
-                    bag: 'receptionsForm'
-                }),
-                viewSendNotificationModal: false,
-                sendNotificationForm: this.$inertia.form({})
+export default {
+    name: "List",
+    components: {Dashboard, JetButton, JetSecondaryButton, JetDialog, JetLabel, JetInput, JetInputError},
+    props: {
+        list: Array
+    },
+    data() {
+        return {
+            viewNotificationModal: false,
+            notificationForm: this.$inertia.form({
+                title: null,
+                pattern: null,
+                parameters: null,
+                body: null,
+                type: null,
+            }, {
+                bag: 'notificationForm'
+            }),
+            viewReceptionsModal: false,
+            notification: {id: null, title: null, pattern: null},
+            notificationId: null,
+            receptionsForm: this.$inertia.form({
+                batch_notification_id: null,
+                file: null,
+                delete_old_numbers: false,
+                body: null
+            }, {
+                bag: 'receptionsForm'
+            }),
+            viewSendNotificationModal: false,
+            sendNotificationForm: this.$inertia.form({})
+        }
+    },
+    computed: {
+        notificationPageCount: function () {
+            let length = 0;
+            if (this.notificationForm.body) {
+                length = Math.round(this.notificationForm.body.length / 67);
             }
+            if (length < 1) return 1;
+            return length;
+
+        }
+    },
+    methods: {
+        newNotification() {
+            this.notificationForm.reset();
+            this.notificationId = null;
+            this.viewNotificationModal = true;
         },
-        computed: {
-            notificationPageCount: function () {
-                let length = Math.round(this.notificationForm.body.length / 67);
-                if (length < 1) return 1;
-                return length;
-            }
-        },
-        methods: {
-            newNotification() {
-                this.notificationForm.reset();
-                this.notificationId = null;
-                this.viewNotificationModal = true;
-            },
-            submitNewNotification() {
-                this.notificationForm.post(route('dashboard.notifications.store'))
-                    .then(response => {
-                        if (!this.notificationForm.hasErrors()) {
-                            this.viewNotificationModal = false;
-                        }
-                    })
-            },
-            viewReceptions(notification) {
-                this.receptionsForm.reset();
-                this.viewReceptionsModal = true;
-                this.notification = notification;
-                this.receptionsForm.batch_notification_id = notification.id;
-            },
-            handleReceptionsFile(e) {
-                this.receptionsForm.file = e.target.files[0];
-            },
-            submitNewReceptions() {
-                this.receptionsForm.post(route('dashboard.notifications.receptions.store', {id: this.notification.id}))
-                    .then(response => {
-                        if (!this.receptionsForm.hasErrors()) {
-                            this.viewReceptionsModal = false;
-                            this.notificationId = null;
-                        }
-                    });
-            },
-            editNotification(notification) {
-                this.notificationId = notification.id;
-                this.notificationForm.title = notification.title;
-                this.notificationForm.type = notification.type;
-                this.notificationForm.body = notification.body;
-                this.notificationForm.pattern = notification.pattern;
-                this.notificationForm.status = notification.status;
-                this.notificationForm.parameters = notification.parameters;
-                this.viewNotificationModal = true;
-            },
-            updateNotification() {
-                this.notificationForm.put(route('dashboard.notifications.update', {id: this.notificationId}))
-                    .then(response => {
-                        if (!this.notificationForm.hasErrors()) {
-                            this.viewNotificationModal = false;
-                            this.notificationId = null;
-                        }
-                    })
-            },
-            sendNotification(notification) {
-                this.notification = notification;
-                this.viewSendNotificationModal = true;
-            },
-            submitSendNotification() {
-                this.sendNotificationForm.post(route('dashboard.notifications.send', {id: this.notification.id}), {
-                    onSuccess: () => {
-                        this.viewSendNotificationModal = false;
+        submitNewNotification() {
+            this.notificationForm.post(route('dashboard.notifications.store'))
+                .then(response => {
+                    if (!this.notificationForm.hasErrors()) {
+                        this.viewNotificationModal = false;
                     }
                 })
-            },
-            statusColors(status) {
-                switch (status) {
-                    case 0:
-                        return 'bg-red-100 text-red-800';
-                    case 1:
-                        return 'bg-green-100 text-green-800';
+        },
+        viewReceptions(notification) {
+            this.receptionsForm.reset();
+            this.viewReceptionsModal = true;
+            this.notification = notification;
+            this.receptionsForm.batch_notification_id = notification.id;
+        },
+        handleReceptionsFile(e) {
+            this.receptionsForm.file = e.target.files[0];
+        },
+        submitNewReceptions() {
+            this.receptionsForm.post(route('dashboard.notifications.receptions.store', {id: this.notification.id}))
+                .then(response => {
+                    if (!this.receptionsForm.hasErrors()) {
+                        this.viewReceptionsModal = false;
+                        this.notificationId = null;
+                    }
+                });
+        },
+        editNotification(notification) {
+            this.notificationId = notification.id;
+            this.notificationForm.title = notification.title;
+            this.notificationForm.type = notification.type;
+            this.notificationForm.body = notification.body;
+            this.notificationForm.pattern = notification.pattern;
+            this.notificationForm.status = notification.status;
+            this.notificationForm.parameters = notification.parameters;
+            this.viewNotificationModal = true;
+        },
+        updateNotification() {
+            this.notificationForm.put(route('dashboard.notifications.update', {id: this.notificationId}))
+                .then(response => {
+                    if (!this.notificationForm.hasErrors()) {
+                        this.viewNotificationModal = false;
+                        this.notificationId = null;
+                    }
+                })
+        },
+        sendNotification(notification) {
+            this.notification = notification;
+            this.viewSendNotificationModal = true;
+        },
+        submitSendNotification() {
+            this.sendNotificationForm.post(route('dashboard.notifications.send', {id: this.notification.id}), {
+                onSuccess: () => {
+                    this.viewSendNotificationModal = false;
                 }
+            })
+        },
+        statusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'bg-red-100 text-red-800';
+                case 1:
+                    return 'bg-green-100 text-green-800';
             }
         }
     }
+}
 </script>
 
 <style scoped>
