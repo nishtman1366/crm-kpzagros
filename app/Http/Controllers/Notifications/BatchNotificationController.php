@@ -96,13 +96,19 @@ class BatchNotificationController extends Controller
         if (is_null($batchNotification)) throw new NotFoundHttpException('اعلان گروهی یافت نشد.');
 
         if ($batchNotification->type === 'pattern') {
-            $receptions = $batchNotification->receptions;
-            foreach ($batchNotification->receptions as $reception) {
-                if (!is_null($reception->reception) && $reception->reception != '') {
-                    dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, $reception->reception))
-                        ->onQueue('notificationsQueue');
+            $i = 1;
+            $batchNotification->receptions()->chunk(50, function ($receptions) use ($batchNotification, &$i) {
+                foreach ($receptions as $reception) {
+                    if (!is_null($reception->reception) && $reception->reception != '') {
+                        $list[] = $reception->reception;
+                        dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, $reception->reception))
+                            ->onQueue('notificationsQueue')
+                            ->delay(($i * 10));
+                    }
                 }
-            }
+                $i++;
+//                Log::channel('notifications')->info('count: ' . count($list));
+            });
         } elseif ($batchNotification->type === 'club') {
             $batchNotification->receptions()->chunk(10000, function ($receptions) use ($batchNotification) {
                 $list = [];
