@@ -46,6 +46,7 @@ class ProfileExport implements FromCollection, WithHeadings
             }
 
             $item->push(
+                $profile->id,
                 substr($profile->jCreatedAt, 0, 10),
                 substr($profile->jUpdatedAt, 0, 10),
                 $profile->user ? $profile->user->name : '',
@@ -126,6 +127,7 @@ class ProfileExport implements FromCollection, WithHeadings
             $accountsHeading = array_merge($accountsHeading, $accounts);
         }
         $headings = [
+            'شناسه پرونده',
             'تاریخ ثبت اولیه',
             'تاریخ تایید نهایی',
             'کاربر ثبت کننده',
