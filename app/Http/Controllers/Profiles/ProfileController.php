@@ -8,6 +8,9 @@ use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Requests\Profiles\Profile\UpdateTerminal;
 use App\Imports\Profiles\CustomImport;
 use App\Imports\Profiles\ProfileImport;
+use App\Jobs\Profiles\CreateZipArchive;
+use App\Jobs\Profiles\DeleteExportedFiles;
+use App\Jobs\Profiles\ExportProfiles;
 use App\Models\Profiles\Profile;
 use App\Models\Profiles\LicenseType;
 use App\Models\Profiles\ProfileMessage;
@@ -20,6 +23,8 @@ use App\Rules\ChangeSerial;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -134,12 +139,12 @@ class ProfileController extends Controller
 
         if (!is_null($agentId)) {
             $profilesQuery->where(function ($query) use ($agentId, $marketerId) {
-                if(is_null($marketerId)) {
+                if (is_null($marketerId)) {
                     $query->where('user_id', $agentId)
                         ->orWhereHas('user', function ($userQuery) use ($agentId) {
                             $userQuery->where('parent_id', $agentId);
                         });
-                }else {
+                } else {
                     $query->orWhere('user_id', $marketerId);
                 }
             });
@@ -166,19 +171,21 @@ class ProfileController extends Controller
                 $query->orWhere('last_name', 'LIKE', '%' . $searchQuery . '%');
             });
         }
-
-//        $fromDate = $request->query('fromDate', Jalalian::now()->subMonths()->format('Y-m-d'));
-//        $fromDate = str_replace('/', '-', $fromDate);
-//        $jFromDate = $fromDate;
-//        $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
-//        $profilesQuery->where('updated_at', '>=', $fromDate);
-//
-//        $toDate = $request->query('toDate', Jalalian::now()->format('Y-m-d'));
-//        $toDate = str_replace('/', '-', $toDate);
-//        $jToDate = $toDate;
-//        $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
-//        $profilesQuery->where('updated_at', '<=', $toDate);
-
+        $jFromDate = $jToDate = null;
+        $fromDate = $request->query('fromDate');
+        if ($fromDate) {
+            $fromDate = str_replace('/', '-', $fromDate);
+            $jFromDate = $fromDate;
+            $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
+            $profilesQuery->where('updated_at', '>=', $fromDate);
+        }
+        $toDate = $request->query('toDate');
+        if ($toDate) {
+            $toDate = str_replace('/', '-', $toDate);
+            $jToDate = $toDate;
+            $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
+            $profilesQuery->where('updated_at', '<=', $toDate);
+        }
         $profiles = $profilesQuery->orderBy('updated_at', 'DESC')
             ->paginate(30);
 
@@ -262,8 +269,8 @@ class ProfileController extends Controller
 
                 'searchQuery' => $searchQuery,
 
-//                'fromDate' => $jFromDate,
-//                'toDate' => $jToDate,
+                'fromDate' => $jFromDate,
+                'toDate' => $jToDate,
 
                 'paginatedLinks' => $paginatedLinks,
             ]
@@ -865,7 +872,6 @@ class ProfileController extends Controller
             ->withCount('accounts')
             ->with('user')
             ->with('user.parent')
-            ->with('customer')
             ->whereHas('customer')
             ->where(function ($query) use ($user) {
                 if (!$user->isSuperUser()) {
@@ -908,12 +914,12 @@ class ProfileController extends Controller
 
         if (!is_null($agentId)) {
             $profilesQuery->where(function ($query) use ($agentId, $marketerId) {
-                if(is_null($marketerId)) {
+                if (is_null($marketerId)) {
                     $query->where('user_id', $agentId)
                         ->orWhereHas('user', function ($userQuery) use ($agentId) {
                             $userQuery->where('parent_id', $agentId);
                         });
-                }else {
+                } else {
                     $query->orWhere('user_id', $marketerId);
                 }
             });
@@ -932,7 +938,6 @@ class ProfileController extends Controller
             });
         }
 
-
         $licenseStatus = $request->query('licenseStatus');
         if (!is_null($licenseStatus)) {
             $profilesQuery->where(function ($query) use ($licenseStatus) {
@@ -942,46 +947,62 @@ class ProfileController extends Controller
 
         $searchQuery = $request->query('query', null);
 
-        $profilesListCount = $profilesQuery->count();
-//        dd($profilesListCount);
-        $jDate = Jalalian::forge(now())->format('Y.m.d');
-        if ($profilesListCount > 1000) {
-            $i = 1;
-            $profilesQuery->orderBy('id', 'ASC')->chunk(1000, function ($profiles) use ($jDate, &$i) {
-                $fileName = 'profiles.' . $jDate . '_' . $i . '_' . '.xlsx';
-                Excel::store(new ProfileExport($profiles), 'temp/excel/profiles/' . $jDate . '/' . $fileName);
-                $i++;
-            });
-
-
-            $files = Storage::files('temp/excel/profiles/' . $jDate);
-            if (count($files) > 0) {
-                $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $jDate));
-                $archive = new ZipArchive();
-                if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-                    throw new Exception("Zip file could not be created: " . $archive->getStatusString());
-                }
-
-                foreach ($files as $file) {
-                    $f = storage_path('app/' . $file);
-                    if (!$archive->addFile($f, basename($file))) {
-                        throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
-                    }
-                }
-
-                if (!$archive->close()) {
-                    throw new Exception("Could not close zip file: " . $archive->getStatusString());
-                }
-                Storage::deleteDirectory('temp/excel/profiles/' . $jDate);
-                return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])->deleteFileAfterSend(true);
-            }
-
-            throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");
-        } else {
-            $profiles = $profilesQuery->orderBy('id', 'ASC')->get();
-            $fileName = $jDate . '.xlsx';
-            return Excel::download(new ProfileExport($profiles), $fileName);
+        $fromDate = $request->query('fromDate', null);
+        if ($fromDate) {
+            $fromDate = str_replace('/', '-', $fromDate);
+            $fromDate = Jalalian::fromFormat('Y-m-d', $fromDate)->toCarbon()->hour(0)->minute(0)->second(0);
+            $profilesQuery->where('updated_at', '>=', $fromDate);
         }
+        $toDate = $request->query('toDate');
+        if ($toDate) {
+            $toDate = str_replace('/', '-', $toDate);
+            $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
+            $profilesQuery->where('updated_at', '<=', $toDate);
+        }
+        $jDate = Jalalian::forge(now())->format('Y.m.d');
+        $i = 1;
+        $excelJobList = collect();
+        $profilesQuery->orderBy('id', 'ASC')->chunk(999, function ($profiles) use (&$excelJobList, $jDate, &$i, $user) {
+            $excelJobList->push(new ExportProfiles($profiles, $user));
+            $i++;
+        });
+        Cache::put(sprintf('%s.profiles.export.total', $user->id), $i);
+        $excelJobList->push(new CreateZipArchive($user));
+        $excelJobList->push(new DeleteExportedFiles($user));
+        Bus::chain($excelJobList->toArray())
+            ->onQueue('ExportQueue')
+            ->dispatch();
+        return redirect()->back();
+    }
+
+    public function ExcelStatus(Request $request)
+    {
+        $user = Auth::user();
+        $status = Cache::get(sprintf('%s.profiles.export.status', $user->id));
+        if (!is_null($status)) {
+            $response = [
+                'status' => $status
+            ];
+            if ($status === 'processing') {
+                $total = (int)Cache::get(sprintf('%s.profiles.export.total', $user->id));
+                $done = (int)Cache::get(sprintf('%s.profiles.export.done', $user->id));
+                $response['message'] = 'فرایند تبدیل فایل در حال پردازش است.';
+                $response['complete'] = round(($done / $total) * 100, 1);
+            } elseif ($status === 'failed') {
+                $response['message'] = 'آخرین فرایند تبدیل فایل با شکست مواجه شده است.';
+            } elseif ($status === 'done') {
+                $response['message'] = 'آخرین فرایند تبدیل فایل با موفقیت به پایان رسید.';
+                $expiration = Cache::get(sprintf('%s.profiles.export.expiration', $user->id));
+                if (!is_null($expiration)) {
+                    $response['expiration'] = Jalalian::forge($expiration)->format('Y/m/d H:i');
+                }
+                $response['url'] = Cache::get(sprintf('%s.profiles.export.zipFileUrl', $user->id));
+            }
+            return response()->json($response);
+        }
+        return response([
+            'status' => 'NotFound'
+        ])->json();
     }
 
     public function uploadExcel(Request $request)

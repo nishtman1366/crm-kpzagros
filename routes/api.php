@@ -51,6 +51,7 @@ Route::middleware('auth:sanctum')->prefix('dashboard')->namespace('App\\Http\\Co
         Route::get('{profileId}/accounts/create', 'AccountController@create');
         Route::post('{profileId}/accounts/store', 'AccountController@store');
 
+        Route::get('excel/status', [\App\Http\Controllers\Profiles\ProfileController::class, 'ExcelStatus']);
     });
 });
 
@@ -83,4 +84,4 @@ Route::get('domain', function () {
 
 
 Route::get('devices/{serial}', [\App\Http\Controllers\ServiceController::class, 'getDeviceBySerial']);
-Route::get('profile/{terminal}', [\App\Http\Controllers\ServiceController::class, 'getProfileByTerminal']);
+Route::get('profiles/{terminal}', [\App\Http\Controllers\ServiceController::class, 'getProfileByTerminal']);

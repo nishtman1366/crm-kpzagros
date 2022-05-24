@@ -37,27 +37,15 @@
                                         </svg>
                                         ورود اطلاعات
                                     </jet-button>
-                                    <a v-show="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
-                                       target="_blank"
-                                       :href="route('dashboard.profiles.downloadExcel',{
-                                                query: query,
-                                                pspId: psp_id,
-                                                statusId: status_id,
-                                                agentId: agent_id,
-                                                marketerId: marketer_id,
-                                                profileType: profile_type,
-                                                licenseStatus: license_status,
-                                                fromDate: from_date,
-                                                toDate: toDate,
-                                            })">
-                                        <jet-button class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
-                                            <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
-                                                <path fill="currentColor"
-                                                      d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
-                                            </svg>
-                                            دریافت لیست
-                                        </jet-button>
-                                    </a>
+                                    <jet-button v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                                @click.native="openDownloadExcelModal"
+                                                class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
+                                        <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
+                                        </svg>
+                                        دریافت لیست
+                                    </jet-button>
                                 </div>
                                 <div class="col-1 md:col-span-4">
                                     <select id="psp_id"
@@ -147,30 +135,35 @@
                                         <option :value="2">تایید نهایی</option>
                                     </select>
                                 </div>
-                                <!--                                <div class="col-1 md:col-span-4">-->
-                                <!--                                    <date-picker-->
-                                <!--                                        @change="submitFromDate"-->
-                                <!--                                        v-model="from_date"-->
-                                <!--                                        element="from_date"-->
-                                <!--                                        ref="from_date_cal"></date-picker>-->
-                                <!--                                    <jet-input placeholder="تاریخ شروع"-->
-                                <!--                                               name="from_date"-->
-                                <!--                                               id="from_date"-->
-                                <!--                                               ref="from_date"-->
-                                <!--                                               v-model="from_date"-->
-                                <!--                                               readonly/>-->
-                                <!--                                    <date-picker-->
-                                <!--                                        @change="submitToDate"-->
-                                <!--                                        v-model="to_date"-->
-                                <!--                                        element="to_date"-->
-                                <!--                                        ref="to_date_cal"></date-picker>-->
-                                <!--                                    <jet-input placeholder="تاریخ پایان"-->
-                                <!--                                               name="to_date"-->
-                                <!--                                               id="to_date"-->
-                                <!--                                               ref="to_date"-->
-                                <!--                                               v-model="to_date"-->
-                                <!--                                               readonly/>-->
-                                <!--                                </div>-->
+                                <div class="col-1 md:col-span-4">
+                                    <date-picker
+                                        @change="submitFromDate"
+                                        v-model="from_date"
+                                        element="from_date"
+                                        ref="from_date_cal"></date-picker>
+                                    <jet-input placeholder="تاریخ شروع"
+                                               name="from_date"
+                                               id="from_date"
+                                               ref="from_date"
+                                               v-model="from_date"
+                                               readonly/>
+                                    <span class="mx-1 text-blue-500 hover:text-blue-400 cursor-pointer"
+                                          @click="clearDate('from')">حذف</span>
+                                    <date-picker
+                                        @change="submitToDate"
+                                        v-model="to_date"
+                                        element="to_date"
+                                        ref="to_date_cal"></date-picker>
+                                    <jet-input placeholder="تاریخ پایان"
+                                               name="to_date"
+                                               id="to_date"
+                                               ref="to_date"
+                                               v-model="to_date"
+                                               readonly/>
+                                    <span class="mx-1 text-blue-500 hover:text-blue-400 cursor-pointer"
+                                          @click="clearDate('to')">حذف</span>
+
+                                </div>
                             </div>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
@@ -432,7 +425,9 @@
                     <div class="mt-4">
                         <p class="float-left">
                             مدل دستگاه: <span
-                            class="text-red-400 font-bold mx-3">{{ selectedDevice.device_type ? selectedDevice.device_type.name : '' }}</span>
+                            class="text-red-400 font-bold mx-3">{{
+                                selectedDevice.device_type ? selectedDevice.device_type.name : ''
+                            }}</span>
                         </p>
                         <p class="float-right">
                             سریال دستگاه: <span class="text-green-400 font-bold mx-3">{{ selectedDevice.serial }}</span>
@@ -485,10 +480,14 @@
                         </div>
                         <div>
                             <p>مدل دستگاه: <span
-                                class="font-bold">{{ selectedProfile && selectedProfile.device_type && selectedProfile.device_type.name }}</span>
+                                class="font-bold">{{
+                                    selectedProfile && selectedProfile.device_type && selectedProfile.device_type.name
+                                }}</span>
                             </p>
                             <p>سریال: <span
-                                class="font-bold">{{ selectedProfile && selectedProfile.device && selectedProfile.device.serial }}</span>
+                                class="font-bold">{{
+                                    selectedProfile && selectedProfile.device && selectedProfile.device.serial
+                                }}</span>
                             </p>
                         </div>
                     </div>
@@ -895,6 +894,76 @@
                     </jet-button>
                 </template>
             </jet-confirmation-modal>
+            <!-- دانلود فایل اکسل -->
+            <jet-confirmation-modal :show="viewDownloadExcelModal" @close="closeDownloadModal">
+                <template #title>
+                    دریافت اطلاعات به صورت فایل اکسل
+                </template>
+                <template #content>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
+                        <div class="my-3 p-2 bg-yellow-200 border-r-4 border-yellow-500">
+                            <p class="text-md">با توجه به زمانبر بودن فرایند تبدیل اطلاعات، این فرایند در پس زمینه اجرا
+                                خواهد شد</p>
+                        </div>
+                        <div v-if="downloadExcelLoading" class="text-center">در حال بارگذاری اطلاعات...</div>
+                        <template v-else>
+                            <div v-if="downloadExcelResponse" class="text-center my-4">
+                                <div v-if="downloadExcelResponse.status==='processing'">
+                                    <div class="text-yellow-500">{{ downloadExcelResponse.message }}</div>
+                                    <div>میزان پیشرفت: {{ downloadExcelResponse.complete }}%</div>
+                                </div>
+                                <div v-else-if="downloadExcelResponse.status==='done'">
+                                    <div class="my-3 p-2 bg-green-200 border-r-4 border-green-500">
+                                        {{ downloadExcelResponse.message }}
+                                    </div>
+                                    <div>
+                                        <a :href="downloadExcelResponse.url" target="_blank">
+                                            <jet-button>دریافت فایل</jet-button>
+                                        </a>
+                                    </div>
+                                    <div class="my-3 p-2 bg-red-200 border-r-4 border-red-500">فایل گزارش در
+                                        <span class="bg-white py-1 px-2 rounded-full text-red-500"
+                                              style="display:inline-block;direction: ltr">
+                                            {{ downloadExcelResponse.expiration }}
+                                        </span>
+                                        به صورت خودکار حذف خواهد شد.
+                                    </div>
+                                </div>
+                                <div v-else-if="downloadExcelResponse.status==='failed'">
+                                    <div class="my-3 p-2 bg-red-200 border-r-4 border-red-500">
+                                        {{ downloadExcelResponse.message }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="my-3 p-2 bg-yellow-200 border-r-4 border-yellow-500">
+                                <p class="text-md">فرایندی در حال اجرا نمی باشد.</p>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                <template #footer>
+                    <jet-secondary-button class="ml-2" @click.native="closeDownloadModal">
+                        بستن
+                    </jet-secondary-button>
+                    <InertiaLink
+                        v-if="!downloadExcelLoading && (!downloadExcelResponse || (downloadExcelResponse && downloadExcelResponse.status==='failed') || (downloadExcelResponse && downloadExcelResponse.status==='NotFound') || (downloadExcelResponse && downloadExcelResponse.status==='done'))"
+                        :href="route('dashboard.profiles.downloadExcel',{
+                                                query: query,
+                                                pspId: psp_id,
+                                                statusId: status_id,
+                                                agentId: agent_id,
+                                                marketerId: marketer_id,
+                                                profileType: profile_type,
+                                                licenseStatus: license_status,
+                                                fromDate: from_date,
+                                                toDate: toDate,
+                                            })">
+                        <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500">
+                            تبدیل اطلاعات
+                        </jet-button>
+                    </InertiaLink>
+                </template>
+            </jet-confirmation-modal>
         </template>
     </Dashboard>
 </template>
@@ -1076,6 +1145,10 @@ export default {
                 bag: 'rejectSerialForm',
                 resetOnSuccess: true
             }),
+
+            downloadExcelLoading: false,
+            viewDownloadExcelModal: false,
+            downloadExcelResponse: null
         }
     },
     mounted() {
@@ -1347,6 +1420,46 @@ export default {
         },
         submitToDate(e) {
             this.submitSearchForm();
+        },
+        clearDate(date) {
+            if (date === 'from') {
+                this.from_date = null;
+            } else if (date === 'to') {
+                this.to_date = null;
+            }
+            Inertia.visit(route('dashboard.profiles.list'), {
+                method: 'get',
+                data: {
+                    query: this.query,
+                    pspId: this.psp_id,
+                    statusId: this.status_id,
+                    agentId: this.agent_id,
+                    marketerId: this.marketer_id,
+                    profileType: this.profile_type,
+                    licenseStatus: this.license_status,
+                    fromDate: this.from_date,
+                    toDate: this.to_date,
+                },
+            })
+        },
+
+        openDownloadExcelModal() {
+            this.downloadExcelLoading = true;
+            this.viewDownloadExcelModal = true;
+            axios.get('dashboard/profiles/excel/status')
+                .then(response => {
+                    this.downloadExcelResponse = response.data;
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.downloadExcelLoading = false;
+                })
+        },
+        closeDownloadModal() {
+            this.viewDownloadExcelModal = false;
+            this.downloadExcelResponse = null;
         }
     }
 }
