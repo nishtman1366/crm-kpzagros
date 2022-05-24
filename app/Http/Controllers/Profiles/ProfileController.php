@@ -978,6 +978,13 @@ class ProfileController extends Controller
     public function ExcelStatus(Request $request)
     {
         $user = Auth::user();
+        Cache::forget(sprintf('%s.profiles.export.status', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.directory', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.zipFileUrl', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.zipFile', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.done', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.total', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.expiration', $user->id));
         $status = Cache::get(sprintf('%s.profiles.export.status', $user->id));
         if (!is_null($status)) {
             $response = [
