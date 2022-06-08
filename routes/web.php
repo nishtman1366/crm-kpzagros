@@ -284,56 +284,35 @@ Route::get('ipg', function (\Illuminate\Http\Request $request) {
     return view('ipg', ['referenceCode' => $referenceCode]);
 });
 
-Route::get('duplicates', function () {
+Route::get('duplicates', function (\Illuminate\Http\Request $request) {
     $duplicates = collect();
-//    $customerIds = \Illuminate\Support\Facades\DB::table('profiles')
-//        ->selectRaw('`merchant_id`, COUNT(`merchant_id`) as m ')
-//        ->groupBy('merchant_id')
-//        ->havingRaw('m > 1')
-//        ->get();
 
-    $profiles = Profile::with('customer')
-        ->with('psp')
-        ->with('business')
-        ->where('psp_id', 4)
-        ->whereIn('status', [5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16])
-        ->selectRaw('`merchant_id`, COUNT(`merchant_id`) as m ')
-        ->groupBy('merchant_id')
-        ->havingRaw('m > 1')
-        ->get();
-
-    foreach ($profiles as $profile) {
+    $pspId = $request->query('psp');
+    if ($pspId) {
         $profiles = Profile::with('customer')
             ->with('psp')
             ->with('business')
-            ->where('psp_id', 4)
+            ->where('psp_id', $pspId)
             ->whereIn('status', [5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16])
-            ->where('merchant_id', $profile->merchant_id)
-            ->get()
-            ->each(function ($p) use (&$duplicates) {
-                $duplicates->push($p);
-            });
+            ->selectRaw('`merchant_id`, COUNT(`merchant_id`) as m ')
+            ->groupBy('merchant_id')
+            ->havingRaw('m > 1')
+            ->get();
+
+        foreach ($profiles as $profile) {
+            $profiles = Profile::with('customer')
+                ->with('psp')
+                ->with('business')
+                ->where('psp_id', $pspId)
+                ->whereIn('status', [5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16])
+                ->where('merchant_id', $profile->merchant_id)
+                ->get()
+                ->each(function ($p) use (&$duplicates) {
+                    $duplicates->push($p);
+                });
+        }
     }
-//    foreach ($customerIds as $customerId) {
-//        $customers = \App\Models\Profiles\Customer::with('profile')
-//            ->with('profile.psp')
-//            ->whereHas('profile', function ($profileQuery) {
-//                $profileQuery->where('psp_id', 4)
-//                    ->where('status', 4);
-//            })
-//            ->where('national_code', $customerId->national_code)
-//            ->get();
-//        $duplicates->push([
-//            'customers' => $customers,
-//        ]);
-//        foreach ($customers as $customer) {
-//            $profile = Profile::with('business')->find($customer->profile_id);
-//            $duplicates->push([
-//                'profile' => $profile,
-//                'customer' => $customer,
-//            ]);
-//        }
-//    }
-//    dd($duplicates);
-    return view('Temp.duplicates', compact('duplicates'));
-});
+
+    $psps = \App\Models\Variables\Psp::orderBy('name', 'ASC')->get();
+    return view('Temp.duplicates', compact('duplicates', 'psps', 'pspId'));
+})->name('duplicates');
