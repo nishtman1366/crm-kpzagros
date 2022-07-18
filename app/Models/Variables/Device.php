@@ -90,26 +90,34 @@ class Device extends Model
     public function setGuaranteeStartAttribute($value)
     {
         if (!is_null($value)) {
+            $format = null;
             if (str_contains($value, '/')) {
                 $format = 'Y/m/d';
             } elseif (str_contains($value, '-')) {
                 $format = 'Y-m-d';
             }
-
-            $this->attributes['guarantee_start'] = Jalalian::fromFormat($format, substr($value, 0, 10))->toCarbon();
+            if (!is_null($format)) {
+                $this->attributes['guarantee_start'] = Jalalian::fromFormat($format, substr($value, 0, 10))->toCarbon();
+            } else {
+                $this->attributes['guarantee_start'] = null;
+            }
         }
     }
 
     public function setGuaranteeEndAttribute($value)
     {
         if (!is_null($value)) {
+            $format = null;
             if (str_contains($value, '/')) {
                 $format = 'Y/m/d';
             } elseif (str_contains($value, '-')) {
                 $format = 'Y-m-d';
             }
-
-            $this->attributes['guarantee_end'] = Jalalian::fromFormat($format, substr($value, 0, 10))->toCarbon();
+            if (!is_null($format)) {
+                $this->attributes['guarantee_end'] = Jalalian::fromFormat($format, substr($value, 0, 10))->toCarbon();
+            } else {
+                $this->attributes['guarantee_end'] = null;
+            }
         }
     }
 

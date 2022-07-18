@@ -34,12 +34,12 @@ class ServiceController extends Controller
             ->with('psp')
             ->with('device')
             ->with('deviceType')
-            ->where('terminal', $terminal)->get()->first();
+            ->where('terminal_id', $terminal)->get()->first();
         if (is_null($profile)) throw new NotFoundHttpException('ترمینال وارد شده اشتباه است.');
 
         return response()->json([
-            'terminal_id' => $profile->terminal,
-            'merchant_id' => $profile->terminal,
+            'terminal_id' => $profile->terminal_id,
+            'merchant_id' => $profile->merchant_id,
             'device' => [
                 'serial' => $profile->device ? $profile->device->serial : null,
                 'guarantee_end' => $profile->device ? $profile->device->guarantee_end : null,

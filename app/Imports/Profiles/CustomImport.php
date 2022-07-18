@@ -6,6 +6,7 @@ use App\Models\Profiles\Account;
 use App\Models\Profiles\Business;
 use App\Models\Profiles\Customer;
 use App\Models\Profiles\Profile;
+use App\Models\Profiles\ProfilesAccount;
 use App\Models\Variables\Bank;
 use App\Models\Variables\Device;
 use Illuminate\Support\Facades\DB;
@@ -129,7 +130,7 @@ class CustomImport implements ToModel, WithStartRow
     private function createAccount($row)
     {
         $bank = Bank::where('name', $row[33])->get()->first();
-        Account::create([
+        $account = Account::create([
             'customer_id' => $this->customer->id,
             'bank_id' => is_null($bank) ? null : $bank->id,
             'branch' => $row[34],
@@ -140,6 +141,10 @@ class CustomImport implements ToModel, WithStartRow
             'national_code' => $this->customer->national_code,
             'mobile' => $this->customer->mobile,
             'birthday' => $this->customer->birthday
+        ]);
+        ProfilesAccount::create([
+            'profile_id' => $this->profile->id,
+            'account_id' => $account->id
         ]);
     }
 }

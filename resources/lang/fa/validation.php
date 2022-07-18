@@ -152,12 +152,16 @@ return [
         'company_name' => 'نام شرکت',
         'company_name_english' => 'نام شرکت به انگلیسی',
         'business_name' => 'نام تجاری',
-        'company_reg_date' => 'تاریخ ثبت',
-        'company_reg_code' => 'شماره ثبت',
+        'reg_date' => 'تاریخ ثبت',
+        'reg_code' => 'شماره ثبت',
         'company_national_code' => 'شناسه ملی',
         'asasname_file' => 'تصویر اساسنامه',
         'agahi_file_1' => 'تصویر آگهی ثبت',
         'agahi_file_2' => 'تصویر آگهی تاسیس',
+
+        'business_category_code'=>'صنف مرتبط',
+        'business_subCategory_code'=>'صنف مرتبط تکمیلی',
+        'tax_code'=>'کد مالیاتی',
 
         'ostan_id' => 'استان',
         'shahrestan_id' => 'شهرستان',
@@ -223,6 +227,9 @@ return [
         'transfer_payment_file' => 'تصویر واریز وجه',
 
 
+        'license_type_id' => 'نوع مدرک',
+        'account_id' => 'حساب بانکی',
+
         'reject_serial_reason' => 'علت عدم تایید',
 
         'amount' => 'مبلغ',
@@ -236,6 +243,7 @@ return [
         'ticket_type_id' => 'واحد پشتیبانی',
         'agent_id' => 'کاربر پشتیبانی',
 
-        'parameters'=>'متغیرها'
+        'parameters'=>'متغیرها',
+        'terminal_number'=>'شماره پایانه'
     ],
 ];

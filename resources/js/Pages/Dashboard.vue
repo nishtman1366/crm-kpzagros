@@ -261,9 +261,6 @@
                 return this.$slots.dashboardContent;
             }
         },
-        mounted() {
-
-        },
         methods: {
 
         }

@@ -81,12 +81,8 @@ class UserController extends Controller
         return redirect()->route('dashboard.users.list', ['type' => $type]);
     }
 
-    public function view(Request $request)
+    public function view(string $type, User $user)
     {
-        $userId = $request->route('id');
-        $user = User::find($userId);
-        if (is_null($user)) return response()->json('not found', 404);
-        $type = $request->route('type', null);
         $usersType = $this->returnUsersType(strtoupper($type));
         $statuses = [
             ['id' => 0, 'name' => 'ثبت شده'],
@@ -107,20 +103,16 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(string $type, User $user, Request $request)
     {
-        $userId = $request->route('id');
         $request->validateWithBag('userForm', [
             'parent_id' => 'required',
             'name' => 'required',
-            'username' => 'required|unique:users,id,' . $userId,
+            'username' => 'required|unique:users,id,' . $user->id,
             'password' => 'nullable|min:6',
             'mobile' => 'required|digits:11',
             'status' => 'required',
         ]);
-
-        $user = User::find($userId);
-        if (is_null($user)) return response()->json('not found', 404);
 
         $user->fill($request->all());
         $user->save();
@@ -129,13 +121,9 @@ class UserController extends Controller
         return redirect()->route('dashboard.users.list', ['type' => $type]);
     }
 
-    public function destroy(Request $request)
+    public function destroy(string $type, User $user)
     {
-        $userId = $request->route('id');
-        $type = $request->route('type');
-
-        User::destroy($userId);
-
+        $user->delete();
         return redirect()->route('dashboard.users.list', ['type' => $type]);
     }
 

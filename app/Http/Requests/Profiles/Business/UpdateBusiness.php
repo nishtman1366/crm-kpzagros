@@ -27,7 +27,7 @@ class UpdateBusiness extends FormRequest
      */
     public function rules()
     {
-        $profileId = $this->route('profileId');
+        $profileId = $this->get('profile_id');
 
         $validationArray = [
             'profile_id' => 'required|exists:profiles,id',
@@ -37,8 +37,7 @@ class UpdateBusiness extends FormRequest
             'shahr_id' => 'nullable|exists:shahr,id',
             'name' => 'required',
             'name_english' => 'required|regex:/(^[a-zA-Z0-9 ]+$)/u',
-            'senf' => 'required',
-            'postal_code' => ['required', 'numeric', 'digits:10', new UniquePostalCode((int)$this->get('profile_id'), true)],
+            'postal_code' => ['required', 'numeric', 'digits:10', new UniquePostalCode((int)$profileId, true)],
             'address' => 'required',
             'phone_code' => 'required',
             'phone' => 'required',
@@ -58,7 +57,6 @@ class UpdateBusiness extends FormRequest
                 'esteshhad_file' => 'nullable|image|mimetypes:image/jpg,image/jpeg',
             ]);
         }
-        $profileId = $this->route('profileId');
         $business = Business::where('profile_id', $profileId)->get()->first();
         if (!is_null($business)) {
             if ($business->has_license == 'NO' && $hasLicense == 'YES') {

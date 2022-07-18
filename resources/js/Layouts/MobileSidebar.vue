@@ -7,23 +7,41 @@
                 داشبورد
             </inertia-link>
             <template v-if="$page.user.level!='TECHNICAL'">
-                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">پذیرندگان</p>
+                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">
+                    پذیرندگان</p>
                 <inertia-link :href="route('dashboard.profiles.list')"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">assignment_ind</i>
                     لیست پذیرندگان
                 </inertia-link>
+                <inertia-link v-if="$page.user.level!='TECHNICAL'" :href="route('dashboard.profiles.create')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">assignment_ind</i>
+                    ثبت درخواست جدید
+                </inertia-link>
             </template>
             <template v-if="$page.user.level!='MARKETER'">
-                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">دستگاه ها</p>
+                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">
+                    دستگاه ها</p>
                 <inertia-link :href="route('dashboard.devices.list')"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">dock</i>
                     لیست دستگاه ها
                 </inertia-link>
+                <inertia-link :href="route('dashboard.repairs.list')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">construction</i>
+                    تعمیرات
+                </inertia-link>
+                <inertia-link :href="route('dashboard.returns.list')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">keyboard_return</i>
+                    عودت دستگاه
+                </inertia-link>
             </template>
             <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">اخبار و اطلاعیه ها</p>
+                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">
+                    اخبار و اطلاعیه ها</p>
                 <inertia-link :href="route('dashboard.posts.list')"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">article</i>
@@ -37,35 +55,70 @@
             </template>
             <template
                 v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
-                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">کاربران</p>
+                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">
+                    کاربران</p>
                 <inertia-link v-if="$page.user.level=='SUPERUSER'" :href="route('dashboard.users.list',{type:'admin'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">people</i>
                     مدیران سیستم
                 </inertia-link>
-                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'" :href="route('dashboard.users.list',{type:'office'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'"
+                              :href="route('dashboard.users.list',{type:'office'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
                     کارمندان دفتر
                 </inertia-link>
-                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'" :href="route('dashboard.users.list',{type:'agent'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'"
+                              :href="route('dashboard.users.list',{type:'agent'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
                     نمایندگان
                 </inertia-link>
-                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'" :href="route('dashboard.users.list',{type:'marketer'})"
-                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                <inertia-link
+                    v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'"
+                    :href="route('dashboard.users.list',{type:'marketer'})"
+                    class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">person</i>
                     بازاریابان
                 </inertia-link>
-                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'" :href="route('dashboard.users.list',{type:'technical'})"
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'"
+                              :href="route('dashboard.users.list',{type:'technical'})"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
                     کارشناسان فنی
                 </inertia-link>
             </template>
+            <template>
+                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">
+                    پشتیبانی
+                </p>
+                <inertia-link :href="route('dashboard.tickets.list')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">comment</i>
+                    لیست درخواست ها
+                </inertia-link>
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'"
+                              :href="route('dashboard.tickets.agents.list')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">group</i>
+                    کاربران
+                </inertia-link>
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'"
+                              :href="route('dashboard.tickets.types.list')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">forum</i>
+                    واحدها
+                </inertia-link>
+                <inertia-link v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'"
+                              :href="route('dashboard.notifications.list')"
+                              class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
+                    <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">forum</i>
+                    اعلان های گروهی
+                </inertia-link>
+            </template>
             <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
-                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">تنظیمات</p>
+                <p class="text-gray-300 hover:bg-gray-700 hover:text-white block px-4 py-2 rounded-md text-base font-bold">
+                    تنظیمات</p>
                 <inertia-link :href="route('dashboard.settings.main')"
                               class="text-gray-300 hover:bg-gray-700 hover:text-white block px-2 py-2 rounded-md text-base font-medium">
                     <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">settings</i>
@@ -124,9 +177,9 @@
                     <img class="h-8 w-8 rounded-full m-1" :src="$page.user.profile_photo_url" alt="">
                 </div>
                 <div class="ml-3">
-                    <div class="inline text-base font-medium leading-none text-white">{{$page.user.name}}</div>
+                    <div class="inline text-base font-medium leading-none text-white">{{ $page.user.name }}</div>
                     <div class="inline text-sm font-medium leading-none text-gray-400">
-                        ({{$page.user.levelText}})
+                        ({{ $page.user.levelText }})
                     </div>
                 </div>
                 <button
@@ -157,16 +210,16 @@
 </template>
 
 <script>
-    export default {
-        name: "MobileSidebar",
-        methods:{
-            logout() {
-                axios.post(route('logout').url()).then(response => {
-                    window.location = '/';
-                })
-            },
-        }
+export default {
+    name: "MobileSidebar",
+    methods: {
+        logout() {
+            axios.post(route('logout').url()).then(response => {
+                window.location = '/';
+            })
+        },
     }
+}
 
 </script>
 

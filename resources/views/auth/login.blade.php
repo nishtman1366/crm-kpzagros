@@ -4,8 +4,8 @@
             <x-jet-authentication-card-logo/>
         </x-slot>
 
-        <h3 class="text-2xl text-center">{{systemConfig('COMPANY_NAME')}}</h3>
-        <h3 class="text-xl text-center">{{systemConfig('PAGE_TITLE')}}</h3>
+        <h3 class="text-2xl text-center">{{systemConfig('COMPANY_NAME', 'کیان‌پرداز زاگرس')}}</h3>
+        <h3 class="text-xl text-center">{{systemConfig('PAGE_TITLE', 'سامانه جامع امور نمایندگان زاگرس پی')}}</h3>
 
         <x-jet-validation-errors class="mb-4"/>
 

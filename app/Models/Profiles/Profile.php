@@ -16,17 +16,18 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'user_id', 'psp_id', 'device_type_id', 'device_id',
+    protected $fillable = ['type', 'user_id',
+        'psp_id', 'device_type_id', 'device_id' .
         'multi_account', 'terminal_id', 'merchant_id', 'cancel_reason', 'change_reason', 'reject_serial_reason',
         'previous_name', 'previous_national_code', 'previous_mobile', 'new_device_type_id',
-        'new_device_id', 'status', 'licenses_status',
-        'device_sell_type', 'device_amount', 'device_dept_profile_id', 'device_physical_status'];
+        'new_device_id', 'status', 'licenses_status'];
 
     protected $appends = ['statusText', 'jCreatedAt', 'jUpdatedAt', 'transferFileUrl',
-        'transferPaymentFileUrl', 'typeText', 'devicePhysicalStatusText', 'deviceSellTypeText', 'licensesStatusText'];
+        'transferPaymentFileUrl', 'typeText', 'licensesStatusText'];
 
 
     protected $casts = [
+        'id' => 'integer',
         'licenses_status' => 'integer'
     ];
 
@@ -41,33 +42,6 @@ class Profile extends Model
                 return 'تایید نهایی';
             case 3:
                 return 'رد شده';
-        }
-    }
-
-    public function getDevicePhysicalStatusTextAttribute()
-    {
-        switch ($this->attributes['device_physical_status']) {
-            default:
-                return 'ثبت نشده';
-            case 'new':
-                return 'آکبند';
-            case 'stock':
-                return 'کارکرده';
-        }
-    }
-
-
-    public function getDeviceSellTypeTextAttribute()
-    {
-        switch ($this->attributes['device_sell_type']) {
-            default:
-                return 'ثبت نشده';
-            case 'cash':
-                return 'نقدی';
-            case 'dept':
-                return 'امانی';
-            case 'installment':
-                return 'اقساطی';
         }
     }
 
@@ -121,6 +95,9 @@ class Profile extends Model
                 break;
             case 16:
                 return 'رد درخواست جابجایی';
+                break;
+            case 255:
+                return 'حذف به دلیل ادغام';
                 break;
             default:
                 return 'ثبت موقت';
@@ -191,6 +168,11 @@ class Profile extends Model
     public function psp()
     {
         return $this->belongsTo(Psp::class, 'psp_id', 'id');
+    }
+
+    public function terminals()
+    {
+        return $this->hasMany(Terminal::class);
     }
 
     public function user()

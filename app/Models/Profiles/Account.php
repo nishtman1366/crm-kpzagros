@@ -14,7 +14,18 @@ class Account extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['customer_id', 'bank_id', 'branch', 'account_number', 'sheba_code', 'first_name', 'last_name', 'national_code', 'mobile', 'birthday'];
+    protected $fillable = [
+        'customer_id',
+        'bank_id',
+        'branch',
+        'account_number',
+        'sheba_code',
+        'first_name',
+        'last_name',
+        'national_code',
+        'mobile',
+        'birthday'
+    ];
 
     protected $appends = ['fullName', 'shebaText', 'jBirthday', 'shebaFile'];
 

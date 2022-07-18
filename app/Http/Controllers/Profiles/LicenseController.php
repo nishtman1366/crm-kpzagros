@@ -78,19 +78,17 @@ class LicenseController extends Controller
     }
 
     /**
+     * @param Profile $profile
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(Profile $profile, Request $request)
     {
         $request->validateWithBag('uploadLicenseForm', [
             'license_type_id' => 'required|exists:license_types,id',
             'file' => 'required'
         ]);
 
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
         $user = Auth::user();
         if (!$user->isAdmin() && !$user->isSuperuser() && !$user->isOffice()) {
             if ($profile->user_id !== $user->id) throw new UnauthorizedHttpException('', 'شما اجازه دسترسی به این پرونده را ندارید.');
@@ -103,9 +101,9 @@ class LicenseController extends Controller
             $licenseTypeId = $request->get('license_type_id');
             $accountId = $request->get('account_id', null);
             $type = LicenseType::where('id', $licenseTypeId)->get()->first();
-            static::upload($request->file('file'), $type->key, $profileId, $accountId);
+            static::upload($request->file('file'), $type->key, $profile->id, $accountId);
         }
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id]);
     }
 
     /**
@@ -145,12 +143,9 @@ class LicenseController extends Controller
      * This function delete the license file with the @param $licneseId in route
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Request $request)
+    public function destroy(Profile $profile, Request $request)
     {
         $licenseId = (int)$request->route('licenseId');
-        $profileId = (int)$request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
 
         $user = Auth::user();
         if (!$user->isAdmin() && !$user->isSuperuser() && !$user->isOffice()) {
@@ -161,29 +156,26 @@ class LicenseController extends Controller
 
         $license = License::find($licenseId);
         if (!is_null($license)) {
-            if ($license->profile_id !== $profileId) throw new UnprocessableEntityHttpException('شما اجازه دسترسی به این پرونده را ندارید');
+            if ($license->profile_id !== $profile->id) throw new UnprocessableEntityHttpException('شما اجازه دسترسی به این پرونده را ندارید');
             Storage::disk('licenses')->delete('profiles/' . $license->profile_id . '/' . $license->file);
             $license->delete();
         }
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id]);
     }
 
-    public function downloadZipArchive(Request $request)
+    public function downloadZipArchive(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')->find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
-
-        $licenses = License::where('profile_id', $profileId)->get();
+        $profile->load('customer');
+        $licenses = License::where('profile_id', $profile->id)->get();
         $files = [];
 
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
 
-            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profileId, $license->file));
-            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profileId, $license->file));
-            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profileId, $license->file), $stream);
+            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
+            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
+            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $license->file), $stream);
             $files[] = $fileItem;
         }
 
@@ -204,7 +196,7 @@ class LicenseController extends Controller
                 throw new Exception("Could not close zip file: " . $archive->getStatusString());
             }
 
-            \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profileId));
+            \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profile->id));
 
             return response()->download($archiveFile, basename($archiveFile), ['Content-Type' => 'application/octet-stream'])
                 ->deleteFileAfterSend(true);

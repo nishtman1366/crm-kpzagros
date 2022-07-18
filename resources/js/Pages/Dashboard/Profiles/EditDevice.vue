@@ -249,7 +249,7 @@
             },
             submitDeviceType(id) {
                 this.deviceTypeForm.device_type_id = id;
-                this.deviceTypeForm.put(route('dashboard.profiles.devices.update', {profileId: this.profileId})).then(response => {
+                this.deviceTypeForm.put(route('dashboard.profiles.devices.update', {profile: this.profileId})).then(response => {
 
                 })
             }

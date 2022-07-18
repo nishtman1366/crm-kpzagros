@@ -377,6 +377,7 @@ class RepairController extends Controller
         $id = $request->route('repairId');
         $repair = Repair::find($id);
         if (is_null($repair)) return response()->json(['message' => 'اطلاعات درخواست یافت نشد'], 404);
+
         $status = $request->get('status');
         $repair->status = $status;
         $repair->save();

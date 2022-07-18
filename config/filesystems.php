@@ -43,18 +43,24 @@ return [
         ],
 
         'licenses' => [
-            'driver' => 'ftp',
-            'host' => '185.255.90.105',
-//            'host' => 'storage.kpzagros-crm.com',
-            'username' => 'zagros@storage.kpzagros-crm.com',
-            'password' => 'Nil00f@r1869',
-            'root' => 'public_html/licenses/',
-            'url' => 'http://storage.kpzagros-crm.com/licenses',
-            'passive' => false,
-            'ignorePassiveAddress' => true,
-            'ssl' => false,
-            'port' => 21,
+            'driver' => 'local',
+            'root' => storage_path('app/public/licenses'),
+            'url' => env('APP_URL') . '/licenses',
+            'visibility' => 'public',
         ],
+
+//        'licenses' => [
+//            'driver' => 'ftp',
+//            'host' => 'storage.kpzagros-crm.com',
+//            'username' => 'zagros@storage.kpzagros-crm.com',
+//            'password' => 'Nil00f@r1869',
+//            'root' => 'public_html/licenses/',
+//            'url' => 'http://storage.kpzagros-crm.com/licenses',
+//            'passive' => false,
+//            'ignorePassiveAddress' => true,
+//            'ssl' => false,
+//            'port' => 21,
+//        ],
 
         's3' => [
             'driver' => 's3',
@@ -81,6 +87,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        public_path('licenses') => storage_path('app/public/licenses'),
     ],
 
 ];

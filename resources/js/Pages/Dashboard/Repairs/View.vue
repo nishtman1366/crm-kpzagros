@@ -11,7 +11,7 @@
 
                         <template #description>
                             <p class="mx-3 my-2 rounded border border-blue-700 bg-blue-200 text-blue-700 px-2 py-3 text-center text-xl">
-                                کد رهگیری: {{repair.tracking_code}}
+                                کد رهگیری: {{ repair.tracking_code }}
                             </p>
                             <p class="mt-1 text-sm text-gray-600">
                                 در این بخش اطلاعات درخواست تعمیرات را ثبت نمایید.
@@ -36,14 +36,32 @@
 
                             <div class="my-1 p-3 border-r-4 border-green-600 bg-green-100"
                                  v-for="event in repair.events" :key="event.id">
-                                <p class="text-sm text-gray-400 mt-2">{{event.jDate | persianDigit}}</p>
-                                <p class="font-bold ml-1">{{event.title}}
-                                    <span class="text-xs text-gray-400">{{event.user && event.user.name}}</span>
+                                <p class="text-sm text-gray-400 mt-2">{{ event.jDate | persianDigit }}</p>
+                                <p class="font-bold ml-1">{{ event.title }}
+                                    <span class="text-xs text-gray-400">{{ event.user && event.user.name }}</span>
                                 </p>
-                                <p v-if="event.description" class="text-justify">{{event.description}}</p>
+                                <p v-if="event.description" class="text-justify">{{ event.description }}</p>
                             </div>
                         </template>
                         <template #form>
+                            <div class="col-span-6 flex justify-start items-end" v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                <div class="ml-3">
+                                    <jet-label for="admin_status" value="وضعیت"/>
+                                    <select id="admin_status" name="admin_status" ref="admin_status"
+                                            v-model="updateStatusByAdminForm.status"
+                                            autocomplete="admin_status"
+                                            class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
+                                        <option v-for="status in statuses" :key="status.id"
+                                                :value="status.id">
+                                            {{ status.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <jet-button type="button" @click.native="submitUpdateStatusByAdminForm">ذخیره</jet-button>
+                            </div>
+                            <div class="col-span-6" v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                <jet-section-border/>
+                            </div>
                             <div class="col-span-6 sm:col-span-2">
                                 <jet-label for="device_type_id" value="مدل دستگاه"/>
                                 <select id="device_type_id" name="device_type_id" ref="device_type_id"
@@ -52,7 +70,7 @@
                                         class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                     <option v-for="type in deviceTypes" :key="type.id"
                                             :value="type.id">
-                                        {{type.name}}
+                                        {{ type.name }}
                                     </option>
                                 </select>
                                 <jet-input-error :message="updateRepairForm.error('device_type_id')" class="mt-2"/>
@@ -75,7 +93,7 @@
                                         class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                     <option v-for="psp in psps" :key="psp.id"
                                             :value="psp.id">
-                                        {{psp.name}}
+                                        {{ psp.name }}
                                     </option>
                                 </select>
                                 <jet-input-error :message="updateRepairForm.error('psp_id')" class="mt-2"/>
@@ -88,7 +106,7 @@
                                         class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                     <option v-for="bank in banks" :key="bank.id"
                                             :value="bank.id">
-                                        {{bank.name}}
+                                        {{ bank.name }}
                                     </option>
                                 </select>
                                 <jet-input-error :message="updateRepairForm.error('bank_id')" class="mt-2"/>
@@ -165,7 +183,7 @@
                                                :id="'accessories_'+item.id"
                                                v-model="updateRepairForm.accessories"
                                                :value="item.id"/>
-                                        <span class="mr- ml-3">{{item.name}}</span>
+                                        <span class="mr- ml-3">{{ item.name }}</span>
                                     </jet-label>
                                 </div>
                                 <jet-input-error :message="updateRepairForm.error('accessories')" class="mt-2"/>
@@ -182,7 +200,7 @@
                                            class="form-input p-0 rounded-none m-1"
                                            v-model="updateRepairForm.repairTypeList"
                                            :id="'type_'+type.id"
-                                           :value="type.id">{{type.name}}
+                                           :value="type.id">{{ type.name }}
                                 </jet-label>
                             </div>
                             <div class="col-span-6">
@@ -216,7 +234,7 @@
                                             class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                         <option v-for="location in locations" :key="location.id"
                                                 :value="location.id">
-                                            {{location.name}}
+                                            {{ location.name }}
                                         </option>
                                     </select>
                                     <jet-input-error :message="updateRepairForm.error('location_id')" class="mt-2"/>
@@ -243,7 +261,7 @@
                                             class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                         <option v-for="device in deviceTypes" :key="device.id"
                                                 :value="device.id">
-                                            {{device.name}}
+                                            {{ device.name }}
                                         </option>
                                     </select>
                                     <jet-input-error :message="updateRepairForm.error('new_device_type_id')"
@@ -271,7 +289,7 @@
                                             class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                         <option v-for="device in deviceTypes" :key="device.id"
                                                 :value="device.id">
-                                            {{device.name}}
+                                            {{ device.name }}
                                         </option>
                                     </select>
                                     <jet-input-error :message="updateRepairForm.error('loan_device_type_id')"
@@ -340,16 +358,20 @@
                                         </thead>
                                         <tbody class="bg-white divide-y divide-gray-200">
                                         <tr v-for="payment in repair.payments" :key="payment.id">
-                                            <td class="py-4 text-center text-gray-900">{{payment.user && payment.user.name}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.type && payment.type.name}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.jDate}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.ref_code}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.tracking_code}}</td>
+                                            <td class="py-4 text-center text-gray-900">
+                                                {{ payment.user && payment.user.name }}
+                                            </td>
+                                            <td class="py-4 text-center text-gray-900">
+                                                {{ payment.type && payment.type.name }}
+                                            </td>
+                                            <td class="py-4 text-center text-gray-900">{{ payment.jDate }}</td>
+                                            <td class="py-4 text-center text-gray-900">{{ payment.ref_code }}</td>
+                                            <td class="py-4 text-center text-gray-900">{{ payment.tracking_code }}</td>
                                             <td :colspan="payment.status==2 ? 2 : ''"
                                                 class="py-4 text-center text-gray-900">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                                   :class="paymentStatusColors(payment.status)">
-                                                    {{payment.statusText}}
+                                                    {{ payment.statusText }}
                                             </span>
                                             </td>
                                             <td class="py-4 text-center text-gray-900">
@@ -522,137 +544,147 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetLabel from '@/Jetstream/Label'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-    import JetSectionBorder from '@/Jetstream/SectionBorder'
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import Dashboard from "@/Pages/Dashboard";
+import JetActionMessage from '@/Jetstream/ActionMessage'
+import JetButton from '@/Jetstream/Button'
+import JetFormSection from '@/Jetstream/FormSection'
+import JetInput from '@/Jetstream/Input'
+import JetInputError from '@/Jetstream/InputError'
+import JetLabel from '@/Jetstream/Label'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import JetSectionBorder from '@/Jetstream/SectionBorder'
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
 
-    export default {
-        name: "View",
-        components: {
-            Dashboard,
-            JetActionMessage,
-            JetButton,
-            JetFormSection,
-            JetInput,
-            JetInputError,
-            JetLabel,
-            JetSecondaryButton,
-            JetSectionBorder,
-            JetConfirmationModal,
-            datePicker: VuePersianDatetimePicker,
+export default {
+    name: "View",
+    components: {
+        Dashboard,
+        JetActionMessage,
+        JetButton,
+        JetFormSection,
+        JetInput,
+        JetInputError,
+        JetLabel,
+        JetSecondaryButton,
+        JetSectionBorder,
+        JetConfirmationModal,
+        datePicker: VuePersianDatetimePicker,
+    },
+    props: {
+        repair: Object,
+        repairTypesList: Array,
+        locations: Array,
+        deviceTypes: Array,
+        psps: Array,
+        banks: Array,
+        repairTypes: Array,
+        accessories: Array,
+        statuses: Array,
+    },
+    data() {
+        return {
+            viewPaymentModal: false,
+            paymentDate: '',
+            message: '',
+            guarantee_end: this.repair.jGuaranteeEnd,
+            updateRepairForm: this.$inertia.form({
+                '_method': 'PUT',
+                device_type_id: this.repair.device_type_id,
+                psp_id: this.repair.psp_id,
+                bank_id: this.repair.bank_id,
+                serial: this.repair.serial,
+                guarantee_end: this.repair.guarantee_end,
+                name: this.repair.name,
+                business_name: this.repair.business_name,
+                mobile: this.repair.mobile,
+                national_code: this.repair.national_code,
+                repairTypeList: this.repairTypesList,
+                description: this.repair.description,
+                location_id: this.repair.location_id,
+                price: this.repair.price,
+                new_serial: this.repair.new_serial,
+                new_device_type_id: this.repair.new_device_type_id,
+                loan_serial: this.repair.loan_serial,
+                loan_device_type_id: this.repair.loan_device_type_id,
+                deposit: this.repair.deposit,
+                technical_description: this.repair.technical_description,
+                accessories: this.repair.accessories,
+            }, {
+                bag: 'updateRepairForm',
+            }),
+            updateRepairStatusForm: this.$inertia.form({
+                '_method': 'PUT',
+                status: '',
+                message: ''
+            }, {
+                bag: 'updateRepairStatusForm',
+            }),
+            submitPaymentForm: this.$inertia.form({
+                '_method': 'PUT',
+                type: 2,
+                ref_code: '',
+                payment_date: '',
+                status: 6,
+            }, {
+                bag: 'submitPaymentForm',
+            }),
+            updateStatusByAdminForm: this.$inertia.form({
+                '_method': 'PUT',
+                status: this.repair.status,
+            }, {
+                bag: 'updateStatusByAdminForm',
+            }),
+        }
+    },
+    methods: {
+        showPaymentModal() {
+            this.viewPaymentModal = true;
         },
-        props: {
-            repair: Object,
-            repairTypesList: Array,
-            locations: Array,
-            deviceTypes: Array,
-            psps: Array,
-            banks: Array,
-            repairTypes: Array,
-            accessories: Array,
+        selectPaymentDate(e) {
+            this.submitPaymentForm.payment_date = e.format('YYYY/MM/DD H:m');
         },
-        data() {
-            return {
-                viewPaymentModal: false,
-                paymentDate: '',
-                message: '',
-                guarantee_end: this.repair.jGuaranteeEnd,
-                updateRepairForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    device_type_id: this.repair.device_type_id,
-                    psp_id: this.repair.psp_id,
-                    bank_id: this.repair.bank_id,
-                    serial: this.repair.serial,
-                    guarantee_end: this.repair.guarantee_end,
-                    name: this.repair.name,
-                    business_name: this.repair.business_name,
-                    mobile: this.repair.mobile,
-                    national_code: this.repair.national_code,
-                    repairTypeList: this.repairTypesList,
-                    description: this.repair.description,
-                    location_id: this.repair.location_id,
-                    price: this.repair.price,
-                    new_serial: this.repair.new_serial,
-                    new_device_type_id: this.repair.new_device_type_id,
-                    loan_serial: this.repair.loan_serial,
-                    loan_device_type_id: this.repair.loan_device_type_id,
-                    deposit: this.repair.deposit,
-                    technical_description: this.repair.technical_description,
-                    accessories: this.repair.accessories,
-                }, {
-                    bag: 'updateRepairForm',
-                }),
-                updateRepairStatusForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    status: '',
-                    message: ''
-                }, {
-                    bag: 'updateRepairStatusForm',
-                }),
-                submitPaymentForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    type: 2,
-                    ref_code: '',
-                    payment_date: '',
-                    status: 6,
-                }, {
-                    bag: 'submitPaymentForm',
-                }),
-            }
-        },
-        methods: {
-            showPaymentModal() {
-                this.viewPaymentModal = true;
-            },
-            selectPaymentDate(e) {
-                this.submitPaymentForm.payment_date = e.format('YYYY/MM/DD H:m');
-            },
-            submitPayment() {
-                this.submitPaymentForm.post(route('dashboard.repairs.update', {repairId: this.repair.id})).then(response => {
-                    if (!this.submitPaymentForm.hasErrors()) {
-                        this.viewPaymentModal = false;
-                    }
-                })
-            },
-            submitUpdateRepairForm() {
-                this.updateRepairForm.post(route('dashboard.repairs.update', {repairId: this.repair.id})).then(response => {
-                    if (!this.updateRepairForm.hasErrors()) {
-
-                    }
-                })
-            },
-            changeRepairStatus(status) {
-                this.updateRepairStatusForm.status = status;
-                this.updateRepairStatusForm.message = this.message;
-                this.updateRepairStatusForm.post(route('dashboard.repairs.update', {repairId: this.repair.id})).then(response => {
-                    if (!this.updateRepairStatusForm.hasErrors()) {
-
-                    }
-                })
-            },
-            paymentStatusColors(status) {
-                switch (status) {
-                    case 0:
-                        return 'bg-blue-100 text-blue-800';
-                    case 1:
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 2:
-                        return 'bg-green-100 text-green-800';
+        submitPayment() {
+            this.submitPaymentForm.post(route('dashboard.repairs.update', {repairId: this.repair.id})).then(response => {
+                if (!this.submitPaymentForm.hasErrors()) {
+                    this.viewPaymentModal = false;
                 }
-            },
-            selectGuaranteeEnd(e) {
-                this.updateRepairForm.guarantee_end = e.format('YYYY/MM/DD');
+            })
+        },
+        submitUpdateRepairForm() {
+            this.updateRepairForm.post(route('dashboard.repairs.update', {repairId: this.repair.id})).then(response => {
+                if (!this.updateRepairForm.hasErrors()) {
+
+                }
+            })
+        },
+        changeRepairStatus(status) {
+            this.updateRepairStatusForm.status = status;
+            this.updateRepairStatusForm.message = this.message;
+            this.updateRepairStatusForm.post(route('dashboard.repairs.update', {repairId: this.repair.id})).then(response => {
+                if (!this.updateRepairStatusForm.hasErrors()) {
+
+                }
+            })
+        },
+        paymentStatusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'bg-blue-100 text-blue-800';
+                case 1:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 2:
+                    return 'bg-green-100 text-green-800';
             }
+        },
+        selectGuaranteeEnd(e) {
+            this.updateRepairForm.guarantee_end = e.format('YYYY/MM/DD');
+        },
+        submitUpdateStatusByAdminForm() {
+            this.updateStatusByAdminForm.post(route('dashboard.repairs.updateStatusByAdmin', {repairId: this.repair.id}));
         }
     }
+}
 </script>
 
 <style scoped>

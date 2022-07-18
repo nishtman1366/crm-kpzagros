@@ -281,35 +281,23 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profile = Profile::create(['user_id' => $user->id]);
-
-//        if ($request->wantsJson()) return response()->json(['profileId' => $profile->id]);
-
-        return redirect()->route('dashboard.profiles.customers.create', ['profileId' => $profile->id]);
+        return redirect()->route('dashboard.profiles.customers.create', ['profile' => $profile->id]);
     }
 
-    public function view(Request $request)
+    public function view(Profile $profile, Request $request)
     {
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')
-            ->with('psp')
-            ->with('business')
-            ->with('accounts')
-            ->with('accounts.account')
-            ->with('accounts.account.bank')
-            ->with('deviceType')
-            ->with('deviceType.type')
-            ->with('device')
-            ->with('messages')
-            ->with('licenses')
-            ->with('licenses.type')
-            ->find($profileId);
+        $profile->load([
+            'customer', 'psp',
+            'terminals', 'terminals.deviceConnectionType', 'terminals.deviceType', 'terminals.device', 'terminals.device.deviceType',
+            'business', 'business.category', 'business.subCategory',
+            'accounts','accounts.account','accounts.account.bank',
+            'messages','licenses','licenses.type'
+        ]);
 
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-        if (is_null($profile->customer)) return response()->json(['message' => 'اطلاعات مشتری یافت نشد'], 404);
-//        if (is_null($profile->business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
-        if (count($profile->accounts) == 0) return redirect()->route('dashboard.profiles.accounts.create', ['profileId' => $profileId]);
-        if (is_null($profile->deviceType)) return redirect()->route('dashboard.profiles.devices.create', ['profileId' => $profileId]);
+        if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد');
+        if (is_null($profile->business)) return redirect()->route('dashboard.profiles.businesses.create', ['profile' => $profile]);
+        if (count($profile->accounts) == 0) return redirect()->route('dashboard.profiles.accounts.create', ['profile' => $profile]);
+        if (count($profile->terminals) === 0) return redirect()->route('dashboard.profiles.devices.create', ['profile' => $profile]);
 
         $statuses = [
             ['id' => 0, 'name' => 'ثبت موقت'],
@@ -340,12 +328,14 @@ class ProfileController extends Controller
         })->get();
 
         $licenseTypes = LicenseType::where('status', 1)->orderBy('name', 'ASC')->get();
+
         return Inertia::render('Dashboard/Profiles/ViewProfile', [
             'profile' => $profile,
             'psps' => $psps,
             'statuses' => $statuses,
             'licenseTypes' => $licenseTypes,
             'deviceTypes' => $deviceTypes,
+            'selectedTab' => $request->query('action', 'general'),
         ]);
     }
 
@@ -377,24 +367,17 @@ class ProfileController extends Controller
         return $x->download($fileName);
     }
 
-    public function update(Request $request)
+    public function update(Profile $profile,Request $request)
     {
         $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')
-            ->with('business')
-            ->with('accounts')
-            ->with('accounts.account')
-            ->with('accounts.account.bank')
-            ->find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+        $profile->load('customer','business','accounts','accounts.account','accounts.account.bank');
 
         $status = $request->get('status');
 
         if ($status == 1) {
             $errors = LicenseController::checkProfileLicenses($profile);
             if (count($errors) > 0) {
-                return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->withErrors($errors);
+                return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id])->withErrors($errors);
             }
         }
 
@@ -418,7 +401,7 @@ class ProfileController extends Controller
 
         if ($status == 2 || $status == 4) return back()->with(['message' => 'پرونده در لیست در حال بررسی قرار گرفت']);
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id]);
     }
 
     public function updateStatus(Request $request)
@@ -488,290 +471,18 @@ class ProfileController extends Controller
 
     }
 
-    public function updateSerial(Request $request)
+    public function updateMerchant(Profile $profile, Request $request)
     {
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-        $deviceId = $request->get('device_id');
-        $deviceTypeId = $request->get('device_type_id');
-        $byAdmin = $request->query('byAdmin', null);
-
-        if ($byAdmin) {
-            $request->validateWithBag('serialForm', [
-                'device_type_id' => 'required',
-                'serial' => ['required', new ChangeSerial($request->get('device_type_id'))],
-            ]);
-
-            $device = Device::where('serial', $request->get('serial'))->get()->first();
-            //دستگاه قدیمی
-            if (!is_null($profile->device)) {
-                $profile->device->update(
-                    [
-                        'transport_status' => 1,
-                        'psp_status' => 1,
-                    ]
-                );
-            }
-
-            $profile->fill([
-                'device_type_id' => $request->get('device_type_id'),
-                'device_id' => $device->id,
-                'reject_serial_reason' => null
-            ]);
-
-            $device->update([
-                'transport_status' => $profile->status == 5 ? 2 : 3,
-                'psp_status' => $profile->status == 5 ? 1 : 2,
-            ]);
-        } else {
-            $profile->fill([
-                'device_type_id' => $deviceTypeId,
-                'device_id' => $deviceId,
-                'status' => 6,
-                'reject_serial_reason' => null
-            ]);
-
-            Device::find($deviceId)->update([
-                'transport_status' => 2
-            ]);
-
-            $this->setProfileMessage(6, $user, $profile, null);
-        }
-        $profile->save();
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست ثبت شماره سریال با موفقیت ثبت شد.']);
-
-    }
-
-    public function updateTerminal(UpdateTerminal $request)
-    {
-        $byAdmin = $request->query('byAdmin', null);
-
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
-
-        if ($byAdmin) {
-            $profile->fill($request->all());
-        } else {
-            $device = Device::find($profile->device_id);
-            if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
-            $device->update(['psp_status' => 2]);
-
-            $request->merge(['status' => 7]);
-            $profile->fill($request->all());
-        }
-        $profile->save();
-
-        $this->setProfileMessage(7, $user, $profile, null);
-
-        if ($byAdmin) return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست ثبت شماره ترمینال و شماره پذیرنده با موفقیت ثبت شد.']);
-
-    }
-
-    public function rejectSerial(Request $request)
-    {
-        $request->validateWithBag('rejectSerialForm', [
-            'reject_serial_reason' => 'required',
+        $request->validateWithBag('merchantForm', [
+            'merchant_id' => 'required|unique:profiles,merchant_id'
         ]);
 
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-
-        $device = Device::find($profile->device_id);
-        if (!is_null($device)) {
-            $device->update([
-                'transport_status' => 1,
-                'psp_status' => 1,
-            ]);
-        }
-
-        $profile->status = 13;
-        $profile->device_id = null;
-        $profile->reject_serial_reason = $request->get('reject_serial_reason');
+        $profile->merchant_id = $request->get('merchant_id');
         $profile->save();
-
-        $this->setProfileMessage(13, $user, $profile, $request->get('reject_serial_reason'));
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'عدم تایید سریال با موفقیت ثبت شد.']);
-    }
-
-    public function cancelRequest(Request $request)
-    {
-        $request->validateWithBag('cancelRequestForm', [
-            'cancel_reason' => 'required',
-        ]);
-
         $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+        $this->setProfileMessage('', $user, $profile);
 
-        $request->merge(['status' => 12]);
-        $profile->fill($request->all());
-
-        $profile->save();
-
-        $this->setProfileMessage(12, $user, $profile, null);
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست فسخ پرونده با موفقیت ثبت شد.']);
-    }
-
-    public function cancelConfirm(Request $request)
-    {
-        $cancelType = $request->get('confirmCancelMessage');
-        $status = 9;
-        if ($cancelType) {
-            $request->validateWithBag('confirmCancelForm', [
-                'message' => 'required',
-            ]);
-            $status = 8;
-        }
-
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-
-        $profile->fill(['status' => $status]);
-
-        $profile->save();
-
-        if (!$cancelType) {
-            $profile->device->transport_status = 1;
-            $profile->device->psp_status = 1;
-            $profile->device->save();
-        }
-
-        $this->setProfileMessage($status == 8 ? 14 : $status, $user, $profile, $request->get('message'));
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه فسخ پرونده با موفقیت ثبت شد.']);
-    }
-
-    public function changeRequest(Request $request)
-    {
-        $request->validateWithBag('changeSerialRequestForm', [
-            'change_reason' => 'required',
-            'new_device_type_id' => 'required',
-        ]);
-
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-
-        $request->merge(['status' => 14]);
-        $profile->fill($request->all());
-
-        $profile->save();
-
-        $this->setProfileMessage(14, $user, $profile, null);
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'درخواست جابجایی سریال با موفقیت ثبت شد.']);
-    }
-
-    public function getNewDeviceByAjax(Request $request)
-    {
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-        $device = Device::with('deviceType')
-            ->where('id', $profile->new_device_id)
-            ->get()
-            ->first();
-
-        return response()->json($device);
-    }
-
-    public function getNewDeviceTypeByAjax(Request $request)
-    {
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-        $deviceType = DeviceType::with('type')->where('id', $profile->new_device_type_id)->get()->first();
-
-        return response()->json($deviceType);
-    }
-
-    public function newSerial(Request $request)
-    {
-        $request->validateWithBag('selectNewSerialForm', [
-            'new_device_id' => 'required',
-        ]);
-
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-
-        $profile->fill(['new_device_id' => $request->get('new_device_id'), 'status' => 15]);
-
-        $profile->save();
-
-        $this->setProfileMessage(15, $user, $profile, null);
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'سریال جدید با موفقیت ثبت شد.']);
-    }
-
-    public function changeConfirm(Request $request)
-    {
-        $cancelType = $request->get('confirmChangeMessage');
-        $status = 17;
-        if ($cancelType) {
-            $request->validateWithBag('confirmChangeSerialForm', [
-                'change_message' => 'required',
-            ]);
-            $status = 16;
-        }
-
-        $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')->find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-
-        $updateArray = [];
-
-        if ($status == 16) {
-            $updateArray = [
-                'status' => 7,
-            ];
-        } elseif ($status == 17) {
-            $oldDevice = Device::find($profile->device_id);
-            if (!is_null($oldDevice)) {
-                $oldDevice->transport_status = 1;
-                $oldDevice->psp_status = 1;
-                $oldDevice->save();
-            }
-
-            $newDevice = Device::find($profile->new_device_id);
-            if (!is_null($newDevice)) {
-                $newDevice->transport_status = 2;
-                $newDevice->psp_status = 2;
-                $newDevice->save();
-            }
-
-            $updateArray = [
-                'device_type_id' => $profile->new_device_type_id,
-                'device_id' => $profile->new_device_id,
-                'status' => 7
-            ];
-        }
-
-        $profile->fill($updateArray);
-
-        $profile->save();
-
-        $this->setProfileMessage($status, $user, $profile, $request->get('change_message'));
-
-        return redirect()->route('dashboard.profiles.list')->with(['message' => 'نتیجه جابجایی سریال با موفقیت ثبت شد.']);
+        return redirect()->back();
     }
 
     private function setProfileMessage($status, $user, $profile, $message = null)
@@ -849,6 +560,10 @@ class ProfileController extends Controller
             case 18:
                 $title = sprintf('درخواست فسخ پرونده توسط %s رد شد.', $user->name);
                 $type = 'DANGER';
+                break;
+            case 19:
+                $title = sprintf('شماره پذیرنده توسط %s ثبت شد.', $user->name);
+                $type = 'SUCCESS';
                 break;
         }
 

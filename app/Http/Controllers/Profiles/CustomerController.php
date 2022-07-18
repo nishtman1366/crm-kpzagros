@@ -2,136 +2,78 @@
 
 namespace App\Http\Controllers\Profiles;
 
+use App\Actions\Profiles\Customers\CheckCustomerStatus;
+use App\Actions\Profiles\Customers\CreateCustomerData;
+use App\Actions\Profiles\Customers\HandleCustomerLicenses;
+use App\Actions\Profiles\Customers\UpdateCustomerData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Profiles\Customers\CreateCustomer;
 use App\Http\Requests\Profiles\Customers\UpdateCustomer;
 use App\Models\Profiles\Customer;
-use App\Models\Profiles\License;
 use App\Models\Profiles\Profile;
 use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomerController extends Controller
 {
-    public function index(Request $request)
+    public function create(Profile $profile, Request $request)
     {
-        return Inertia::render('Dashboard/Customers/CustomersList');
-    }
-
-    public function create(Request $request)
-    {
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
-
-//        if ($request->wantsJson()) return response()->json([
-//            'profileId' => (int)$profile->id,
-//            'profile' => $profile,
-//        ]);
+        $countries = DB::table('countries')->get();
 
         return Inertia::render('Dashboard/Profiles/CreateCustomer', [
             'profile' => $profile,
-            'profileId' => (int)$profileId
+            'profileId' => $profile->id,
+            'countries' => $countries
         ]);
     }
 
-    public function store(CreateCustomer $request)
+    public function store(Profile $profile, CreateCustomer $request)
     {
         $user = Auth::user();
-        if (is_null($user)) return response()->json(['please log in'], 401);
-
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
-
-        $profileExisted = Customer::where('profile_id', $profileId)->exists();
+        $profileExisted = Customer::where('profile_id', $profile->id)->exists();
         if ($profileExisted) throw new NotFoundHttpException('شماره پرونده تکراری است.');
-
-        $request->merge(['user_id' => $user->id]);
-
-        $request->merge(['profile_id' => $profile->id]);
-        $customer = Customer::create($request->all());
-
-        if ($request->hasFile('national_card_file_1')) {
-            LicenseController::upload($request->file('national_card_file_1'), 'national_card_file_1', $profileId);
-        }
-        if ($request->hasFile('national_card_file_2')) {
-            LicenseController::upload($request->file('national_card_file_2'), 'national_card_file_2', $profileId);
-        }
-        if ($request->hasFile('id_file')) {
-            LicenseController::upload($request->file('id_file'), 'id_file', $profileId);
-        }
-        if ($request->hasFile('asasname_file')) {
-            LicenseController::upload($request->file('asasname_file'), 'asasname_file', $profileId);
-        }
-        if ($request->hasFile('agahi_file_1')) {
-            LicenseController::upload($request->file('agahi_file_1'), 'agahi_file_1', $profileId);
-        }
-        if ($request->hasFile('agahi_file_2')) {
-            LicenseController::upload($request->file('agahi_file_2'), 'agahi_file_2', $profileId);
-        }
-
-//        if ($request->wantsJson()) return response()->json([]);
-
-        return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profile->id]);
+        $request->merge(['user_id' => $user->id, 'profile_id' => $profile->id, 'profile' => $profile]);
+        app(Pipeline::class)
+            ->send($request)
+            ->through([
+                CreateCustomerData::class,
+                HandleCustomerLicenses::class
+            ])
+            ->thenReturn();
+        return redirect()->route('dashboard.profiles.businesses.create', ['profile' => $profile]);
     }
 
-    public function edit(Request $request)
+    public function edit(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')
-            ->with('accounts')
-            ->with('business')
-            ->with('device')
-            ->find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
+        $profile->load(['accounts', 'business', 'device']);
         $customer = $profile->customer;
         if (is_null($customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد');
-
+        $countries = DB::table('countries')->get();
         $profile->load('deviceType');
         return Inertia::render('Dashboard/Profiles/EditCustomer', [
             'customer' => $customer,
-            'profileId' => (int)$profileId,
+            'profileId' => $profile->id,
             'profile' => $profile,
+            'countries' => $countries
         ]);
     }
 
-    public function update(UpdateCustomer $request)
+    public function update(Profile $profile, UpdateCustomer $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
+        $request->merge(['profile' => $profile]);
+        app(Pipeline::class)
+            ->send($request)
+            ->through([
+                CheckCustomerStatus::class,
+                UpdateCustomerData::class,
+                HandleCustomerLicenses::class
+            ])
+            ->thenReturn();
 
-        $customer = Customer::where('profile_id', $profileId)->get()->first();
-        if (is_null($customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد');
-
-        $customer->fill($request->all());
-        $customer->save();
-
-        if ($request->hasFile('national_card_file_1')) {
-            LicenseController::upload($request->file('national_card_file_1'), 'national_card_file_1', $profileId);
-        }
-        if ($request->hasFile('national_card_file_2')) {
-            LicenseController::upload($request->file('national_card_file_2'), 'national_card_file_2', $profileId);
-        }
-        if ($request->hasFile('id_file')) {
-            LicenseController::upload($request->file('id_file'), 'id_file', $profileId);
-        }
-        if ($request->hasFile('asasname_file')) {
-            LicenseController::upload($request->file('asasname_file'), 'asasname_file', $profileId);
-        }
-        if ($request->hasFile('agahi_file_1')) {
-            LicenseController::upload($request->file('agahi_file_1'), 'agahi_file_1', $profileId);
-        }
-        if ($request->hasFile('agahi_file_2')) {
-            LicenseController::upload($request->file('agahi_file_2'), 'agahi_file_2', $profileId);
-        }
-
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id]);
     }
 }

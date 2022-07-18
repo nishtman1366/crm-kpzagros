@@ -21,8 +21,8 @@
                     <div class="mt-5 md:mt-0 md:col-span-2">
                         <div class="shadow sm:rounded-md sm:overflow-hidden m-2">
                             <div class="px-4 py-5 bg-white space-y-6 sm:p-6">
-                                <div class="grid md:grid-cols-6 gap-6 ">
-                                    <div class="col-6 sm:col-span-6">
+                                <div class="grid grid-cols-6 gap-6">
+                                    <div class="col-span-6">
                                         <div>
                                             <legend class="text-base font-medium text-gray-900">نوع مشتری:</legend>
                                             <p class="text-sm text-gray-500">در صورتی که مشتری یک شخص است "حقیقی" و در
@@ -59,8 +59,8 @@
                                         <jet-input-error :message="customerForm.error('type')" class="mt-2"/>
                                     </div>
                                     <div v-if="customerType==='ORGANIZATION'"
-                                         class="grid md:grid-cols-6 sm:col-span-6 gap-6">
-                                        <div class="col-3 sm:col-span-3">
+                                         class="col-span-6 grid md:grid-cols-6 gap-6">
+                                        <div class="col-span-6 md:col-span-3">
                                             <label for="company_name"
                                                    class="block text-sm font-medium text-gray-700">
                                                 نام شرکت:
@@ -74,7 +74,7 @@
                                             <jet-input-error :message="customerForm.error('company_name')"
                                                              class="mt-2"/>
                                         </div>
-                                        <div class="col-3 sm:col-span-3">
+                                        <div class="col-span-6 md:col-span-3">
                                             <label for="company_name_english"
                                                    class="block text-sm font-medium text-gray-700">
                                                 نام شرکت (انگلیسی):
@@ -88,7 +88,7 @@
                                             <jet-input-error :message="customerForm.error('company_name_english')"
                                                              class="mt-2"/>
                                         </div>
-                                        <div class="col-3 sm:col-span-3">
+                                        <div class="col-span-6 md:col-span-3">
                                             <label for="business_name"
                                                    class="block text-sm font-medium text-gray-700">
                                                 نام تجاری:
@@ -102,8 +102,8 @@
                                             <jet-input-error :message="customerForm.error('business_name')"
                                                              class="mt-2"/>
                                         </div>
-                                        <div class="col-3 sm:col-span-3">
-                                            <label for="company_reg_date"
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="reg_date"
                                                    class="block text-sm font-medium text-gray-700">
                                                 تاریخ ثبت:
                                             </label>
@@ -125,7 +125,7 @@
                                             <jet-input-error :message="customerForm.error('reg_date')"
                                                              class="mt-2"/>
                                         </div>
-                                        <div class="col-3 sm:col-span-3">
+                                        <div class="col-span-6 md:col-span-3">
                                             <label for="reg_code"
                                                    class="block text-sm font-medium text-gray-700">
                                                 شماره ثبت:
@@ -139,7 +139,7 @@
                                             <jet-input-error :message="customerForm.error('reg_code')"
                                                              class="mt-2"/>
                                         </div>
-                                        <div class="col-3 sm:col-span-3">
+                                        <div class="col-span-6 md:col-span-3">
                                             <label for="company_national_code"
                                                    class="block text-sm font-medium text-gray-700">
                                                 شناسه ملی:
@@ -153,124 +153,140 @@
                                             <jet-input-error :message="customerForm.error('company_national_code')"
                                                              class="mt-2"/>
                                         </div>
-                                        <div class="col-2 sm:col-span-2">
-                                            <div
-                                                class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                                <div class="space-y-1 text-center">
-                                                    <svg v-if="imageFiles.asasnameFilePreview===''"
-                                                         class="mx-auto h-12 w-12 text-gray-400"
-                                                         stroke="currentColor"
-                                                         fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            stroke-width="2" stroke-linecap="round"
-                                                            stroke-linejoin="round"/>
-                                                    </svg>
-                                                    <img v-else :src="imageFiles.asasnameFilePreview">
-                                                    <div class="flex text-sm text-gray-600">
-                                                        <label for="asasname_file"
-                                                               class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                            <span>انتخاب فایل</span>
-                                                            <input id="asasname_file"
-                                                                   name="asasname_file"
-                                                                   type="file"
-                                                                   @change="onAsasnameFileChange"
-                                                                   class="sr-only">
-                                                        </label>
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="company_national_code"
+                                                   class="block text-sm font-medium text-gray-700">
+                                                شناسه اقتصادی:
+                                            </label>
+                                            <input type="text"
+                                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                                   placeholder="شناسه اقتصادی"
+                                                   ref="company_commercial_code"
+                                                   id="company_commercial_code"
+                                                   v-model="customerForm.company_commercial_code"/>
+                                            <jet-input-error :message="customerForm.error('company_commercial_code')"
+                                                             class="mt-2"/>
+                                        </div>
+                                        <div class="col-span-6 grid grid-cols-6 gap-3">
+                                            <div class="col-span-6 md:col-span-2">
+                                                <div
+                                                    class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                    <div class="space-y-1 text-center">
+                                                        <svg v-if="imageFiles.asasnameFilePreview===''"
+                                                             class="mx-auto h-12 w-12 text-gray-400"
+                                                             stroke="currentColor"
+                                                             fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                            <path
+                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"/>
+                                                        </svg>
+                                                        <img v-else :src="imageFiles.asasnameFilePreview">
+                                                        <div class="flex text-sm text-gray-600">
+                                                            <label for="asasname_file"
+                                                                   class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                                <span>انتخاب فایل</span>
+                                                                <input id="asasname_file"
+                                                                       name="asasname_file"
+                                                                       type="file"
+                                                                       @change="onAsasnameFileChange"
+                                                                       class="sr-only">
+                                                            </label>
+                                                        </div>
+                                                        <p class="text-xs text-gray-500">
+                                                            تصویر اساسنامه
+                                                        </p>
+                                                        <jet-input-error
+                                                            :message="customerForm.error('asasname_file')"
+                                                            class="mt-2"/>
+                                                        <jet-input-error
+                                                            :message="fileUploadErrors.asasname_file"
+                                                            class="mt-2"/>
                                                     </div>
-                                                    <p class="text-xs text-gray-500">
-                                                        تصویر اساسنامه
-                                                    </p>
-                                                    <jet-input-error
-                                                        :message="customerForm.error('asasname_file')"
-                                                        class="mt-2"/>
-                                                    <jet-input-error
-                                                        :message="fileUploadErrors.asasname_file"
-                                                        class="mt-2"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-span-6 md:col-span-2">
+                                                <div
+                                                    class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                    <div class="space-y-1 text-center">
+                                                        <svg v-if="imageFiles.agahiFile1Preview===''"
+                                                             class="mx-auto h-12 w-12 text-gray-400"
+                                                             stroke="currentColor"
+                                                             fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                            <path
+                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"/>
+                                                        </svg>
+                                                        <img v-else :src="imageFiles.agahiFile1Preview">
+                                                        <div class="flex text-sm text-gray-600">
+                                                            <label for="agahi_file_1"
+                                                                   class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                                <span>انتخاب فایل</span>
+                                                                <input id="agahi_file_1"
+                                                                       name="agahi_file_1"
+                                                                       type="file"
+                                                                       @change="onAgahiFile1Change"
+                                                                       class="sr-only">
+                                                            </label>
+                                                        </div>
+                                                        <p class="text-xs text-gray-500">
+                                                            تصویر آگهی ثبتی
+                                                        </p>
+                                                        <jet-input-error
+                                                            :message="customerForm.error('agahi_file_1')"
+                                                            class="mt-2"/>
+                                                        <jet-input-error
+                                                            :message="fileUploadErrors.agahi_file_1"
+                                                            class="mt-2"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-span-6 md:col-span-2">
+                                                <div
+                                                    class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                                                    <div class="space-y-1 text-center">
+                                                        <svg v-if="imageFiles.agahiFile2Preview===''"
+                                                             class="mx-auto h-12 w-12 text-gray-400"
+                                                             stroke="currentColor"
+                                                             fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                                                            <path
+                                                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                                                stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round"/>
+                                                        </svg>
+                                                        <img v-else :src="imageFiles.agahiFile2Preview">
+                                                        <div class="flex text-sm text-gray-600">
+                                                            <label for="agahi_file_2"
+                                                                   class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
+                                                                <span>انتخاب فایل</span>
+                                                                <input id="agahi_file_2"
+                                                                       name="agahi_file_2"
+                                                                       type="file"
+                                                                       @change="onAgahiFile2Change"
+                                                                       class="sr-only">
+                                                            </label>
+                                                        </div>
+                                                        <p class="text-xs text-gray-500">
+                                                            تصویر آگهی تغییرات
+                                                        </p>
+                                                        <jet-input-error
+                                                            :message="customerForm.error('agahi_file_2')"
+                                                            class="mt-2"/>
+                                                        <jet-input-error
+                                                            :message="fileUploadErrors.agahi_file_2"
+                                                            class="mt-2"/>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-2 sm:col-span-2">
-                                            <div
-                                                class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                                <div class="space-y-1 text-center">
-                                                    <svg v-if="imageFiles.agahiFile1Preview===''"
-                                                         class="mx-auto h-12 w-12 text-gray-400"
-                                                         stroke="currentColor"
-                                                         fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            stroke-width="2" stroke-linecap="round"
-                                                            stroke-linejoin="round"/>
-                                                    </svg>
-                                                    <img v-else :src="imageFiles.agahiFile1Preview">
-                                                    <div class="flex text-sm text-gray-600">
-                                                        <label for="agahi_file_1"
-                                                               class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                            <span>انتخاب فایل</span>
-                                                            <input id="agahi_file_1"
-                                                                   name="agahi_file_1"
-                                                                   type="file"
-                                                                   @change="onAgahiFile1Change"
-                                                                   class="sr-only">
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-xs text-gray-500">
-                                                        تصویر آگهی ثبتی
-                                                    </p>
-                                                    <jet-input-error
-                                                        :message="customerForm.error('agahi_file_1')"
-                                                        class="mt-2"/>
-                                                    <jet-input-error
-                                                        :message="fileUploadErrors.agahi_file_1"
-                                                        class="mt-2"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-2 sm:col-span-2">
-                                            <div
-                                                class="mt-2 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
-                                                <div class="space-y-1 text-center">
-                                                    <svg v-if="imageFiles.agahiFile2Preview===''"
-                                                         class="mx-auto h-12 w-12 text-gray-400"
-                                                         stroke="currentColor"
-                                                         fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                                        <path
-                                                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                                            stroke-width="2" stroke-linecap="round"
-                                                            stroke-linejoin="round"/>
-                                                    </svg>
-                                                    <img v-else :src="imageFiles.agahiFile2Preview">
-                                                    <div class="flex text-sm text-gray-600">
-                                                        <label for="agahi_file_2"
-                                                               class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                            <span>انتخاب فایل</span>
-                                                            <input id="agahi_file_2"
-                                                                   name="agahi_file_2"
-                                                                   type="file"
-                                                                   @change="onAgahiFile2Change"
-                                                                   class="sr-only">
-                                                        </label>
-                                                    </div>
-                                                    <p class="text-xs text-gray-500">
-                                                        تصویر آگهی تغییرات
-                                                    </p>
-                                                    <jet-input-error
-                                                        :message="customerForm.error('agahi_file_2')"
-                                                        class="mt-2"/>
-                                                    <jet-input-error
-                                                        :message="fileUploadErrors.agahi_file_2"
-                                                        class="mt-2"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="hidden col-6 sm:col-span-6 sm:block" aria-hidden="true">
+                                        <div class="hidden col-span-6 sm:col-span-6 md:block" aria-hidden="true">
                                             <div class="py-5">
                                                 <div class="border-t border-gray-200"></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="first_name" class="block text-sm font-medium text-gray-700">
                                             نام:
                                         </label>
@@ -282,7 +298,7 @@
                                                v-model="customerForm.first_name"/>
                                         <jet-input-error :message="customerForm.error('first_name')" class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="first_name_english"
                                                class="block text-sm font-medium text-gray-700">
                                             نام (انگلیسی):
@@ -296,7 +312,7 @@
                                         <jet-input-error :message="customerForm.error('first_name_english')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="last_name" class="block text-sm font-medium text-gray-700">
                                             نام خانوادگی:
                                         </label>
@@ -308,7 +324,7 @@
                                                v-model="customerForm.last_name"/>
                                         <jet-input-error :message="customerForm.error('last_name')" class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="last_name_english"
                                                class="block text-sm font-medium text-gray-700">
                                             نام خانوادگی (انگلیسی):
@@ -322,7 +338,7 @@
                                         <jet-input-error :message="customerForm.error('last_name_english')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="father" class="block text-sm font-medium text-gray-700">
                                             نام پدر:
                                         </label>
@@ -334,7 +350,7 @@
                                                v-model="customerForm.father"/>
                                         <jet-input-error :message="customerForm.error('father')" class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="father_english" class="block text-sm font-medium text-gray-700">
                                             نام پدر (انگلیسی):
                                         </label>
@@ -347,32 +363,144 @@
                                         <jet-input-error :message="customerForm.error('father_english')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
-                                        <label for="national_code" class="block text-sm font-medium text-gray-700">
-                                            کد ملی:
+                                    <div class="col-span-6">
+                                        <label class="block text-sm font-medium text-gray-700">
+                                            تابعیت:
                                         </label>
-                                        <input type="text"
-                                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
-                                               placeholder="کد ملی"
-                                               ref="national_code"
-                                               id="national_code"
-                                               v-model="customerForm.national_code"/>
-                                        <jet-input-error :message="customerForm.error('national_code')"
+                                        <jet-button @click.native="customerForm.residency='iranian'"
+                                                    :class="customerForm.residency==='iranian' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'">
+                                            ایرانی
+                                        </jet-button>
+                                        <jet-button @click.native="customerForm.residency='foreign'"
+                                                    :class="customerForm.residency==='foreign' ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700'">
+                                            غیرایرانی
+                                        </jet-button>
+
+                                        <jet-input-error :message="customerForm.error('residency')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
-                                        <label for="id_code" class="block text-sm font-medium text-gray-700">
-                                            شماره شناسنامه:
-                                        </label>
-                                        <input type="text"
-                                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
-                                               placeholder="شماره شناسنامه"
-                                               ref="id_code"
-                                               id="id_code"
-                                               v-model="customerForm.id_code"/>
-                                        <jet-input-error :message="customerForm.error('id_code')" class="mt-2"/>
-                                    </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <template v-if="customerForm.residency==='foreign'">
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="country_code" class="block text-sm font-medium text-gray-700">
+                                                کشور:
+                                            </label>
+                                            <select v-model="customerForm.country_code" id="country_code"
+                                                    class="mt-1 block w-full py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <option v-for="country in countries" :key="country.id"
+                                                        :value="country.country_code" v-text="country.country_name"/>
+                                            </select>
+                                            <jet-input-error :message="customerForm.error('country_code')"
+                                                             class="mt-2"/>
+                                        </div>
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="foreign_pervasive_code"
+                                                   class="block text-sm font-medium text-gray-700">
+                                                شماره اتباع خارجه:
+                                            </label>
+                                            <input type="text"
+                                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                                   placeholder="شماره اتباع خارجه"
+                                                   ref="foreign_pervasive_code"
+                                                   id="foreign_pervasive_code"
+                                                   v-model="customerForm.foreign_pervasive_code"/>
+                                            <jet-input-error :message="customerForm.error('foreign_pervasive_code')"
+                                                             class="mt-2"/>
+                                        </div>
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="passport_number"
+                                                   class="block text-sm font-medium text-gray-700">
+                                                شماره پاسپورت:
+                                            </label>
+                                            <input type="text"
+                                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                                   placeholder="شماره اتباع خارجه"
+                                                   ref="passport_number"
+                                                   id="passport_number"
+                                                   v-model="customerForm.passport_number"/>
+                                            <jet-input-error :message="customerForm.error('passport_number')"
+                                                             class="mt-2"/>
+                                        </div>
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="passport_expireDate"
+                                                   class="block text-sm font-medium text-gray-700">
+                                                تاریخ اعتبار پاسپورت:
+                                            </label>
+                                            <input type="text"
+                                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                                   placeholder="شماره اتباع خارجه"
+                                                   ref="passport_expireDate"
+                                                   id="passport_expireDate"
+                                                   v-model="customerForm.passport_expireDate"/>
+                                            <jet-input-error :message="customerForm.error('passport_expireDate')"
+                                                             class="mt-2"/>
+                                        </div>
+                                    </template>
+                                    <template v-else>
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="national_code" class="block text-sm font-medium text-gray-700">
+                                                کد ملی:
+                                            </label>
+                                            <input type="text"
+                                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                                   placeholder="کد ملی"
+                                                   ref="national_code"
+                                                   id="national_code"
+                                                   v-model="customerForm.national_code"/>
+                                            <jet-input-error :message="customerForm.error('national_code')"
+                                                             class="mt-2"/>
+                                        </div>
+                                        <div class="col-span-6 md:col-span-3">
+                                            <label for="id_code" class="block text-sm font-medium text-gray-700">
+                                                شماره شناسنامه:
+                                            </label>
+                                            <input type="text"
+                                                   class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                                   placeholder="شماره شناسنامه"
+                                                   ref="id_code"
+                                                   id="id_code"
+                                                   v-model="customerForm.id_code"/>
+                                            <jet-input-error :message="customerForm.error('id_code')" class="mt-2"/>
+                                        </div>
+                                        <div class="col-span-6">
+                                            <label for="id_code" class="block text-sm font-medium text-gray-700">
+                                                سریال شناسنامه (به صورت الف/۸۵-۱۲۳۴۵۶):
+                                            </label>
+                                            <div class="flex items-center justify-start">
+                                                <input type="text"
+                                                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-2/4 sm:text-sm border-gray-300 rounded-r-md border"
+                                                       placeholder="سریال شناسنامه"
+                                                       ref="birth_crtfct_serial"
+                                                       id="birth_crtfct_serial"
+                                                       v-model="customerForm.birth_crtfct_serial"/>
+                                                <select
+                                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-1/4 sm:text-sm border-gray-300 border-t border-b"
+                                                    ref="birth_crtfct_series_letter"
+                                                    id="birth_crtfct_series_letter"
+                                                    v-model="customerForm.birth_crtfct_series_letter">
+                                                    <option :value="null">بخش حرفی سری</option>
+                                                    <option :value="0">الف</option>
+                                                    <option :value="1">ب</option>
+                                                    <option :value="2">ل</option>
+                                                    <option :value="3">د</option>
+                                                    <option :value="4">ر</option>
+                                                    <option :value="5">۱</option>
+                                                    <option :value="6">۲</option>
+                                                    <option :value="7">۳</option>
+                                                    <option :value="8">۴</option>
+                                                    <option :value="9">۹</option>
+                                                    <option :value="10">۱۰</option>
+                                                    <option :value="11">۱۱</option>
+                                                </select>
+                                                <input type="text"
+                                                       class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-1/4 sm:text-sm border-gray-300 rounded-l-md border"
+                                                       placeholder="بخش عددی سری  شناسنامه"
+                                                       ref="birth_crtfct_series_number"
+                                                       id="birth_crtfct_series_number"
+                                                       v-model="customerForm.birth_crtfct_series_number"/>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="birthday" class="block text-sm font-medium text-gray-700">
                                             تاریخ تولد:
                                         </label>
@@ -393,7 +521,7 @@
                                                readonly="true"/>
                                         <jet-input-error :message="customerForm.error('birthday')" class="mt-2"/>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="gender" class="block text-sm font-medium text-gray-700">
                                             جنسیت:
                                         </label>
@@ -429,7 +557,7 @@
                                             <jet-input-error :message="customerForm.error('gender')" class="mt-2"/>
                                         </div>
                                     </div>
-                                    <div class="col-3 sm:col-span-3">
+                                    <div class="col-span-6 md:col-span-3">
                                         <label for="mobile" class="block text-sm font-medium text-gray-700">
                                             تلفن همراه:
                                         </label>
@@ -441,7 +569,7 @@
                                                v-model="customerForm.mobile"/>
                                         <jet-input-error :message="customerForm.error('mobile')" class="mt-2"/>
                                     </div>
-                                    <div class="col-6 sm:col-span-6">
+                                    <div class="col-span-6 md:col-span-6">
                                         <div
                                             class="grid md:grid-cols-6 sm:col-span-6 gap-6">
                                             <div class="sm:col-span-2">
@@ -575,172 +703,199 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetInput from '@/Jetstream/Input'
-    import JetInputError from '@/Jetstream/InputError'
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
-    import ProfileSteps from "@/Pages/Dashboard/Components/ProfileSteps";
+import Dashboard from "@/Pages/Dashboard";
+import JetInput from '@/Jetstream/Input'
+import JetButton from '@/Jetstream/Button'
+import JetInputError from '@/Jetstream/InputError'
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import ProfileSteps from "@/Pages/Dashboard/Components/ProfileSteps";
 
-    export default {
-        name: "CreateCustomer",
-        components: {Dashboard, JetInput, JetInputError, datePicker: VuePersianDatetimePicker, ProfileSteps},
-        props: {
-            profile: Object,
-            profileId: Number
-        },
-        data() {
-            return {
-                customerType: 'PERSON',
-                imageFiles: {
-                    nationalFile1Preview: '',
-                    nationalFile2Preview: '',
-                    idFilePreview: '',
-                    agahiFile1Preview: '',
-                    agahiFile2Preview: '',
-                    asasnameFilePreview: '',
-                },
-                fileUploadErrors: {
-                    national_card_file_1: '',
-                    national_card_file_2: '',
-                    id_file: '',
-                    asasname_file: '',
-                    agahi_file_1: '',
-                    agahi_file_2: '',
-                },
+export default {
+    name: "CreateCustomer",
+    components: {Dashboard, JetInput, JetButton, JetInputError, datePicker: VuePersianDatetimePicker, ProfileSteps},
+    props: {
+        profile: Object,
+        profileId: Number,
+        countries: Array
+    },
+    data() {
+        return {
+            customerType: 'PERSON',
+            imageFiles: {
+                nationalFile1Preview: '',
+                nationalFile2Preview: '',
+                idFilePreview: '',
+                agahiFile1Preview: '',
+                agahiFile2Preview: '',
+                asasnameFilePreview: '',
+            },
+            fileUploadErrors: {
+                national_card_file_1: '',
+                national_card_file_2: '',
+                id_file: '',
+                asasname_file: '',
+                agahi_file_1: '',
+                agahi_file_2: '',
+            },
 
+            birthday: '',
+            regDate: '',
+            customerForm: this.$inertia.form({
+                '_method': 'POST',
+                profile_id: this.profile.id,
+                type: '',
+                first_name: '',
+                first_name_english: '',
+                last_name: '',
+                last_name_english: '',
+                national_code: '',
+                id_code: '',
+                father: '',
+                father_english: '',
+                gender: '',
+                mobile: '',
                 birthday: '',
-                regDate: '',
-                customerForm: this.$inertia.form({
-                    '_method': 'POST',
-                    profile_id: this.profile.id,
-                    type: '',
-                    first_name: '',
-                    first_name_english: '',
-                    last_name: '',
-                    last_name_english: '',
-                    national_code: '',
-                    id_code: '',
-                    father: '',
-                    father_english: '',
-                    gender: '',
-                    mobile: '',
-                    birthday: '',
-                    national_card_file_1: '',
-                    national_card_file_2: '',
-                    id_file: '',
-                    company_name: '',
-                    company_name_english: '',
-                    business_name: '',
-                    reg_date: '',
-                    reg_code: '',
-                    company_national_code: '',
-                    asasname_file: '',
-                    agahi_file_1: '',
-                    agahi_file_2: '',
-                }, {
-                    bag: 'customerForm'
-                })
-            }
-        },
-        methods: {
-            onNationalFile1Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.national_card_file_1 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.national_card_file_1 = '';
-                this.customerForm.national_card_file_1 = e.target.files[0];
-                this.imageFiles.nationalFile1Preview = URL.createObjectURL(file);
-            },
-            onNationalFile2Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.national_card_file_2 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.national_card_file_2 = '';
-                this.customerForm.national_card_file_2 = e.target.files[0];
-                this.imageFiles.nationalFile2Preview = URL.createObjectURL(file);
-            },
-            onIdFileChange(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.id_file = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.id_file = '';
-                this.customerForm.id_file = e.target.files[0];
-                this.imageFiles.idFilePreview = URL.createObjectURL(file);
-            },
-            onAsasnameFileChange(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.asasname_file = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.asasname_file = '';
-                this.customerForm.asasname_file = e.target.files[0];
-                this.imageFiles.asasnameFilePreview = URL.createObjectURL(file);
-            },
-            onAgahiFile1Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.agahi_file_1 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.agahi_file_1 = '';
-                this.customerForm.agahi_file_1 = e.target.files[0];
-                this.imageFiles.agahiFile1Preview = URL.createObjectURL(file);
-            },
-            onAgahiFile2Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.agahi_file_2 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.agahi_file_2 = '';
-                this.customerForm.agahi_file_2 = e.target.files[0];
-                this.imageFiles.agahiFile2Preview = URL.createObjectURL(file);
-            },
-            resetFileUploadErrors() {
-                this.fileUploadErrors = {
-                    national_card_file_1: '',
-                    national_card_file_2: '',
-                    id_file: '',
-                    asasname_file: '',
-                    agahi_file_1: '',
-                    agahi_file_2: '',
-                };
-            },
-            selectBirthday(e) {
-                this.customerForm.birthday = e.format('YYYY/MM/DD');
-            },
-            selectRegDate(e) {
-                this.customerForm.reg_date = e.format('YYYY/MM/DD');
-            },
-            submitCustomerForm() {
-                this.customerForm.type = this.customerType;
-                this.resetFileUploadErrors();
-                this.customerForm.post(route('dashboard.profiles.customers.store', {profileId: this.profileId}
-                )).then(response => {
+                national_card_file_1: '',
+                national_card_file_2: '',
+                id_file: '',
+                company_name: '',
+                company_name_english: '',
+                business_name: '',
+                reg_date: '',
+                reg_code: '',
+                company_national_code: '',
+                company_commercial_code: '',
+                asasname_file: '',
+                agahi_file_1: '',
+                agahi_file_2: '',
 
-                })
-            },
+
+                residency: 'iranian',
+                country_code: 'IR',
+                foreign_pervasive_code: '',
+                passport_number: '',
+                passport_expireDate: '',
+
+                vital: 'alive',
+
+                birth_crtfct_serial: null,
+                birth_crtfct_series_letter: null,
+                birth_crtfct_series_number: null,
+
+
+                /*
+                فیلد های این موارد باید اضافه شود.
+                 */
+                phone: null,
+                email: null,
+                webSite: null,
+                fax: null,
+                description: null,
+
+            }, {
+                bag: 'customerForm'
+            })
         }
+    },
+    methods: {
+        onNationalFile1Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.national_card_file_1 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.national_card_file_1 = '';
+            this.customerForm.national_card_file_1 = e.target.files[0];
+            this.imageFiles.nationalFile1Preview = URL.createObjectURL(file);
+        },
+        onNationalFile2Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.national_card_file_2 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.national_card_file_2 = '';
+            this.customerForm.national_card_file_2 = e.target.files[0];
+            this.imageFiles.nationalFile2Preview = URL.createObjectURL(file);
+        },
+        onIdFileChange(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.id_file = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.id_file = '';
+            this.customerForm.id_file = e.target.files[0];
+            this.imageFiles.idFilePreview = URL.createObjectURL(file);
+        },
+        onAsasnameFileChange(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.asasname_file = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.asasname_file = '';
+            this.customerForm.asasname_file = e.target.files[0];
+            this.imageFiles.asasnameFilePreview = URL.createObjectURL(file);
+        },
+        onAgahiFile1Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.agahi_file_1 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.agahi_file_1 = '';
+            this.customerForm.agahi_file_1 = e.target.files[0];
+            this.imageFiles.agahiFile1Preview = URL.createObjectURL(file);
+        },
+        onAgahiFile2Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.agahi_file_2 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.agahi_file_2 = '';
+            this.customerForm.agahi_file_2 = e.target.files[0];
+            this.imageFiles.agahiFile2Preview = URL.createObjectURL(file);
+        },
+        resetFileUploadErrors() {
+            this.fileUploadErrors = {
+                national_card_file_1: '',
+                national_card_file_2: '',
+                id_file: '',
+                asasname_file: '',
+                agahi_file_1: '',
+                agahi_file_2: '',
+            };
+        },
+        selectBirthday(e) {
+            this.customerForm.birthday = e.format('YYYY/MM/DD');
+        },
+        selectRegDate(e) {
+            this.customerForm.reg_date = e.format('YYYY/MM/DD');
+        },
+        submitCustomerForm() {
+            this.customerForm.type = this.customerType;
+            this.resetFileUploadErrors();
+            this.customerForm.post(route('dashboard.profiles.customers.store', {profile: this.profileId}
+            )).then(response => {
+
+            })
+        },
     }
+}
 </script>
 
 <style scoped>

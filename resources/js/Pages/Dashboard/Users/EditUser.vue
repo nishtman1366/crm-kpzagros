@@ -1,6 +1,6 @@
 <template>
     <Dashboard>
-        <template #breadcrumb> / ویرایش اطلاعات {{selectedUser.name}}</template>
+        <template #breadcrumb> / ویرایش اطلاعات {{ selectedUser.name }}</template>
         <template #dashboardContent>
             <div>
                 <div class="md:grid md:grid-cols-3 md:gap-6 bg-gray-300  rounded-lg">
@@ -85,8 +85,9 @@
                                         <jet-input-error :message="userForm.error('password')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' && type==='marketer'"
-                                         class="col-2 sm:col-span-2">
+                                    <div
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' && type==='marketer'"
+                                        class="col-2 sm:col-span-2">
                                         <label for="parent_id" class="block text-sm font-medium text-gray-700">
                                             نماینده:
                                         </label>
@@ -97,7 +98,7 @@
                                             <option :value="$page.user.id">خودم</option>
                                             <option v-for="agent in agents" :key="agent.id"
                                                     :value="agent.id">
-                                                {{agent.name}}
+                                                {{ agent.name }}
                                             </option>
                                         </select>
                                         <jet-input-error :message="userForm.error('parent_id')"
@@ -113,7 +114,7 @@
                                                 class="mt-1 block w-full py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                             <option v-for="status in statuses" :key="status.id"
                                                     :value="status.id">
-                                                {{status.name}}
+                                                {{ status.name }}
                                             </option>
                                         </select>
                                         <jet-input-error :message="userForm.error('status')"
@@ -137,57 +138,57 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from '@/Jetstream/Button';
-    import JetInputError from '@/Jetstream/InputError';
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from '@/Jetstream/Button';
+import JetInputError from '@/Jetstream/InputError';
 
-    export default {
-        name: "EditUser",
-        components: {Dashboard, JetButton, JetInputError},
-        props: {
-            type: String,
-            userType: String,
-            statuses: String,
-            agents: Array,
-            selectedUser: Object
-        },
-        data() {
-            return {
-                imageFiles: {
-                    imageFilePreview: '',
-                },
-                userForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    parent_id: this.$page.user.id,
-                    name: '',
-                    username: '',
-                    password: '',
-                    mobile: '',
-                    status: 1,
-                }, {
-                    bag: 'userForm',
-                    resetOnSuccess: false
-                })
-            }
-        },
-        mounted() {
-            this.userForm.parent_id = this.selectedUser.parent_id;
-            this.userForm.name = this.selectedUser.name;
-            this.userForm.username = this.selectedUser.username;
-            this.userForm.mobile = this.selectedUser.mobile;
-            this.userForm.status = this.selectedUser.status;
-        },
-        methods: {
-            submitUserForm() {
-                if (this.userForm.password === '') delete this.userForm.password;
-                this.userForm.post(route('dashboard.users.update', {id: this.selectedUser.id, type: this.type}), {
-                    preserveScroll: true
-                }).then(response => {
+export default {
+    name: "EditUser",
+    components: {Dashboard, JetButton, JetInputError},
+    props: {
+        type: String,
+        userType: String,
+        statuses: String,
+        agents: Array,
+        selectedUser: Object
+    },
+    data() {
+        return {
+            imageFiles: {
+                imageFilePreview: '',
+            },
+            userForm: this.$inertia.form({
+                '_method': 'PUT',
+                parent_id: this.$page.user.id,
+                name: '',
+                username: '',
+                password: '',
+                mobile: '',
+                status: 1,
+            }, {
+                bag: 'userForm',
+                resetOnSuccess: false
+            })
+        }
+    },
+    mounted() {
+        this.userForm.parent_id = this.selectedUser.parent_id;
+        this.userForm.name = this.selectedUser.name;
+        this.userForm.username = this.selectedUser.username;
+        this.userForm.mobile = this.selectedUser.mobile;
+        this.userForm.status = this.selectedUser.status;
+    },
+    methods: {
+        submitUserForm() {
+            if (this.userForm.password === '') delete this.userForm.password;
+            this.userForm.post(route('dashboard.users.update', {user: this.selectedUser.id, type: this.type}), {
+                preserveScroll: true
+            }).then(response => {
 
-                })
-            }
+            })
         }
     }
+}
 </script>
 
 <style scoped>

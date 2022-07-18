@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Profiles;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profiles\Profile;
+use App\Models\Profiles\Terminal;
 use App\Models\Variables\Device;
 use App\Models\Variables\DeviceConnectionType;
 use App\Models\Variables\DevicePsp;
@@ -16,15 +17,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DeviceController extends Controller
 {
-    public function create(Request $request)
+    public function create(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')->with('business')->with('accounts')->find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+        $profile->load(['customer', 'business', 'accounts']);
         $customer = $profile->customer;
         if (is_null($customer)) return response()->json(['message' => 'اطلاعات مشتری یافت نشد'], 404);
         $business = $profile->business;
-        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
+        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profile' => $profile]);
         $accounts = $profile->accounts;
         if (count($accounts) === 0) return response()->json(['message' => 'اطلاعات حساب های بانکی یافت نشد'], 404);
         $user = Auth::User();
@@ -37,7 +36,7 @@ class DeviceController extends Controller
 
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/CreateDevice', [
-            'profileId' => (int)$profileId,
+            'profileId' => $profile->id,
             'profile' => $profile,
             'customer' => $customer,
             'connectionTypes' => $connectionTypes,
@@ -47,9 +46,10 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Profile $profile, Request $request)
     {
         $validateArray = collect([
+            'type' => 'required|in:POS,WPOS,IPG',
             'psp_id' => 'required|exists:psps,id',
             'device_sell_type' => 'required',
             'device_physical_status' => 'required'
@@ -68,50 +68,39 @@ class DeviceController extends Controller
 
         $request->validateWithBag('deviceTypeForm', $validateArray->toArray());
 
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('شماره پرونده یافت نشد.');
-        $profile->fill($request->all());
+
+        $request->merge(['profile_id' => $profile->id]);
+        Terminal::create($request->all());
+
+        $profile->psp_id = $request->get('psp_id');
         $profile->save();
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile]);
     }
 
-    public function edit(Request $request)
+    public function edit(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')->find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
         if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
-        $deviceType = $profile->deviceType;
-        if (is_null($deviceType)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
-
-        $user = Auth::User();
-
+        $terminals = $profile->terminals;
+        if (count($terminals)===0) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
         $connectionTypes = DeviceConnectionType::orderBy('id', 'ASC')->get();
-
         $deviceTypes = DeviceType::where('status', 1)->get();
-
         $psps = Psp::orderBy('name', 'ASC')->get();
-
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/EditDevice', [
-            'profileId' => (int)$profileId,
+            'profileId' => $profile->id,
             'profile' => $profile,
             'customer' => $profile->customer,
             'connectionTypes' => $connectionTypes,
             'deviceTypes' => $deviceTypes,
-            'deviceType' => $deviceType,
+            'deviceType' => null,
             'psps' => $psps,
             'devicePsps' => $devicePsps,
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Profile $profile,Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')->find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
         if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
         $deviceType = $profile->deviceType;
         if (is_null($deviceType)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');

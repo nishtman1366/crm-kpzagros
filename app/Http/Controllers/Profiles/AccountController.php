@@ -18,59 +18,55 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AccountController extends Controller
 {
-    public function create(Request $request)
+    public function create(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')->with('business')->find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
+        $profile->load(['customer', 'business']);
         $customer = $profile->customer;
         if (is_null($customer)) return response()->json(['message' => 'اطلاعات مشتری یافت نشد'], 404);
         $business = $profile->business;
-        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profileId' => $profileId]);
+        if (is_null($business)) return redirect()->route('dashboard.profiles.businesses.create', ['profile' => $profile]);
 
         $banks = Bank::orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/CreateAccount', [
-            'profileId' => (int)$profileId,
+            'profileId' => $profile->id,
             'profile' => $profile,
             'customer' => $customer,
             'banks' => $banks
         ]);
     }
 
-    public function store(CreateAccount $request)
+    public function store(Profile $profile, CreateAccount $request)
     {
-        $profileId = $request->route('profileId');
-
         $accounts = $request->get('accounts');
         foreach ($accounts as $key => $account) {
             $CreatedAccount = Account::create($account);
 
-            LicenseController::upload($request->accounts[$key]['sheba_file'],'sheba_file', $profileId, $CreatedAccount->id);
+            LicenseController::upload($request->accounts[$key]['sheba_file'], 'sheba_file', $profile->id, $CreatedAccount->id);
 
             ProfilesAccount::create([
-                'profile_id' => $profileId,
+                'profile_id' => $profile->id,
                 'account_id' => $CreatedAccount->id
             ]);
-
-            if (count($accounts) > 1) {
-                Profile::find($profileId)->update(['multi_account' => 1]);
-            }
         }
-        return redirect()->route('dashboard.profiles.devices.create', ['profileId' => $profileId]);
+
+        if (count($accounts) > 1) {
+            $profile->multi_account = 1;
+            $profile->save();
+        }
+
+        return redirect()->route('dashboard.profiles.devices.create', ['profile' => $profile]);
     }
 
-    public function edit(Request $request)
+    public function edit(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('business')->with('accounts')->with('accounts.account')->find($profileId);
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد.');
+        $profile->load(['customer', 'business', 'accounts', 'accounts.account']);
         $customer = $profile->customer;
         if (is_null($customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
         $accounts = $profile->accounts;
         $profile->load('deviceType');
         $banks = Bank::orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/EditAccount', [
-            'profileId' => (int)$profileId,
+            'profileId' => $profile->id,
             'profile' => $profile,
             'customer' => $customer,
             'banks' => $banks,
@@ -78,12 +74,10 @@ class AccountController extends Controller
         ]);
     }
 
-    public function update(UpdateAccount $request)
+    public function update(Profile $profile, UpdateAccount $request)
     {
-        $profileId = $request->route('profileId');
-
         $accounts = $request->get('accounts');
-        ProfilesAccount::where('profile_id', $profileId)->delete();
+        ProfilesAccount::where('profile_id', $profile->id)->delete();
 
         foreach ($accounts as $key => $account) {
             if (key_exists('id', $account)) {
@@ -95,18 +89,20 @@ class AccountController extends Controller
             }
 
             if ($request->hasFile('accounts.' . $key . '.sheba_file')) {
-                LicenseController::upload($request->accounts[$key]['sheba_file'],'sheba_file', $profileId, $updatedAccount->id);
+                LicenseController::upload($request->accounts[$key]['sheba_file'], 'sheba_file', $profile->id, $updatedAccount->id);
             }
 
             ProfilesAccount::create([
-                'profile_id' => $profileId,
+                'profile_id' => $profile->id,
                 'account_id' => $updatedAccount->id
             ]);
-
-            if (count($accounts) > 1) {
-                Profile::find($profileId)->update(['multi_account' => 1]);
-            }
         }
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+
+        if (count($accounts) > 1) {
+            $profile->multi_account = 1;
+            $profile->save();
+        }
+
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile]);
     }
 }

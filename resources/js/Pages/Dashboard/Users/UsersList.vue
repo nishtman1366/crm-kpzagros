@@ -55,7 +55,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        <InertiaLink :href="route('dashboard.users.view',{type:type,id: user.id})"
+                                        <InertiaLink :href="route('dashboard.users.view',{type:type,user: user.id})"
                                                      class="text-indigo-600 hover:text-indigo-900">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -63,7 +63,7 @@
                                             </svg>
                                         </InertiaLink>
                                         <InertiaLink method="DELETE"
-                                                     :href="route('dashboard.users.destroy',{type:type,id: user.id})"
+                                                     :href="route('dashboard.users.destroy',{type:type,user: user.id})"
                                                      class="text-red-600 hover:text-red-900">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"

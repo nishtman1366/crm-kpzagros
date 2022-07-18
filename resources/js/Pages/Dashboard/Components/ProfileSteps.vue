@@ -13,7 +13,7 @@
                 <div class="col-span-7 p-1">
                     <p class="font-base font-bold">
                         <inertia-link v-if="customerInfo && edit"
-                                      :href="route('dashboard.profiles.customers.edit',{profileId})">
+                                      :href="route('dashboard.profiles.customers.edit',{profile:profileId})">
                             مشتری
                         </inertia-link>
                         <span v-else>مشتری</span>
@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-span-7 p-1">
                     <inertia-link v-if="businessInfo && edit"
-                                  :href="route('dashboard.profiles.businesses.edit',{profileId})">
+                                  :href="route('dashboard.profiles.businesses.edit',{profile:profileId})">
                         <p class="font-base font-bold">
                             کسب و کار</p>
                     </inertia-link>
@@ -53,7 +53,7 @@
                 </div>
                 <div class="col-span-7 m-1 p-1">
                     <inertia-link v-if="accountsInfo && edit"
-                                  :href="route('dashboard.profiles.accounts.edit',{profileId})">
+                                  :href="route('dashboard.profiles.accounts.edit',{profile:profileId})">
                         <p class="font-base font-bold">
                             حساب های بانکی
                         </p>
@@ -75,7 +75,7 @@
                      :class="step===4 ? 'bg-pink-600' : 'bg-gray-300'">
                     <p class="font-base font-bold">
                         <inertia-link v-if="deviceInfo && edit"
-                                      :href="route('dashboard.profiles.devices.edit',{profileId})">
+                                      :href="route('dashboard.profiles.view',{profile:profileId,action:'terminals'})">
                             دستگاه
                         </inertia-link>
                         <span v-else>دستگاه</span>
@@ -119,7 +119,7 @@
                     >
                         <h2 class="font-bold text-sm">
                             <inertia-link v-if="customerInfo && edit"
-                                          :href="route('dashboard.profiles.customers.edit',{profileId})">
+                                          :href="route('dashboard.profiles.customers.edit',{profile:profileId})">
                                 مشتری
                             </inertia-link>
                             <span v-else>مشتری</span>
@@ -151,16 +151,16 @@
                         </svg>
                     </div>
                     <div :class="step===2 ? 'bg-pink-300' : 'bg-gray-200'"
-                        class="w-2/3 h-24 flex flex-col items-center justify-center px-1 rounded-r-lg body-step"
+                         class="w-2/3 h-24 flex flex-col items-center justify-center px-1 rounded-r-lg body-step"
                     >
                         <h2 class="font-bold text-sm">
                             <inertia-link v-if="businessInfo && edit"
-                                          :href="route('dashboard.profiles.businesses.edit',{profileId})">
+                                          :href="route('dashboard.profiles.businesses.edit',{profile:profileId})">
                                 کسب و کار
                             </inertia-link>
                             <span v-else>
                                 <inertia-link
-                                    :href="route('dashboard.profiles.businesses.create',{profileId})">
+                                    :href="route('dashboard.profiles.businesses.create',{profile:profileId})">
                                     کسب و کار
                                 </inertia-link>
                             </span>
@@ -194,7 +194,7 @@
                     >
                         <p class="font-base font-bold">
                             <inertia-link v-if="accountsInfo && edit"
-                                          :href="route('dashboard.profiles.accounts.edit',{profileId})">
+                                          :href="route('dashboard.profiles.accounts.edit',{profile:profileId})">
                                 حساب های بانکی
                             </inertia-link>
                             <span v-else>حساب های بانکی</span>
@@ -229,8 +229,8 @@
                         class="w-2/3 h-24 flex flex-col items-center justify-center px-1 rounded-r-lg body-step"
                     >
                         <p class="font-base font-bold">
-                            <inertia-link v-if="deviceInfo && edit"
-                                          :href="route('dashboard.profiles.devices.edit',{profileId})">
+                            <inertia-link v-if="edit"
+                                          :href="route('dashboard.profiles.view',{profile:profileId,action:'terminals'})">
                                 دستگاه
                             </inertia-link>
                             <span v-else>دستگاه</span>
@@ -264,7 +264,7 @@
                         class="w-2/3 bg-gray-200 h-24 flex flex-col items-center justify-center px-1 rounded-r-lg body-step"
                     >
                         <h2 class="font-bold text-sm">
-                            <inertia-link :href="route('dashboard.profiles.view',{profileId})">
+                            <inertia-link :href="route('dashboard.profiles.view',{profile:profileId})">
                                 جمع بندی
                             </inertia-link>
                         </h2>
@@ -279,18 +279,18 @@
 </template>
 
 <script>
-    export default {
-        name: "ProfileSteps",
-        props: {
-            edit: false,
-            step: Number,
-            customerInfo: false,
-            businessInfo: false,
-            accountsInfo: false,
-            deviceInfo: false,
-            profileId: ''
-        }
+export default {
+    name: "ProfileSteps",
+    props: {
+        edit: false,
+        step: Number,
+        customerInfo: false,
+        businessInfo: false,
+        accountsInfo: false,
+        deviceInfo: false,
+        profileId: ''
     }
+}
 </script>
 
 <style scoped>

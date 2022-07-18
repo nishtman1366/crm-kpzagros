@@ -7,17 +7,17 @@ use Illuminate\Contracts\Validation\Rule;
 
 class ChangeSerial implements Rule
 {
-    private $deviceTypeId;
+    private $terminals;
     private $messageType;
 
     /**
      * Create a new rule instance.
      *
-     * @param int $deviceTypeId
+     * @param array $terminals
      */
-    public function __construct(int $deviceTypeId)
+    public function __construct(array $terminals)
     {
-        $this->deviceTypeId = $deviceTypeId;
+        $this->terminals = $terminals;
         $this->messageType = 1;
     }
 
@@ -36,10 +36,15 @@ class ChangeSerial implements Rule
             return false;
         }
 
-        if ($device->device_type_id !== $this->deviceTypeId) {
-            $this->messageType = 4;
-            return false;
+        foreach ($this->terminals as $terminal) {
+            if($terminal['serial']===$value){
+                if ($device->device_type_id !== $terminal['device_type_id']) {
+                    $this->messageType = 4;
+                    return false;
+                }
+            }
         }
+
 
         if ($device->physical_status == 2) {
             $this->messageType = 2;

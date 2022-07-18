@@ -27,29 +27,27 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dashboard.')->namespace('App\\Http\\Controllers')->group(function () {
-    Route::get('', 'DashboardController@index')->name('main');
+    Route::get('', [\App\Http\Controllers\DashboardController::class, 'index'])->name('main');
 
     Route::prefix('devices')->name('devices.')->group(function () {
-        Route::get('', 'DeviceController@index')->name('list');
-        Route::get('new', 'DeviceController@create')->name('create');
-        Route::post('', 'DeviceController@store')->name('store');
-        Route::get('{id}', 'DeviceController@view')->name('view');
-        Route::put('{id}', 'DeviceController@update')->name('update');
-        Route::delete('{id}', 'DeviceController@destroy')->name('destroy');
-
-        Route::get('excel', 'DeviceController@downloadExcel')->name('downloadExcel');
-        Route::post('excel', 'DeviceController@uploadExcel')->name('uploadExcel');
-
-        Route::post('batchJob', 'DeviceController@batchJob')->name('batchJob');
+        Route::get('', [\App\Http\Controllers\DeviceController::class, 'index'])->name('list');
+        Route::get('new', [\App\Http\Controllers\DeviceController::class, 'create'])->name('create');
+        Route::post('', [\App\Http\Controllers\DeviceController::class, 'store'])->name('store');
+        Route::get('{device}', [\App\Http\Controllers\DeviceController::class, 'view'])->name('view');
+        Route::put('{device}', [\App\Http\Controllers\DeviceController::class, 'update'])->name('update');
+        Route::delete('{device}', [\App\Http\Controllers\DeviceController::class, 'destroy'])->name('destroy');
+        Route::get('excel', [\App\Http\Controllers\DeviceController::class, 'downloadExcel'])->name('downloadExcel');
+        Route::post('excel', [\App\Http\Controllers\DeviceController::class, 'uploadExcel'])->name('uploadExcel');
+        Route::post('batchJob', [\App\Http\Controllers\DeviceController::class, 'batchJob'])->name('batchJob');
     });
 
     Route::prefix('users/{type}')->name('users.')->group(function () {
-        Route::get('', 'UserController@index')->name('list');
-        Route::get('new', 'UserController@create')->name('create');
-        Route::post('', 'UserController@store')->name('store');
-        Route::get('{id}', 'UserController@view')->name('view');
-        Route::put('{id}', 'UserController@update')->name('update');
-        Route::delete('{id}', 'UserController@destroy')->name('destroy');
+        Route::get('', [\App\Http\Controllers\UserController::class, 'index'])->name('list');
+        Route::get('new', [\App\Http\Controllers\UserController::class, 'create'])->name('create');
+        Route::post('', [\App\Http\Controllers\UserController::class, 'store'])->name('store');
+        Route::get('{user}', [\App\Http\Controllers\UserController::class, 'view'])->name('view');
+        Route::put('{user}', [\App\Http\Controllers\UserController::class, 'update'])->name('update');
+        Route::delete('{user}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('settings')->name('settings.')->namespace('Settings')->group(function () {
@@ -153,37 +151,41 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('excel', 'ProfileController@downloadExcel')->name('downloadExcel');
         Route::post('excel', 'ProfileController@uploadExcel')->name('uploadExcel');
 
-        Route::prefix('{profileId}')->group(function () {
-            Route::get('view', 'ProfileController@view')->name('view');
-            Route::get('/deliveryForm', 'ProfileController@deliveryForm')->name('delivery.form');
-            Route::put('', 'ProfileController@update')->name('update');
-            Route::put('updateStatus', 'ProfileController@updateStatus')->name('update.status');
-            Route::put('setType', 'ProfileController@setType')->name('update.type');
-            Route::put('serial', 'ProfileController@updateSerial')->name('update.serial');
-            Route::put('terminal', 'ProfileController@updateTerminal')->name('update.terminal');
-            Route::put('rejectSerial', 'ProfileController@rejectSerial')->name('update.rejectSerial');
-            Route::put('cancelRequest', 'ProfileController@cancelRequest')->name('update.cancelRequest');
-            Route::put('cancelConfirm', 'ProfileController@cancelConfirm')->name('update.cancelConfirm');
-            Route::put('changeRequest', 'ProfileController@changeRequest')->name('update.changeRequest');
-            Route::put('changeConfirm', 'ProfileController@changeConfirm')->name('update.changeConfirm');
-            Route::put('newSerial', 'ProfileController@newSerial')->name('update.newSerial');
-            Route::put('confirmLicenses', 'ProfileController@confirmLicenses')->name('confirm.licenses');
+        Route::prefix('{profile}')->group(function () {
+            Route::prefix('update')->name('update.')->group(function () {
+                Route::put('terminals/{terminal}/serial', [\App\Http\Controllers\Profiles\TerminalController::class, 'updateSerial'])->name('serial');
+                Route::put('terminals/{terminal}/number', [\App\Http\Controllers\Profiles\TerminalController::class, 'terminalNumber'])->name('terminal');
+                Route::put('terminals/{terminal}/serial/reject', [\App\Http\Controllers\Profiles\TerminalController::class, 'rejectSerial'])->name('reject_serial');
+                Route::put('terminals/{terminal}/cancel', [\App\Http\Controllers\Profiles\TerminalController::class, 'cancelSerial'])->name('cancel_terminal');
+                Route::put('terminals/{terminal}/confirmCancel', [\App\Http\Controllers\Profiles\TerminalController::class, 'confirmCancelSerial'])->name('confirm_cancel');
+                Route::put('terminals/{terminal}/install', [\App\Http\Controllers\Profiles\TerminalController::class, 'install'])->name('install');
+                Route::put('terminals/{terminal}/changeSerial', [\App\Http\Controllers\Profiles\TerminalController::class, 'changeSerial'])->name('change_serial');
+                Route::put('terminals/{terminal}/confirmChange', [\App\Http\Controllers\Profiles\TerminalController::class, 'confirmChangeSerial'])->name('confirm_change');
 
+                Route::put('merchant', [\App\Http\Controllers\Profiles\ProfileController::class, 'updateMerchant'])->name('merchant');
+            });
+        });
+
+
+        Route::prefix('{profile}')->group(function () {
+            Route::get('view', [\App\Http\Controllers\Profiles\ProfileController::class, 'view'])->name('view');
+            Route::get('/deliveryForm', [\App\Http\Controllers\Profiles\ProfileController::class, 'deliveryForm'])->name('delivery.form');
+            Route::put('', [\App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('update');
+            Route::put('updateStatus', [App\Http\Controllers\Profiles\ProfileController::class, 'updateStatus'])->name('update.status');
+            Route::put('setType', [\App\Http\Controllers\Profiles\ProfileController::class, 'setType'])->name('update.type');
 
             Route::prefix('customers')->name('customers.')->group(function () {
-                Route::get('', 'CustomerController@index')->name('list');
-                Route::get('new', 'CustomerController@create')->name('create');
-                Route::post('', 'CustomerController@store')->name('store');
-                Route::get('edit', 'CustomerController@edit')->name('edit');
-                Route::PUT('', 'CustomerController@update')->name('update');
+                Route::get('new', [\App\Http\Controllers\Profiles\CustomerController::class, 'create'])->name('create');
+                Route::post('', [\App\Http\Controllers\Profiles\CustomerController::class, 'store'])->name('store');
+                Route::get('edit', [\App\Http\Controllers\Profiles\CustomerController::class, 'edit'])->name('edit');
+                Route::put('', [\App\Http\Controllers\Profiles\CustomerController::class, 'update'])->name('update');
             });
 
             Route::prefix('businesses')->name('businesses.')->group(function () {
-                Route::get('', 'BusinessController@index')->name('list');
-                Route::get('new', 'BusinessController@create')->name('create');
-                Route::post('', 'BusinessController@store')->name('store');
-                Route::get('edit', 'BusinessController@edit')->name('edit');
-                Route::PUT('', 'BusinessController@update')->name('update');
+                Route::get('new', [\App\Http\Controllers\Profiles\BusinessController::class, 'create'])->name('create');
+                Route::post('', [\App\Http\Controllers\Profiles\BusinessController::class, 'store'])->name('store');
+                Route::get('edit', [\App\Http\Controllers\Profiles\BusinessController::class, 'edit'])->name('edit');
+                Route::put('', [\App\Http\Controllers\Profiles\BusinessController::class, 'update'])->name('update');
             });
 
             Route::prefix('accounts')->name('accounts.')->group(function () {
@@ -203,9 +205,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             });
 
             Route::prefix('licenses')->name('licenses.')->group(function () {
-                Route::post('', 'LicenseController@store')->name('store');
-                Route::delete('{licenseId}', 'LicenseController@destroy')->name('destroy');
-                Route::get('downloadZipArchive', 'LicenseController@downloadZipArchive')->name('downloadZipArchive');
+                Route::post('', [\App\Http\Controllers\Profiles\LicenseController::class, 'store'])->name('store');
+                Route::delete('{licenseId}', [\App\Http\Controllers\Profiles\LicenseController::class, 'destroy'])->name('destroy');
+                Route::get('downloadZipArchive', [\App\Http\Controllers\Profiles\LicenseController::class, 'downloadZipArchive'])->name('downloadZipArchive');
             });
         });
     });
@@ -278,7 +280,6 @@ Route::get('listSerials', function () {
         });
 });
 
-
 Route::get('ipg', function (\Illuminate\Http\Request $request) {
     $referenceCode = $request->query('referenceCode');
     return view('ipg', ['referenceCode' => $referenceCode]);
@@ -297,6 +298,7 @@ Route::get('duplicates', function (\Illuminate\Http\Request $request) {
             ->selectRaw('`merchant_id`, COUNT(`merchant_id`) as m ')
             ->groupBy('merchant_id')
             ->havingRaw('m > 1')
+            ->orderBy('id', 'ASC')
             ->get();
 
         foreach ($profiles as $profile) {
@@ -316,3 +318,26 @@ Route::get('duplicates', function (\Illuminate\Http\Request $request) {
     $psps = \App\Models\Variables\Psp::orderBy('name', 'ASC')->get();
     return view('Temp.duplicates', compact('duplicates', 'psps', 'pspId'));
 })->name('duplicates');
+
+Route::get('duplicates/{profileId}', function (\Illuminate\Http\Request $request) {
+    $parent = Profile::find((int)$request->route('profileId'));
+    if (is_null($parent)) throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('پروفایل یافت نشد.');
+
+    $children = Profile::with('terminals')
+        ->where('merchant_id', $parent->merchant_id)
+        ->where('id', '!=', $parent->id)
+        ->get()
+        ->each(function ($profile) use ($parent) {
+            $profile->terminals->each(function ($terminal) use ($parent) {
+                $terminal->profile_id = $parent->id;
+                $terminal->save();
+            });
+            $profile->status = 255;
+            $profile->parent_profile_id = $profile->id;
+            $profile->save();
+        });
+
+    return redirect()->back();
+})->name('duplicateProfiles');
+
+

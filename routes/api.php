@@ -24,16 +24,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::middleware('auth:sanctum')->prefix('dashboard')->namespace('App\\Http\\Controllers')->group(function () {
-    Route::get('devices/{profileId}', 'DeviceController@getDevicesListByAjax');
+    Route::get('devices/{terminal}', [\App\Http\Controllers\DeviceController::class, 'getDevicesListByAjax']);
     Route::get('newDevices/{profileId}', 'DeviceController@getNewDevicesListByAjax');
-    Route::get('deviceTypes/{profileId}', 'DeviceController@getDeviceTypesListByAjax');
+    Route::get('deviceTypes/{terminal}', [\App\Http\Controllers\DeviceController::class, 'getDeviceTypesListByAjax']);
+    Route::get('devices/types/{type}', [\App\Http\Controllers\DeviceController::class, 'deviceTypes'])->name('dashboard.devices.types');
+    Route::get('devices/{device}/view', [\App\Http\Controllers\DeviceController::class, 'view'])->name('api.dashboard.devices.view');
 
-    Route::get('profiles/{profileId}/newDevice', 'Profiles\\ProfileController@getNewDeviceByAjax')->name('getNewDeviceByAjax');
-    Route::get('profiles/{profileId}/newDeviceType', 'Profiles\\ProfileController@getNewDeviceTypeByAjax')->name('getNewDeviceTypeByAjax');
-
-    Route::post('searchProfiles', 'DashboardController@searchProfiles');
-    Route::post('searchDevices', 'DashboardController@searchDevices');
-    Route::post('searchRepairs', 'DashboardController@searchRepairs');
+    Route::post('searchProfiles', [\App\Http\Controllers\DashboardController::class, 'searchProfiles']);
+    Route::post('searchDevices', [\App\Http\Controllers\DashboardController::class, 'searchDevices']);
+    Route::post('searchRepairs', [\App\Http\Controllers\DashboardController::class, 'searchRepairs']);
 
     /*
      * وب سرویس های مربوط به نرم افزار موبایل
@@ -81,7 +80,6 @@ Route::get('domain', function () {
     $domain = request()->getHttpHost();
     return response()->json($domain);
 });
-
 
 Route::get('devices/{serial}', [\App\Http\Controllers\ServiceController::class, 'getDeviceBySerial']);
 Route::get('profiles/{terminal}', [\App\Http\Controllers\ServiceController::class, 'getProfileByTerminal']);

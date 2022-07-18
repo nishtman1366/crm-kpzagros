@@ -1,8 +1,10 @@
 <?php
 
 use App\Exceptions\NotificationException;
+use App\Libraries\ProgressBar;
 use App\Libraries\TemplateEngine;
 use App\Models\User;
+use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use IPPanel\Client;
@@ -19,54 +21,6 @@ use IPPanel\Errors\HttpException;
 | simple approach to interacting with each command's IO methods.
 |
 */
-
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
-
-Artisan::command('createUsers', function () {
-    $admins = User::factory()->count(20)->level('ADMIN')->create()->each(function ($admin) {
-        $agents = User::factory()->count(2)->level('AGENT')->parent($admin->id)->create()->each(function ($agent) {
-            User::factory()->count(10)->level('MARKETER')->parent($agent->id)->create();
-        });
-    });
-});
-Artisan::command('createDevices', function () {
-    $devices = \App\Models\Variables\Device::factory()->count(1500)->create();
-    echo count($devices);
-});
-Artisan::command('pass', function () {
-    print \Illuminate\Support\Facades\Hash::make('Nil00f@r1869');
-});
-
-Artisan::command('checkDates', function () {
-    $customers = \App\Models\Profiles\Customer::orderBy('id', 'ASC')->get()->each(function ($customer) {
-        $birthday = $customer->birthday;
-        if (substr($birthday, 0, 4) < 1900) {
-            $newDate = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $birthday)->toCarbon();
-            $customer->birthday = $newDate;
-            $customer->save();
-        }
-    });
-
-    $businesses = \App\Models\Profiles\Business::orderBy('id', 'ASC')->get()->each(function ($business) {
-        $licenseDate = $business->license_date;
-        if (substr($licenseDate, 0, 4) < 1900) {
-            $newDate = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $licenseDate)->toCarbon();
-            $business->license_date = $newDate;
-            $business->save();
-        }
-    });
-
-    $accounts = \App\Models\Profiles\Account::orderBy('id', 'ASC')->get()->each(function ($account) {
-        $birthday = $account->birthday;
-        if (substr($birthday, 0, 4) < 1900) {
-            $newDate = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $birthday)->toCarbon();
-            $account->birthday = $newDate;
-            $account->save();
-        }
-    });
-});
 
 Artisan::command('setProfileId', function () {
     $licenses = \App\Models\Profiles\License::get()->each(function ($license) {
@@ -111,21 +65,6 @@ Artisan::command('setProfileId', function () {
     });
 });
 
-Artisan::command('sms', function () {
-//    $notification = \App\Models\Notifications\BatchNotification::with('receptions')
-//        ->find(3);
-//    $x = $notification->receptions()->chunk(50, function ($receptions) {
-//        print_r($receptions->count());
-//        print(PHP_EOL);
-//    });
-//    $job = dispatch(new \App\Jobs\Notifications\SendNotification($notification, '', 'club'))
-//        ->onQueue('notificationsQueue');
-//    print_r($job);
-    $client = new  Client('RwoB81G8VWdrZ4xc-GmNp96xPlk1rvdcYmUGnSCvWZY=');
-    $d = $client->fetchStatuses('209076264');
-    print_r($d);
-});
-
 Artisan::command('transfer', function () {
     $directories = \Illuminate\Support\Facades\Storage::disk('public')->directories('profiles');
     foreach ($directories as $directory) {
@@ -141,4 +80,55 @@ Artisan::command('transfer', function () {
         print('#####################################################' . PHP_EOL);
     }
     print('All directories successfully copied to new disk' . PHP_EOL);
+});
+
+Artisan::command('categories', function () {
+    \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\Businesses\CategoryImport, public_path('files/business_categories.xlsx'));
+});
+
+Artisan::command('changeTerminals', function () {
+    \App\Models\Profiles\Profile::with('deviceType')
+        ->orderBy('id', 'ASC')
+        ->where('status', '!=', 0)
+        ->get()
+        ->each(function ($profile) {
+            if (!is_null($profile->psp_id) && !is_null($profile->deviceType)) {
+                \App\Models\Profiles\Terminal::create([
+                    'profile_id' => $profile->id,
+                    'type' => 'WPOS',
+                    'terminal_number' => $profile->terminal_id,
+                    'device_connection_type_id' => $profile->deviceType->device_connection_type_id,
+                    'device_type_id' => $profile->device_type_id,
+                    'device_id' => $profile->device_id,
+                    'device_sell_type' => $profile->device_sell_type,
+                    'device_amount' => $profile->device_amount,
+                    'device_dept_profile_id' => $profile->device_dept_profile_id,
+                    'device_physical_status' => $profile->device_physical_status,
+                ]);
+            }
+        });
+});
+
+Artisan::command('migrateDB', function () {
+    print PHP_EOL;
+    print "Fetching Data From Server...";
+    print PHP_EOL;
+    \App\Libraries\TransferDB::run([
+        User::class,
+        \App\Models\Variables\Device::class,
+        \App\Models\Profiles\Profile::class,
+        \App\Models\Profiles\Customer::class,
+        \App\Models\Profiles\Business::class,
+        \App\Models\Profiles\Account::class,
+        \App\Models\Profiles\ProfilesAccount::class,
+        \App\Models\Profiles\ProfileMessage::class,
+        \App\Models\Profiles\License::class,
+    ]);
+    print PHP_EOL;
+});
+
+Artisan::command('color', function () {
+    print "\e[32mAll Customers Transferred Successfully\e[0m";
+    print PHP_EOL;
+    print "All Customers Transferred Successfully";
 });

@@ -256,7 +256,7 @@
                                         {{device.guarantee_start}} - {{device.guarantee_end}}
                                     </td>
                                     <td class="py-4 text-center text-gray-900">
-                                        <InertiaLink :href="route('dashboard.devices.view',{id: device.id})"
+                                        <InertiaLink :href="route('dashboard.devices.view',{device: device.id})"
                                                      class="text-indigo-600 hover:text-indigo-900"
                                                      v-b-tooltip.hover
                                                      title="ویرایش">
@@ -268,7 +268,7 @@
                                         <InertiaLink
                                             v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
                                             method="DELETE"
-                                            :href="route('dashboard.devices.destroy',{id: device.id})"
+                                            :href="route('dashboard.devices.destroy',{device: device.id})"
                                             class="text-red-600 hover:text-red-900"
                                             v-b-tooltip.hover
                                             title="حذف">

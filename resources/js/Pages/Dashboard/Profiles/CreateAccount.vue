@@ -363,7 +363,7 @@
                     this.accountForm.accounts[i].mobile = this.fixNumbers(this.accountForm.accounts[i].mobile);
                     this.accountForm.accounts[i].national_code = this.fixNumbers(this.accountForm.accounts[i].national_code);
                 }
-                this.accountForm.post(route('dashboard.profiles.accounts.store', {profileId: this.profileId}))
+                this.accountForm.post(route('dashboard.profiles.accounts.store', {profile: this.profileId}))
                     .then(response => {
                     })
             },

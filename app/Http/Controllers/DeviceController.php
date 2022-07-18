@@ -6,6 +6,7 @@ use App\Exports\Devices\DeviceExport;
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Imports\Devices\DeviceImport;
 use App\Models\Profiles\Profile;
+use App\Models\Profiles\Terminal;
 use App\Models\User;
 use App\Models\Variables\Device;
 use App\Models\Variables\DeviceConnectionType;
@@ -156,12 +157,10 @@ class DeviceController extends Controller
         return redirect()->route('dashboard.devices.list');
     }
 
-    public function view(Request $request)
+    public function view(Device $device, Request $request)
     {
+        $device->load('deviceType', 'deviceType.type');
         $user = Auth::user();
-        $deviceId = $request->route('id');
-        $device = Device::with('deviceType')->find($deviceId);
-        if (is_null($device)) return response()->json('not found', 404);
 
         $connectionTypes = DeviceConnectionType::orderBy('name', 'ASC')->get();
         $deviceTypes = DeviceType::where('status', 1)->orderBy('id', 'ASC')->get();
@@ -170,6 +169,7 @@ class DeviceController extends Controller
             $id = $user->isOffice() ? $user->parent_id : $user->id;
             $marketers = User::where('level', 'AGENT')->where('parent_id', $id)->get();
         }
+        if ($request->wantsJson()) return response()->json($device);
         return Inertia::render('Dashboard/Devices/EditDevice', [
             'device' => $device,
             'deviceTypes' => $deviceTypes,
@@ -178,20 +178,16 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function update(Request $request)
+    public function update(Device $device, Request $request)
     {
         $user = Auth::user();
-
-        $deviceId = $request->route('id');
-        $device = Device::find($deviceId);
-        if (is_null($device)) return response()->json('not found', 404);
 
         if ($device->status == 2 && $user->isAgent()) throw ValidationException::withMessages(['error' => 'پس از تایید دستگاه امکان ویرایش اطلاعات آن وجود ندارد.'])->errorBag('deviceForm');
 
         $request->validateWithBag('deviceForm', [
             'device_connection_type_id' => 'required|exists:device_connection_types,id',
             'device_type_id' => 'required|exists:device_types,id',
-            'serial' => 'required|unique:devices,serial,' . $deviceId,
+            'serial' => 'required|unique:devices,serial,' . $device->id,
             'physical_status' => 'required',
             'transport_status' => 'required',
             'psp_status' => 'required',
@@ -209,11 +205,8 @@ class DeviceController extends Controller
         return redirect()->route('dashboard.devices.list');
     }
 
-    public function destroy(Request $request)
+    public function destroy(Device $device)
     {
-        $deviceId = $request->route('id');
-        $device = Device::find($deviceId);
-        if (is_null($device)) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
         $user = Auth::user();
         if ($user->isAgent()) {
             if ($device->status == 2) throw new NotFoundHttpException('شما اجازه حذف این دستگاه را ندارید.');
@@ -304,28 +297,25 @@ class DeviceController extends Controller
         return redirect()->route('dashboard.devices.list');
     }
 
-    public function getDeviceTypesListByAjax(Request $request)
+    public function getDeviceTypesListByAjax(Terminal $terminal)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
-
         $deviceTypes = DeviceType::where(function () {
 
         })
-            ->where('device_connection_type_id', $profile->deviceType->device_connection_type_id)
+            ->where('device_connection_type_id', $terminal->device_connection_type_id)
             ->where('status', 1)
             ->orderBy('id', 'ASC')->get();
 
         return response()->json($deviceTypes);
     }
 
-    public function getDevicesListByAjax(Request $request)
+    public function getDevicesListByAjax(Terminal $terminal, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
         $user = Auth::user();
-        $devices = $this->getDeviceListByType($profile->device_type_id, $user);
+        $changeSerial = $request->query('change', false);
+        $search = $terminal->device_type_id;
+        if ($changeSerial) $search = $terminal->new_device_type_id;
+        $devices = $this->getDeviceListByType($search, $user);
         return response()->json($devices);
     }
 
@@ -358,6 +348,7 @@ class DeviceController extends Controller
             ->where('transport_status', 1)
             ->where('psp_status', 1)
             ->where('status', 2)
+            ->limit(5)
             ->get();
 
         return $devices;
@@ -429,5 +420,10 @@ class DeviceController extends Controller
         }
 
         return redirect()->route('dashboard.devices.list')->with('message', 'عملیات گروهی با موفقیت انجام شد.');
+    }
+
+    public function deviceTypes(DeviceType $type)
+    {
+        return response()->json($type);
     }
 }

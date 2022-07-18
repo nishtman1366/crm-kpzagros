@@ -39,9 +39,9 @@
                                 :class="event.status==6 ? ' border-red-600 bg-red-100' : ' border-green-600 bg-green-100'"
                                 class="my-1 p-3 border-r-4"
                                 v-for="event in device.events" :key="event.id">
-                                <p class="text-sm text-gray-400 mt-2">{{event.jDate | persianDigit}}</p>
-                                <p class="font-bold ml-1">{{event.title}}
-                                    <span class="text-xs text-gray-400">{{event.user && event.user.name}}</span>
+                                <p class="text-sm text-gray-400 mt-2">{{ event.jDate | persianDigit }}</p>
+                                <p class="font-bold ml-1">{{ event.title }}
+                                    <span class="text-xs text-gray-400">{{ event.user && event.user.name }}</span>
                                 </p>
                                 <p v-if="event.description" class="text-justify" v-html="event.description"></p>
                             </div>
@@ -56,7 +56,7 @@
                                         class="form-input rounded-md shadow-sm mt-1 block w-full pr-6">
                                     <option v-for="type in deviceTypes" :key="type.id"
                                             :value="type.id">
-                                        {{type.name}}
+                                        {{ type.name }}
                                     </option>
                                 </select>
                                 <jet-input-error :message="editReturnForm.error('device_type_id')" class="mt-2"/>
@@ -173,7 +173,7 @@
                                                :disabled="disableInputs"
                                                v-model="editReturnForm.accessories"
                                                :value="item.id"/>
-                                        <span class="mr- ml-3">{{item.name}}</span>
+                                        <span class="mr- ml-3">{{ item.name }}</span>
                                     </jet-label>
                                 </div>
                                 <jet-input-error :message="editReturnForm.error('accessories')" class="mt-2"/>
@@ -231,15 +231,19 @@
                                         </thead>
                                         <tbody class="bg-white divide-y divide-gray-200">
                                         <tr v-for="payment in device.payments" :key="payment.id">
-                                            <td class="py-4 text-center text-gray-900">{{payment.user && payment.user.name}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.type && payment.type.name}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.jDate}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.ref_code}}</td>
-                                            <td class="py-4 text-center text-gray-900">{{payment.tracking_code}}</td>
+                                            <td class="py-4 text-center text-gray-900">
+                                                {{ payment.user && payment.user.name }}
+                                            </td>
+                                            <td class="py-4 text-center text-gray-900">
+                                                {{ payment.type && payment.type.name }}
+                                            </td>
+                                            <td class="py-4 text-center text-gray-900">{{ payment.jDate }}</td>
+                                            <td class="py-4 text-center text-gray-900">{{ payment.ref_code }}</td>
+                                            <td class="py-4 text-center text-gray-900">{{ payment.tracking_code }}</td>
                                             <td class="py-4 text-center text-gray-900">
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                                   :class="paymentStatusColors(payment.status)">
-                                                    {{payment.statusText}}
+                                                    {{ payment.statusText }}
                                             </span>
                                                 <InertiaLink
                                                     v-if="payment.status==1 && ($page.user.level==='ADMIN'  || $page.user.level==='SUPERUSER')"
@@ -333,7 +337,8 @@
                     </jet-danger-button>
                 </template>
             </jet-confirmation-modal>
-            <jet-confirmation-modal maxHeight="h-96" class="h-16" :show="viewPaymentModal" @close="viewPaymentModal = false">
+            <jet-confirmation-modal maxHeight="h-96" class="h-16" :show="viewPaymentModal"
+                                    @close="viewPaymentModal = false">
                 <template #title>
                     عودت هزینه دستگاه
                 </template>
@@ -392,133 +397,132 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetLabel from '@/Jetstream/Label'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-    import JetSectionBorder from '@/Jetstream/SectionBorder'
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
-    import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
-    import JetDangerButton from '@/Jetstream/DangerButton';
+import Dashboard from "@/Pages/Dashboard";
+import JetActionMessage from '@/Jetstream/ActionMessage'
+import JetButton from '@/Jetstream/Button'
+import JetFormSection from '@/Jetstream/FormSection'
+import JetInput from '@/Jetstream/Input'
+import JetInputError from '@/Jetstream/InputError'
+import JetLabel from '@/Jetstream/Label'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import JetSectionBorder from '@/Jetstream/SectionBorder'
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
+import JetDangerButton from '@/Jetstream/DangerButton';
 
-    export default {
-        name: "View",
-        components: {
-            Dashboard,
-            JetActionMessage,
-            JetConfirmationModal,
-            JetDangerButton,
-            JetButton,
-            JetFormSection,
-            JetInput,
-            JetInputError,
-            JetLabel,
-            JetSecondaryButton,
-            JetSectionBorder,
-            datePicker: VuePersianDatetimePicker
+export default {
+    name: "View",
+    components: {
+        Dashboard,
+        JetActionMessage,
+        JetConfirmationModal,
+        JetDangerButton,
+        JetButton,
+        JetFormSection,
+        JetInput,
+        JetInputError,
+        JetLabel,
+        JetSecondaryButton,
+        JetSectionBorder,
+        datePicker: VuePersianDatetimePicker
+    },
+    props: {
+        device: Object,
+        deviceTypes: Array,
+        accessories: Array,
+    },
+    data() {
+        return {
+            imageFiles: {
+                faktorFilePreview: this.device.fileUrl,
+            },
+            fileUploadErrors: {
+                faktorFile: null,
+            },
+            editReturnForm: this.$inertia.form({
+                '_method': 'POST',
+                device_type_id: this.device.device_type_id,
+                serial: this.device.serial,
+                name: this.device.name,
+                mobile: this.device.mobile,
+                national_code: this.device.national_code,
+                description: this.device.description,
+                amount: this.device.amount,
+                file: '',
+                status: this.device.status,
+                accessories: this.device.accessories
+            }, {
+                bag: 'editReturnForm',
+                resetOnSuccess: false
+            }),
+            updateReturnStatusForm: this.$inertia.form({
+                '_method': 'PUT',
+                status: this.device.status,
+                message: null,
+                type: 2,
+                ref_code: null,
+                payment_date: null,
+            }, {
+                bag: 'updateReturnStatusForm',
+                resetOnSuccess: false
+            }),
+            paymentDate: null,
+            viewPaymentModal: false,
+            rejectReturn: false,
+        }
+    },
+    methods: {
+        submitEditReturnForm() {
+            this.editReturnForm.post(route('dashboard.returns.update', {returnId: this.device.id})).then(response => {
+                if (!this.editReturnForm.hasErrors()) {
+
+                }
+            })
         },
-        props: {
-            device: Object,
-            deviceTypes: Array,
-            accessories: Array,
+        updateStatus(status) {
+            this.updateReturnStatusForm.status = status;
+            this.updateReturnStatusForm.put(route('dashboard.returns.updateStatus', {returnId: this.device.id})).then(response => {
+                if (!this.updateReturnStatusForm.hasErrors()) {
+                    this.rejectReturn = false;
+                    this.viewPaymentModal = false;
+                }
+            })
         },
-        data() {
-            return {
-                imageFiles: {
-                    faktorFilePreview: this.device.fileUrl,
-                },
-                fileUploadErrors: {
-                    faktorFile: null,
-                },
-                editReturnForm: this.$inertia.form({
-                    '_method': 'POST',
-                    device_type_id: this.device.device_type_id,
-                    serial: this.device.serial,
-                    name: this.device.name,
-                    mobile: this.device.mobile,
-                    national_code: this.device.national_code,
-                    description: this.device.description,
-                    amount: this.device.amount,
-                    file: '',
-                    status: this.device.status,
-                    accessories: this.device.accessories
-                }, {
-                    bag: 'editReturnForm',
-                    resetOnSuccess: false
-                }),
-                updateReturnStatusForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    status: this.device.status,
-                    message: null,
-                    type: 2,
-                    ref_code: null,
-                    payment_date: null,
-                }, {
-                    bag: 'updateReturnStatusForm',
-                    resetOnSuccess: false
-                }),
-                paymentDate: null,
-                viewPaymentModal: false,
-                rejectReturn: false,
+        selectPaymentDate(e) {
+            this.updateReturnStatusForm.payment_date = e.format('YYYY/MM/DD H:m');
+        },
+        paymentStatusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'bg-blue-100 text-blue-800';
+                case 1:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 2:
+                    return 'bg-green-100 text-green-800';
             }
         },
-        methods: {
-            submitEditReturnForm() {
-                this.editReturnForm.post(route('dashboard.returns.update', {returnId: this.device.id})).then(response => {
-                    if (!this.editReturnForm.hasErrors()) {
-
-                    }
-                })
-            },
-            updateStatus(status) {
-                this.updateReturnStatusForm.status = status;
-                this.updateReturnStatusForm.put(route('dashboard.returns.updateStatus', {returnId: this.device.id})).then(response => {
-                    if (!this.updateReturnStatusForm.hasErrors()) {
-                        this.rejectReturn = false;
-                        this.viewPaymentModal = false;
-                    }
-                })
-            },
-            selectPaymentDate(e) {
-                this.updateReturnStatusForm.payment_date = e.format('YYYY/MM/DD H:m');
-            },
-            paymentStatusColors(status) {
-                switch (status) {
-                    case 0:
-                        return 'bg-blue-100 text-blue-800';
-                    case 1:
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 2:
-                        return 'bg-green-100 text-green-800';
-                }
-            },
-            onFaktorFileChange(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.faktor = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.faktor = '';
-                this.editReturnForm.file = e.target.files[0];
-                this.imageFiles.faktorFilePreview = URL.createObjectURL(file);
-            },
-        },
-        computed: {
-            disableInputs: function () {
-                if (this.$page.user.level == 'SUPERUSER' || this.$page.user.level == 'ADMIN' || this.$page.user.level == 'OFFICE') {
-                    return false;
-                } else {
-                    return !(this.device.status == 0 || this.device.status == 1);
-                }
+        onFaktorFileChange(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.faktor = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
             }
+            this.fileUploadErrors.faktor = '';
+            this.editReturnForm.file = e.target.files[0];
+            this.imageFiles.faktorFilePreview = URL.createObjectURL(file);
+        },
+    },
+    computed: {
+        disableInputs: function () {
+            if (this.$page.user.level == 'SUPERUSER' || this.$page.user.level == 'ADMIN' || this.$page.user.level == 'OFFICE') {
+                return false;
+            }
+            return !(this.device.status == 0 || this.device.status == 1);
         }
     }
+}
 </script>
 
 <style scoped>

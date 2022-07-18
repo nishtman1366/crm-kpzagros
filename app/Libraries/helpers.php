@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Notifications\NotificationController;
+use App\Models\Profiles\ProfileMessage;
 use Illuminate\Pagination\UrlWindow;
 
 if (!function_exists('paginationLinks')) {
@@ -65,9 +67,9 @@ if (!function_exists('systemConfig')) {
     {
         $domain = request()->getHttpHost();
         $value = \App\Models\Setting::where('key', $key)
-            ->where(function ($query)use($domain){
+            ->where(function ($query) use ($domain) {
                 $query->where('domain', $domain)
-                    ->orWhere('domain','kpzagros-crm.com');
+                    ->orWhere('domain', 'kpzagros-crm.com');
             })
             ->where('domain', $domain)
             ->get()
@@ -144,5 +146,105 @@ if (!function_exists('monthOfYear')) {
             ['بهمن', $year . '/11/01', $year . '/11/30'],
             ['اسفند', $year . '/12/01', $year . '/12/' . ($isLeapYear ? '30' : '29')],
         ];
+    }
+}
+
+if (!function_exists('setProfileMessage')) {
+    function setProfileMessage($status, $user, $profile, $message = null)
+    {
+        switch ($status) {
+            default:
+            case 1:
+                $title = sprintf('ثبت اطلاعات پرونده توسط %s انجام شد.', $user->name);
+                $type = 'SUCCESS';
+                break;
+            case 2:
+                $title = sprintf('پرونده توسط %s در انتظار بررسی مدارک می باشد.', $user->name);
+                $type = 'INFO';
+                break;
+            case 3:
+                $title = sprintf('مدارک پرونده توسط %s تایید شد و هم اکنون در حال ثبت در سامانه خدمات دهنده (psp) می باشد.', $user->name);
+                $type = 'INFO';
+                break;
+            case 4:
+                $title = sprintf('اطلاعات پرونده توسط %s در سامانه خدمات دهنده (psp) ثبت شد.', $user->name);
+                $type = 'SUCCESS';
+                break;
+            case 5:
+                $title = sprintf('اطلاعات پرونده توسط شاپرک تایید شد.');
+                $type = 'SUCCESS';
+                break;
+            case 6:
+                $title = sprintf('پرونده در انتظار تخصیص شماره پذیرنده و شماره ترمینال می باشد.');
+                $type = 'WARNING';
+                break;
+            case 7:
+                $title = sprintf('شماره پذیرنده و شماره ترمینال به پرونده اختصاص داده شد. لطفا جهت نصب دستگاه اقدام نمایید.');
+                $type = 'SUCCESS';
+                break;
+            case 8:
+                $title = sprintf('دستگاه توسط %s در محل مشتری با موفقیت نصب شد.', $user->name);
+                $type = 'SUCCESS';
+                break;
+            case 9:
+                $title = sprintf('پرونده توسط %s ابطال شد.', $user->name);
+                $type = 'SUCCESS';
+                break;
+            case 10:
+                $title = sprintf('مدارک پرونده توسط %s رد شد.', $user->name);
+                $type = 'DANGER';
+                break;
+            case 11:
+                $title = sprintf('اطلاعات پرونده توسط شاپرک رد شد.');
+                $type = 'DANGER';
+                break;
+            case 12:
+                $title = sprintf('درخواست فسخ پرونده توسط %s ثبت شد.', $user->name);
+                $type = 'WARNING';
+                break;
+            case 13:
+                $title = sprintf('سریال انتخاب شده برای پرونده توسط %s رد شد.', $user->name);
+                $type = 'DANGER';
+                break;
+            case 14:
+                $title = sprintf('درخواست جابجایی پرونده توسط %s ثبت شد.', $user->name);
+                $type = 'WARNING';
+                break;
+            case 15:
+                $title = sprintf('سریال جدید توسط %s جهت جابجایی انتخاب شد.', $user->name);
+                $type = 'WARNING';
+                break;
+            case 16:
+                $title = sprintf('درخواست جابجایی پرونده توسط %s رد شد.', $user->name);
+                $type = 'DANGER';
+                break;
+            case 17:
+                $title = 'سریال جدید به پذیرنده اختصاص یافت.';
+                $type = 'INFO';
+                break;
+            case 18:
+                $title = sprintf('درخواست فسخ پرونده توسط %s رد شد.', $user->name);
+                $type = 'DANGER';
+                break;
+            case 19:
+                $title = sprintf('شماره پذیرنده توسط %s ثبت شد.', $user->name);
+                $type = 'SUCCESS';
+                break;
+            case 20:
+                $title = sprintf('درخواست ابطال توسط %s رد شد.', $user->name);
+                $type = 'DANGER';
+                break;
+        }
+
+
+        ProfileMessage::create([
+            'user_id' => $user->id,
+            'profile_id' => $profile->id,
+            'message' => $message,
+            'title' => $title,
+            'type' => $type
+        ]);
+
+        NotificationController::handleProfileNotifications('PROFILES', $profile, $user);
     }
 }
