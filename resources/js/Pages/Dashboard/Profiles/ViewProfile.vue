@@ -483,7 +483,7 @@
                                                     profile.business.senf
                                                 }}
                                                 (<inertia-link
-                                                    :href="route('dashboard.profiles.businesses.edit',{profileId:profile.id})"
+                                                    :href="route('dashboard.profiles.businesses.edit',{profile:profile.id})"
                                                     class="text-red-500 font-bold cursor-pointer hover:underline">نیاز به بروزرسانی</inertia-link>)
                                             </span>
                                         </div>

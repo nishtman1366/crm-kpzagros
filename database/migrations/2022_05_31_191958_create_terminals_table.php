@@ -25,7 +25,7 @@ class CreateTerminalsTable extends Migration
             $table->text('cancel_reason')->nullable();
             $table->unsignedBigInteger('new_device_type_id')->nullable();
             $table->text('change_reason')->nullable();
-            $table->unsignedBigInteger('new_device_id');
+            $table->unsignedBigInteger('new_device_id')->nullable();
             $table->unsignedBigInteger('status')->default(0);
             $table->date('setup_date')->nullable();
             $table->string('access_address')->nullable();
