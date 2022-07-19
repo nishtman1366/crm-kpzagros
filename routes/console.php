@@ -109,6 +109,56 @@ Artisan::command('changeTerminals', function () {
         });
 });
 
+function terminalStatusBaseOnProfileStatus($status)
+{
+    switch ($status) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            return 0;
+        case 6:
+            return 1;
+        case 7:
+            return 3;
+        case 8:
+            return 6;
+        case 9:
+            return 5;
+        case 10:
+        case 11:
+        case 255:
+            return false;
+        case 12:
+            return 4;
+        case 13:
+            return 2;
+        case 14:
+            return 7;
+        case 15:
+            return 8;
+        case 16:
+            return 9;
+        case 17:
+            return 10;
+    }
+}
+
+Artisan::command('updateTerminalStatuses', function () {
+    \App\Models\Profiles\Terminal::with('profile')
+        ->where('status', 0)
+        ->get()
+        ->each(function ($terminal) {
+            $status = terminalStatusBaseOnProfileStatus($terminal->profile->status);
+            if ($status) {
+                $terminal->status = $status;
+                $terminal->save();
+            }
+        });
+});
+
 Artisan::command('migrateDB', function () {
     print PHP_EOL;
     print "Fetching Data From Server...";

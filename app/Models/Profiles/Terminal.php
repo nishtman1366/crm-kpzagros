@@ -102,4 +102,9 @@ class Terminal extends Model
         return $this->belongsTo(Device::class, 'device_id', 'id');
     }
 
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class);
+    }
+
 }

@@ -96,6 +96,9 @@ class Profile extends Model
             case 16:
                 return 'رد درخواست جابجایی';
                 break;
+            case 17:
+                return 'رد درخواست ابطال';
+                break;
             case 255:
                 return 'حذف به دلیل ادغام';
                 break;
