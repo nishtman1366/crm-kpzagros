@@ -9,6 +9,7 @@
                             <div class="grid md:grid-cols-4 gap-3">
                                 <div class="col-1 md:col-span-2">
                                     <jet-input type="text"
+                                               @keyup.enter.native="submitSearchForm"
                                                v-model="query"
                                                placeholder="جستجو در کدملی یا نام مشتری"
                                                class="w-1/2"/>
@@ -168,7 +169,7 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
-                                    <th scope="col"
+                                    <th scope="col" colspan="2"
                                         class="list-table-header-cell">
                                         نام پذیرنده
                                     </th>
@@ -200,70 +201,101 @@
                                 </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="profile in profiles.data" :key="profile.id">
-                                    <td class="list-table-body-cell">
-                                        {{ profile.customer.fullName }}
-                                        <p
-                                            class="text-indigo-600">({{ profile.customer.national_code }})</p>
-                                    </td>
-                                    <td class="list-table-body-cell">
-                                        {{ profile.typeText }}
-                                    </td>
-                                    <td class="list-table-body-cell">
-                                        دستگاه کارتخوان
-                                        <p
-                                            class="sub-text">({{ profile.psp ? profile.psp.name : 'نامشخص' }})</p>
-                                    </td>
-                                    <td class="list-table-body-cell">
-                                        <p>{{ profile.user.name }}</p>
-                                        <p class="sub-text">
-                                            {{ profile.user.parent ? 'نماینده: ' + profile.user.parent.name : '' }}
-                                        </p>
-                                    </td>
-                                    <td class="list-table-body-cell">
+                                <template v-for="profile in profiles.data">
+                                    <tr :key="profile.id">
+                                        <td class="list-table-body-cell">
+                                            <svg v-if="profile.terminals && profile.terminals.length > 0" title="ترمینال‌ها" :data-container="`profile-${profile.id}`"
+                                                 v-b-tooltip.hover style="width:24px;height:24px" viewBox="0 0 24 24"
+                                                 class="terminals-box text-indigo-500 hover:text-indigo-400 cursor-pointer">
+                                                <path fill="currentColor"
+                                                      d="M17 14V17H14V19H17V22H19V19H22V17H19V14M20 11V12.3C19.4 12.1 18.7 12 18 12C16.8 12 15.6 12.4 14.7 13H7V11H20M12.1 17H7V15H12.8C12.5 15.6 12.2 16.3 12.1 17M7 7H20V9H7V7M5 19H7V21H3V3H7V5H5V19Z"/>
+                                            </svg>
+                                        </td>
+                                        <td class="list-table-body-cell">
+                                            {{ profile.customer.fullName }}
+                                            <p
+                                                class="text-indigo-600">({{ profile.customer.national_code }})</p>
+                                        </td>
+                                        <td class="list-table-body-cell">
+                                            {{ profile.typeText }}
+                                        </td>
+                                        <td class="list-table-body-cell">
+                                            دستگاه کارتخوان
+                                            <p
+                                                class="sub-text">({{ profile.psp ? profile.psp.name : 'نامشخص' }})</p>
+                                        </td>
+                                        <td class="list-table-body-cell">
+                                            <p>{{ profile.user.name }}</p>
+                                            <p class="sub-text">
+                                                {{ profile.user.parent ? 'نماینده: ' + profile.user.parent.name : '' }}
+                                            </p>
+                                        </td>
+                                        <td class="list-table-body-cell">
                                         <span
                                             :class="statusColors(profile.status)"
                                             class="badge">
                                           {{ profile.statusText }}
                                         </span>
-                                    </td>
-                                    <td class="list-table-body-cell">{{ profile.jCreatedAt }}</td>
-                                    <td class="list-table-body-cell">{{ profile.jUpdatedAt }}</td>
-                                    <td class="list-table-body-cell flex flex-nowrap items-center justify-center">
-                                        <InertiaLink
-                                            :href="route('dashboard.profiles.view',{profile: profile.id})"
-                                            class="tooltip-box text-indigo-600 hover:text-indigo-900">
-                                            <button title="مشاهده پرونده"
-                                                    v-b-tooltip.hover>
-                                                <i id="view-device-button" class="material-icons">folder_shared</i>
+                                        </td>
+                                        <td class="list-table-body-cell">{{ profile.jCreatedAt }}</td>
+                                        <td class="list-table-body-cell">{{ profile.jUpdatedAt }}</td>
+                                        <td class="list-table-body-cell flex flex-nowrap items-center justify-center">
+                                            <InertiaLink
+                                                :href="route('dashboard.profiles.view',{profile: profile.id})"
+                                                class="tooltip-box text-indigo-600 hover:text-indigo-900">
+                                                <button title="مشاهده پرونده"
+                                                        v-b-tooltip.hover>
+                                                    <i id="view-device-button" class="material-icons">folder_shared</i>
+                                                </button>
+                                            </InertiaLink>
+                                            <a target="_blank"
+                                               :href="route('dashboard.profiles.delivery.form',{profile: profile.id})"
+                                               class="tooltip-box text-purple-600 hover:text-purple-900">
+                                                <button title="گواهی تحویل"
+                                                        v-b-tooltip.hover>
+                                                    <i id="view-license-button" class="material-icons">file_download</i>
+                                                </button>
+                                            </a>
+                                            <button
+                                                v-if="profile.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
+                                                v-on:click="updateProfileStatus(profile.id,2)"
+                                                class="text-green-400 hover:text-green-500"
+                                                title="دردست بررسی"
+                                                v-b-tooltip.hover>
+                                                <i class="material-icons">check_circle</i>
                                             </button>
-                                        </InertiaLink>
-                                        <a target="_blank"
-                                           :href="route('dashboard.profiles.delivery.form',{profile: profile.id})"
-                                           class="tooltip-box text-purple-600 hover:text-purple-900">
-                                            <button title="گواهی تحویل"
-                                                    v-b-tooltip.hover>
-                                                <i id="view-license-button" class="material-icons">file_download</i>
+                                            <button
+                                                v-if="profile.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
+                                                v-on:click="updateProfileStatus(profile.id,4)"
+                                                class="text-green-400 hover:text-green-500"
+                                                title="ثبت در psp"
+                                                v-b-tooltip.hover>
+                                                <i class="material-icons">assignment_turned_in</i>
                                             </button>
-                                        </a>
-                                        <button
-                                            v-if="profile.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
-                                            v-on:click="updateProfileStatus(profile.id,2)"
-                                            class="text-green-400 hover:text-green-500"
-                                            title="دردست بررسی"
-                                            v-b-tooltip.hover>
-                                            <i class="material-icons">check_circle</i>
-                                        </button>
-                                        <button
-                                            v-if="profile.status==3 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
-                                            v-on:click="updateProfileStatus(profile.id,4)"
-                                            class="text-green-400 hover:text-green-500"
-                                            title="ثبت در psp"
-                                            v-b-tooltip.hover>
-                                            <i class="material-icons">assignment_turned_in</i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
+                                    <tr v-for="terminal in profile.terminals" :key="terminal.id"
+                                        :class="`profile-${profile.id}`"
+                                        class="hidden bg-gray-100">
+                                        <td class="list-table-body-cell" colspan="2">نوع ترمینال: <span
+                                            class="font-bold">{{ terminal.typeText }}</span></td>
+                                        <td class="list-table-body-cell" >سریال دستگاه: <span
+                                            class="font-bold">{{ terminal.device && terminal.device.serial }}</span>
+                                        </td>
+                                        <td class="list-table-body-cell" colspan="2">مدل دستگاه: <span
+                                            class="font-bold">{{
+                                                terminal.device_type && terminal.device_type.name
+                                            }}</span>
+                                        </td>
+                                        <td class="list-table-body-cell" colspan="2">نوع ارتباط: <span
+                                            class="font-bold">{{
+                                                terminal.device_connection_type && terminal.device_connection_type.name
+                                            }}</span>
+                                        </td>
+                                        <td class="list-table-body-cell" colspan="2">وضعیت: <span
+                                            class="font-bold">{{ terminal.statusText }}</span></td>
+                                    </tr>
+                                </template>
                                 </tbody>
                             </table>
                             <pagination
@@ -478,7 +510,6 @@ export default {
             }),
 
 
-
             viewSelectNewSerialModal: false,
             newDeviceType: {
                 name: '',
@@ -520,6 +551,17 @@ export default {
         this.license_status = this.licenseStatus;
         this.from_date = this.fromDate;
         this.to_date = this.toDate;
+
+        let terminalsBoxes = document.querySelectorAll('.terminals-box');
+        terminalsBoxes.forEach((box) => {
+            box.addEventListener('click', () => {
+                let container = box.dataset.container;
+                let elements = document.querySelectorAll(`.${container}`);
+                elements.forEach((element) => {
+                    element.classList.remove('hidden');
+                })
+            })
+        });
     },
     methods: {
         statusColors(status) {
@@ -567,9 +609,6 @@ export default {
 
                 })
         },
-
-
-
 
 
         uploadExcel() {

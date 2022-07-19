@@ -699,9 +699,9 @@
                                         <div v-if="terminal.reject_reason" class="lg:col-span-3 text-red-500">
                                             {{ terminal.reject_reason }}
                                         </div>
-                                        <div v-if="terminal.cancel_reason">علت درخواست جابجایی</div>
-                                        <div v-if="terminal.cancel_reason" class="lg:col-span-3 text-red-500">
-                                            {{ terminal.cancel_reason }}
+                                        <div v-if="terminal.cancel_reason || terminal.change_reason" class="lg:col-span-2">علت درخواست جابجایی / فسخ</div>
+                                        <div v-if="terminal.cancel_reason || terminal.change_reason" class="lg:col-span-2 text-red-500 font-bold">
+                                            {{ terminal.cancel_reason || terminal.change_reason }}
                                         </div>
                                         <div
                                             class="col-span-2 flex items-center justify-center space-x-reverse space-x-2">
@@ -764,7 +764,6 @@
                                         <inertia-link
                                             :href="route('dashboard.profiles.devices.create',{profile:profile.id})">
                                             <jet-button
-                                                v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' || $page.user.level==='OFFICE'"
                                                 class="block bg-blue-500 hover:bg-blue-400 mx-auto">
                                                 ثبت ترمینال جدید
                                             </jet-button>
@@ -929,7 +928,7 @@
                                 <div class="col-6 sm:col-span-6">
                                     <div class="col-6 sm:col-span-6 text-left">
                                         <template
-                                            v-if="$page.user.level==='OFFICE' || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                            v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
                                             <div
                                                 class="border border-red-700 bg-red-100 rounded m-1 py-2 px-3 text-red-700 flex items-center justify-start">
                                                 <div class="mx-1">

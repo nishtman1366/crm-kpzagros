@@ -18,11 +18,15 @@ class TerminalController extends Controller
             'device_id' => 'required|exists:devices,id'
         ]);
         if ($terminal->profile_id !== $profile->id) throw new UnauthorizedHttpException('', 'دسترسی غیرمجاز');
-
+        $profileStatus = 0;
+        $messageStatus = 0;
         if ($terminal->status === 7) {
             $terminal->new_device_id = (int)$request->get('device_id');
             $terminal->status = 8;
             $terminal->save();
+
+            $profileStatus = 14;
+            $messageStatus = 14;
         } elseif ($terminal->status === 8) {
 
         } else {
@@ -35,11 +39,14 @@ class TerminalController extends Controller
             $device->transport_status = 2;
             $device->save();
 
-            $profile->status = 6;
-            $profile->save();
-            $user = Auth::user();
-            setProfileMessage(6, $user, $profile, null);
+            $profileStatus = 6;
+            $messageStatus = 6;
         }
+
+        $profile->status = $profileStatus;
+        $profile->save();
+        $user = Auth::user();
+        setProfileMessage($messageStatus, $user, $profile, null);
 
 
         return redirect()->back();
@@ -76,6 +83,8 @@ class TerminalController extends Controller
         $device->psp_status = 1;
         $device->save();
 
+        $profile->status = 13;
+        $profile->save();
         $user = Auth::user();
         setProfileMessage(13, $user, $profile, null);
 
@@ -93,6 +102,9 @@ class TerminalController extends Controller
         $terminal->device->psp_status = 2;
         $terminal->device->save();
 
+
+        $profile->status = 8;
+        $profile->save();
         setProfileMessage(8, $user, $profile, null);
         return redirect()->back();
     }
@@ -106,7 +118,8 @@ class TerminalController extends Controller
         $user = Auth::user();
         $terminal->fill($request->all());
         $terminal->save();
-
+        $profile->status = 12;
+        $profile->save();
         setProfileMessage(12, $user, $profile, null);
         return redirect()->back();
     }
@@ -132,6 +145,9 @@ class TerminalController extends Controller
             $terminal->device->transport_status = 1;
             $terminal->device->psp_status = 1;
             $terminal->device->save();
+
+            $profile->status = 13;
+            $profile->save();
         }
 
         $user = Auth::user();
@@ -150,6 +166,9 @@ class TerminalController extends Controller
         $terminal->fill($request->all());
         $terminal->save();
 
+
+        $profile->status = 14;
+        $profile->save();
         setProfileMessage(14, $user, $profile, null);
         return redirect()->back();
     }
@@ -184,6 +203,9 @@ class TerminalController extends Controller
                 $newDevice->psp_status = 2;
                 $newDevice->save();
             }
+
+            $profile->status = 7;
+            $profile->save();
         }
 
         $terminal->device_type_id = $terminal->new_device_type_id;
