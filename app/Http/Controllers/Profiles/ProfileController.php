@@ -404,20 +404,16 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id]);
     }
 
-    public function updateStatus(Request $request)
+    public function updateStatus(Profile $profile, Request $request)
     {
         $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
         $newStatus = $request->get('newStatus');
         $profile->status = $newStatus;
         $profile->save();
 
         $this->setProfileMessage($newStatus, $user, $profile, 'تغییر وضعیت پرونده به صورت دستی');
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'تغییر وضعیت پرونده صورت گرفت.']);
-
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id])->with(['message' => 'تغییر وضعیت پرونده صورت گرفت.']);
     }
 
     public function setType(Request $request)

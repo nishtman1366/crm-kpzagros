@@ -165,6 +165,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
                 Route::put('merchant', [\App\Http\Controllers\Profiles\ProfileController::class, 'updateMerchant'])->name('merchant');
 
                 Route::put('licenses/confirm', [\App\Http\Controllers\Profiles\ProfileController::class, 'confirmLicenses'])->name('licenses.confirm');
+
+                Route::put('status', [\App\Http\Controllers\Profiles\ProfileController::class, 'updateStatus'])->name('status');
             });
         });
 

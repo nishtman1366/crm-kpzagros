@@ -1794,7 +1794,7 @@ export default {
             this.temporaryStatus = status
         },
         changeProfileStatus() {
-            Inertia.visit(route('dashboard.profiles.update.status', {profileId: this.profile.id}), {
+            Inertia.visit(route('dashboard.profiles.update.status', {profile: this.profile.id}), {
                 method: 'put',
                 data: {
                     newStatus: this.newProfileStatus,
