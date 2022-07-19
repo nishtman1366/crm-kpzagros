@@ -1071,15 +1071,21 @@
                             <p class="text-lg" v-if="newDeviceType">
                                 مدل انتخاب شده: {{ newDeviceType.name }}</p>
                         </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
+                        <div v-if="loadingDevicesList"
+                        class="text-center text-lg font-bold my-3 animate-bounce">در حال بارگذاری لیست دستگاه‌ها...</div>
+                        <div v-else class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                             <input type="text"
+                                   :disabled="loadingDevicesList"
+                                   :readonly="loadingDevicesList"
                                    class=" inline-flex shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 sm:text-sm border-gray-300 rounded-md border"
                                    placeholder="جستجوی سریال"
                                    ref="search_serial"
                                    id="search_serial"
                                    v-model="search.serial"/>
                             <button type="button"
-                                    class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                    :disabled="loadingDevicesList"
+                                    :class="loadingDevicesList ? 'bg-gray-100' : 'bg-red-600 hover:bg-red-700'"
+                                    class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                                     v-on:click="searchDeviceSerials">
                                 جستجو
                             </button>
@@ -1619,6 +1625,7 @@ export default {
             selectedTerminal: null,
             selectedDevice: null,
             confirmSerial: false,
+            loadingDevicesList: false,
             serialForm: this.$inertia.form({
                 '_method': 'PUT',
                 device_id: null,
@@ -1913,6 +1920,7 @@ export default {
             this.viewSearchModal = true;
             let queryString = '?';
             let deviceTypeId = terminal.device_type_id;
+            this.loadingDevicesList = true;
             if (change) {
                 deviceTypeId = terminal.new_device_type_id;
                 queryString = '?change=true';
@@ -1926,11 +1934,14 @@ export default {
                         })
                         .catch(error => {
                             console.log(error);
-                        });
+                        }).finally(() => {
+                        this.loadingDevicesList = false;
+                    });
                 })
                 .catch(error => {
                     console.log(error);
                 })
+
 
         },
         searchDeviceSerials() {

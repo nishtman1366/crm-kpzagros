@@ -339,32 +339,16 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function deliveryForm(Request $request)
+    public function deliveryForm(Profile $profile, Request $request)
     {
-        $profileId = $request->route('profileId');
-        $profile = Profile::with('customer')
-            ->with('user')
-            ->with('psp')
-            ->with('business')
-            ->with('accounts')
-            ->with('accounts.account')
-            ->with('accounts.account.bank')
-            ->with('deviceType')
-            ->with('deviceType.type')
-            ->with('device')
-            ->with('messages')
-            ->with('licenses')
-            ->with('licenses.type')
-            ->find($profileId);
+        $profile->load('customer', 'user', 'psp', 'business', 'accounts', 'accounts.account', 'accounts.account.bank', 'deviceType', 'deviceType.type', 'device', 'messages', 'licenses', 'licenses.type');
 
-        if (is_null($profile)) throw new NotFoundHttpException('اطلاعات پرونده یافت نشد');
-
-        $pdf = new PdfWrapper();
-        $x = $pdf->loadView('pdf.profile_deliver_form', compact('profile'), [], [
+        $pdfWrapper = new PdfWrapper();
+        $pdf = $pdfWrapper->loadView('pdf.profile_deliver_form', compact('profile'), [], [
             'mode' => 'utf-8',
         ]);
         $fileName = is_null($profile->customer) ? 'deliveryForm.pdf' : Str::slug($profile->customer->fullName) . '.pdf';
-        return $x->download($fileName);
+        return $pdf->download($fileName);
     }
 
     public function update(Profile $profile, Request $request)
