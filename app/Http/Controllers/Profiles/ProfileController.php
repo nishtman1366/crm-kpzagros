@@ -290,8 +290,8 @@ class ProfileController extends Controller
             'customer', 'psp',
             'terminals', 'terminals.deviceConnectionType', 'terminals.deviceType', 'terminals.device', 'terminals.device.deviceType',
             'business', 'business.category', 'business.subCategory',
-            'accounts','accounts.account','accounts.account.bank',
-            'messages','licenses','licenses.type'
+            'accounts', 'accounts.account', 'accounts.account.bank',
+            'messages', 'licenses', 'licenses.type'
         ]);
 
         if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد');
@@ -367,10 +367,10 @@ class ProfileController extends Controller
         return $x->download($fileName);
     }
 
-    public function update(Profile $profile,Request $request)
+    public function update(Profile $profile, Request $request)
     {
         $user = Auth::user();
-        $profile->load('customer','business','accounts','accounts.account','accounts.account.bank');
+        $profile->load('customer', 'business', 'accounts', 'accounts.account', 'accounts.account.bank');
 
         $status = $request->get('status');
 
@@ -738,11 +738,9 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.list');
     }
 
-    public function confirmLicenses(Request $request)
+    public function confirmLicenses(Profile $profile, Request $request)
     {
         $profileId = (int)$request->route('profileId');
-        $profile = Profile::with('customer')->find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
 
         $status = $request->get('status');
         $message = $request->get('message');
@@ -751,6 +749,6 @@ class ProfileController extends Controller
         $profile->licenses_message = $message;
         $profile->save();
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => 'وضعیت مدارک با موفقیت ثبت شد.']);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile])->with(['message' => 'وضعیت مدارک با موفقیت ثبت شد.']);
     }
 }

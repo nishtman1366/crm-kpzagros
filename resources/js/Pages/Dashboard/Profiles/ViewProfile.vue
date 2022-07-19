@@ -653,9 +653,10 @@
                                             <template v-else>
                                                 تخصیص نیافته
                                             </template>
-                                            <span v-if="$page.user.level==='OFFICE' || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
-                                                  @click="viewDevicesModal(terminal)"
-                                                  class="text-blue-500 hover:text-blue-400 cursor-pointer">(ویرایش)</span>
+                                            <span
+                                                v-if="$page.user.level==='OFFICE' || $page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
+                                                @click="viewDevicesModal(terminal)"
+                                                class="text-blue-500 hover:text-blue-400 cursor-pointer">(ویرایش)</span>
                                         </div>
                                         <div class="border-b border-gray-200 pb-1">مدل نصب شده</div>
                                         <div class="font-bold border-gray-200 pb-1 border-b ">
@@ -1769,7 +1770,7 @@ export default {
             this.viewChangeLicensesStatusModal = false;
         },
         submitLicensesStatusForm() {
-            this.licensesStatusForm.put(route('dashboard.profiles.confirm.licenses', {profileId: this.profile.id})).then(() => {
+            this.licensesStatusForm.put(route('dashboard.profiles.update.licenses.confirm', {profile: this.profile.id})).then(() => {
                 if (!this.licensesStatusForm.hasErrors()) {
                     this.closeChangeLicensesStatusModal();
                 }

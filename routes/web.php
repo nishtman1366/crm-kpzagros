@@ -163,6 +163,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
                 Route::put('terminals/{terminal}/confirmChange', [\App\Http\Controllers\Profiles\TerminalController::class, 'confirmChangeSerial'])->name('confirm_change');
 
                 Route::put('merchant', [\App\Http\Controllers\Profiles\ProfileController::class, 'updateMerchant'])->name('merchant');
+
+                Route::put('licenses/confirm', [\App\Http\Controllers\Profiles\ProfileController::class, 'confirmLicenses'])->name('licenses.confirm');
             });
         });
 
