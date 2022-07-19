@@ -148,14 +148,14 @@ function terminalStatusBaseOnProfileStatus($status)
 
 Artisan::command('updateTerminalStatuses', function () {
     \App\Models\Profiles\Terminal::with('profile')
-        ->where('status', 0)
-        ->get()
-        ->each(function ($terminal) {
-            $status = terminalStatusBaseOnProfileStatus($terminal->profile->status);
-            if ($status) {
-                $terminal->status = $status;
-                $terminal->save();
-            }
+        ->chunk(1000, function ($terminals) {
+            $terminals->each(function ($terminal) {
+                $status = terminalStatusBaseOnProfileStatus($terminal->profile->status);
+                if ($status) {
+                    $terminal->status = $status;
+                    $terminal->save();
+                }
+            });
         });
 });
 
