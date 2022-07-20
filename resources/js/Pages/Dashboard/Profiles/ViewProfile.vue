@@ -928,7 +928,7 @@
                                 <div class="col-6 sm:col-span-6">
                                     <div class="col-6 sm:col-span-6 text-left">
                                         <template
-                                            v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                                            v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'">
                                             <div
                                                 class="border border-red-700 bg-red-100 rounded m-1 py-2 px-3 text-red-700 flex items-center justify-start">
                                                 <div class="mx-1">

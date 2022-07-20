@@ -120,7 +120,7 @@
                                 </template>
                                 <template #content>
                                     <jet-dropdown-link v-for="ticket in $page.userTickets"
-                                                       :key="ticket.id"
+                                                       :key="`ticket_${ticket.id}`"
                                                        :href="route('dashboard.tickets.view',{id:ticket.id})">
                                         <p class="text-sm">{{ticket.title}} - {{ticket.date}}</p>
                                         <p class="text-xs text-gray-400">
@@ -196,10 +196,10 @@
                                 </div>
                                 <div class="h-28 overflow-y-auto">
                                     <inertia-link v-for="profile in searchResults.profiles"
-                                                  :key="'profiles_search_'+profile.id"
+                                                  :key="`profiles_search_${profile.id}`"
                                                   target="_blank"
-                                                  :href="route('dashboard.profiles.view',{profileId:profile.id})">
-                                        <div class="mx-1 my-2 flex justify-between">
+                                                  :href="route('dashboard.profiles.view',{profile:profile.id})">
+                                        <div class="mx-1 my-2 flex justify-between hover:underline">
                                             <div class="w-1/4 text-cen ter truncate list-table-body-cell">
                                                 {{profile.customer &&
                                                 profile.customer.fullName}}
@@ -221,9 +221,9 @@
                                             <span
                                                 class="mx-2 my-1 p-1 text-blue-500 hover:text-blue-400 rounded cursor-pointer"
                                                 :class="{'bg-gray-200' : link.active}"
-                                                v-for="link in searchResults.profilesPagination"
+                                                v-for="(link,linkIndex) in searchResults.profilesPagination"
                                                 @click="searchProfiles(link.url)"
-                                                :key="link" v-html="link.label"/>
+                                                :key="`profiles_link_${linkIndex}`" v-html="link.label"/>
                                     </div>
                                 </div>
                             </div>
@@ -244,7 +244,7 @@
                                 </div>
                                 <div class="h-28 overflow-y-auto">
                                     <inertia-link v-for="device in searchResults.devices"
-                                                  :key="'devices_search_'+device.id"
+                                                  :key="`devices_search_${device.id}`"
                                                   target="_blank"
                                                   :href="route('dashboard.devices.view',{id:device.id})">
                                         <div class="mx-1 my-2 flex justify-between">
@@ -261,9 +261,9 @@
                                             <span
                                                 class="mx-2 my-1 p-1 text-blue-500 hover:text-blue-400 rounded cursor-pointer"
                                                 :class="{'bg-gray-200' : link.active}"
-                                                v-for="link in searchResults.devicesPagination"
+                                                v-for="(link,deviceIndex) in searchResults.devicesPagination"
                                                 @click="searchDevices(link.url)"
-                                                :key="link" v-html="link.label"/>
+                                                :key="`devices_link_${deviceIndex}`" v-html="link.label"/>
                                     </div>
                                 </div>
                             </div>
@@ -284,7 +284,7 @@
                                 </div>
                                 <div class="h-28 overflow-y-auto">
                                     <inertia-link v-for="repair in searchResults.repairs"
-                                                  :key="'repairs_search_'+repair.id"
+                                                  :key="`repairs_search_${repair.id}`"
                                                   target="_blank"
                                                   :href="route('dashboard.repairs.view',{id:repair.id})">
                                         <div class="mx-1 my-2 flex justify-between">
@@ -300,9 +300,9 @@
                                             <span
                                                 class="mx-2 my-1 p-1 text-blue-500 hover:text-blue-400 rounded cursor-pointer"
                                                 :class="{'bg-gray-200' : link.active}"
-                                                v-for="link in searchResults.repairsPagination"
+                                                v-for="(link,repairIndex) in searchResults.repairsPagination"
                                                 @click="searchRepairs(link.url)"
-                                                :key="link" v-html="link.label"/>
+                                                :key="`repairs_link_${repairIndex}`" v-html="link.label"/>
                                     </div>
                                 </div>
                             </div>
