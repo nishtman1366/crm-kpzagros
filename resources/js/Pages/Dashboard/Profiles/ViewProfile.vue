@@ -706,21 +706,21 @@
                                         <div
                                             class="col-span-2 flex items-center justify-center space-x-reverse space-x-2">
                                             <jet-button
-                                                v-if="terminal.status==0 || terminal.status==2"
+                                                v-if="profile.status === 5 && (terminal.status === 0 || terminal.status === 2)"
                                                 @click.native="viewDevicesModal(terminal)"
                                                 class="terminal-actions border-green-600 text-green-600 hover:text-green-700"
                                                 title="انتخاب دستگاه">
                                                 انتخاب دستگاه
                                                 <i class="material-icons">keyboard_hide</i>
                                             </jet-button>
-                                            <button v-if="terminal.status==3"
+                                            <button v-if="terminal.status === 3"
                                                     v-on:click="installDevice(terminal)"
                                                     class="terminal-actions border-green-600 text-green-600 hover:text-green-700"
                                                     title="نصب دستگاه">
                                                 نصب دستگاه
                                                 <i class="material-icons">phonelink_setup</i>
                                             </button>
-                                            <button v-if="terminal.status == 3 || terminal.status == 6"
+                                            <button v-if="terminal.status === 3 || terminal.status === 6"
                                                     v-on:click="changeSerialRequest(terminal)"
                                                     class="terminal-actions border-yellow-600 text-yellow-600 hover:text-yellow-700"
                                                     title="جابجایی سریال">
@@ -728,7 +728,7 @@
                                                 <i class="material-icons">undo</i>
                                             </button>
                                             <button
-                                                v-if="terminal.status == 7 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
+                                                v-if="profile.status===14 && terminal.status === 7 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
                                                 v-on:click="viewDevicesModal(terminal,true)"
                                                 class="terminal-actions border-blue-600 text-blue-600 hover:text-blue-700"
                                                 title="تخصیص سریال جدید">
