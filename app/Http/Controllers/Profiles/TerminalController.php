@@ -8,6 +8,8 @@ use App\Models\Profiles\Terminal;
 use App\Models\Variables\Device;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use niklasravnsborg\LaravelPdf\PdfWrapper;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class TerminalController extends Controller
@@ -220,4 +222,19 @@ class TerminalController extends Controller
         setProfileMessage($eventStatus, $user, $profile, $request->get('cancelChangeMessage'));
         return redirect()->back();
     }
+
+    public function deliveryForm(Profile $profile, Terminal $terminal)
+    {
+        $profile->load('customer', 'user', 'psp', 'business',
+            'accounts', 'accounts.account', 'accounts.account.bank', 'messages', 'licenses', 'licenses.type');
+        $terminal->load('device', 'deviceType');
+
+        $pdfWrapper = new PdfWrapper();
+        $pdf = $pdfWrapper->loadView('pdf.profile_deliver_form', compact('profile', 'terminal'), [], [
+            'mode' => 'utf-8',
+        ]);
+        $fileName = is_null($profile->customer) ? 'deliveryForm.pdf' : Str::slug($profile->customer->fullName) . '.pdf';
+        return $pdf->download($fileName);
+    }
+
 }

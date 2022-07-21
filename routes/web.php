@@ -168,12 +168,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
 
                 Route::put('status', [\App\Http\Controllers\Profiles\ProfileController::class, 'updateStatus'])->name('status');
             });
+
+            Route::get('terminals/{terminal}/deliveryForm', [\App\Http\Controllers\Profiles\TerminalController::class, 'deliveryForm'])->name('terminal.delivery.form');
         });
 
 
         Route::prefix('{profile}')->group(function () {
             Route::get('view', [\App\Http\Controllers\Profiles\ProfileController::class, 'view'])->name('view');
-            Route::get('/deliveryForm', [\App\Http\Controllers\Profiles\ProfileController::class, 'deliveryForm'])->name('delivery.form');
             Route::put('', [\App\Http\Controllers\Profiles\ProfileController::class, 'update'])->name('update');
             Route::put('updateStatus', [App\Http\Controllers\Profiles\ProfileController::class, 'updateStatus'])->name('update.status');
             Route::put('setType', [\App\Http\Controllers\Profiles\ProfileController::class, 'setType'])->name('update.type');

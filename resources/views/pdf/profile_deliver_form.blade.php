@@ -103,12 +103,12 @@
 
 <div id="container">
     <div class="pre-title">بسمه تعالی</div>
-    <div class="title">رسید نصب و تحویل دستگاه کارتخوان– نسخه پذیرنده</div>
+    <div class="title">رسید نصب و تحویل دستگاه کارتخوان – نسخه پذیرنده</div>
     <div class="contents">
         گواهی می شود یک عدد دستگاه کارتخوان مدل <span
-            class="variables">{{is_null($profile->deviceType) ? 'ثبت نشده' : $profile->deviceType->name}}</span> به صورت
+            class="variables">{{is_null($terminal->deviceType) ? 'ثبت نشده' : $terminal->deviceType->name}}</span> به صورت
         <span
-            class="variables">{{$profile->deviceSellTypeText}}</span> و متصل
+            class="variables">{{$terminal->deviceSellTypeText}}</span> و متصل
         به حساب بانک <span
             class="variables">{{(!is_null($profile->accounts) && count($profile->accounts) > 0 && !is_null($profile->accounts->first()->account)) ? toPersianNumbers($profile->accounts->first()->account->bank->name) : 'ثبت نشده'}}</span>
         به نام {{is_null($profile->customer) ? 'ثب نشده' : (($profile->customer->gender==='male') ? 'آقای' : 'خانم')}}
@@ -125,19 +125,19 @@
         <table class="items">
             <tr>
                 <td>مبلغ پرداختی بابت دستگاه (تومان)</td>
-                <td>{{toPersianNumbers($profile->device_amount)}}</td>
+                <td>{{toPersianNumbers($terminal->device_amount)}}</td>
                 <td>فیزیک دستگاه</td>
-                <td>{{$profile->devicePhysicalStatusText}}</td>
+                <td>{{$terminal->devicePhysicalStatusText}}</td>
                 <td>نام فروشگاه</td>
                 <td>{{is_null($profile->business) ? 'ثب نشده' : $profile->business->name}}</td>
             </tr>
             <tr>
                 <td>کد پایانه</td>
-                <td>{{toPersianNumbers($profile->terminal_id)}}</td>
+                <td>{{toPersianNumbers($terminal->terminal_number)}}</td>
                 <td>نوع قرارداد</td>
                 <td>{{$profile->typeText}}</td>
                 <td>سریال دستگاه</td>
-                <td>{{!is_null($profile->device) ? toPersianNumbers($profile->device->serial) : 'ثبت نشده'}}</td>
+                <td>{{!is_null($terminal->device) ? toPersianNumbers($terminal->device->serial) : 'ثبت نشده'}}</td>
             </tr>
             <tr>
                 <td>سرویس دهنده</td>
@@ -146,9 +146,10 @@
             <tr>
                 <td colspan="6" style="text-align: right">
                     مدت گارانتی از تاریخ <span
-                        class="variables">{{!is_null($profile->device) ? toPersianNumbers($profile->device->guarantee_start) : 'نامشخص'}}</span>
+                        class="variables">{{!is_null($terminal->device) ? toPersianNumbers($terminal->device->guarantee_start) : 'نامشخص'}}</span>
                     لغایت <span
-                        class="variables">{{!is_null($profile->device) ? toPersianNumbers($profile->device->guarantee_end) : 'نامشخص'}}</span>است
+                        class="variables">{{!is_null($terminal->device) ? toPersianNumbers($terminal->device->guarantee_end) : 'نامشخص'}}</span>
+                    است
                 </td>
             </tr>
             <tr>
@@ -233,12 +234,12 @@
 <pagebreak></pagebreak>
 <div id="container">
     <div class="pre-title">بسمه تعالی</div>
-    <div class="title">رسید نصب و تحویل دستگاه کارتخوان– نسخه شرکت</div>
+    <div class="title">رسید نصب و تحویل دستگاه کارتخوان – نسخه شرکت</div>
     <div class="contents">
         گواهی می شود یک عدد دستگاه کارتخوان مدل <span
-            class="variables">{{is_null($profile->deviceType) ? 'ثبت نشده' : $profile->deviceType->name}}</span> به صورت
+            class="variables">{{is_null($terminal->deviceType) ? 'ثبت نشده' : $terminal->deviceType->name}}</span> به صورت
         <span
-            class="variables">{{$profile->deviceSellTypeText}}</span> و متصل
+            class="variables">{{$terminal->deviceSellTypeText}}</span> و متصل
         به حساب بانک <span
             class="variables">{{(!is_null($profile->accounts) && count($profile->accounts) > 0 && !is_null($profile->accounts->first()->account)) ? toPersianNumbers($profile->accounts->first()->account->bank->name) : 'ثبت نشده'}}</span>
         به نام {{is_null($profile->customer) ? 'ثب نشده' : (($profile->customer->gender==='male') ? 'آقای' : 'خانم')}}
@@ -255,19 +256,19 @@
         <table class="items">
             <tr>
                 <td>مبلغ پرداختی بابت دستگاه (تومان)</td>
-                <td>{{toPersianNumbers($profile->device_amount)}}</td>
+                <td>{{toPersianNumbers($terminal->device_amount)}}</td>
                 <td>فیزیک دستگاه</td>
-                <td>{{$profile->devicePhysicalStatusText}}</td>
+                <td>{{$terminal->devicePhysicalStatusText}}</td>
                 <td>نام فروشگاه</td>
                 <td>{{is_null($profile->business) ? 'ثب نشده' : $profile->business->name}}</td>
             </tr>
             <tr>
                 <td>کد پایانه</td>
-                <td>{{toPersianNumbers($profile->terminal_id)}}</td>
+                <td>{{toPersianNumbers($terminal->terminal_number)}}</td>
                 <td>نوع قرارداد</td>
                 <td>{{$profile->typeText}}</td>
                 <td>سریال دستگاه</td>
-                <td>{{!is_null($profile->device) ? toPersianNumbers($profile->device->serial) : 'ثبت نشده'}}</td>
+                <td>{{!is_null($terminal->device) ? toPersianNumbers($terminal->device->serial) : 'ثبت نشده'}}</td>
             </tr>
             <tr>
                 <td>سرویس دهنده</td>
@@ -276,9 +277,10 @@
             <tr>
                 <td colspan="6" style="text-align: right">
                     مدت گارانتی از تاریخ <span
-                        class="variables">{{!is_null($profile->device) ? toPersianNumbers($profile->device->guarantee_start) : 'نامشخص'}}</span>
+                        class="variables">{{!is_null($terminal->device) ? toPersianNumbers($terminal->device->guarantee_start) : 'نامشخص'}}</span>
                     لغایت <span
-                        class="variables">{{!is_null($profile->device) ? toPersianNumbers($profile->device->guarantee_end) : 'نامشخص'}}</span>است
+                        class="variables">{{!is_null($terminal->device) ? toPersianNumbers($terminal->device->guarantee_end) : 'نامشخص'}}</span>
+                    است
                 </td>
             </tr>
             <tr>
