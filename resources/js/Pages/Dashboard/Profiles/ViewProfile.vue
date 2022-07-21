@@ -1884,7 +1884,7 @@ export default {
             this.imageFiles.transferPaymentFilePreview = URL.createObjectURL(file);
         },
         submitProfileTypeForm() {
-            this.profileTypeForm.post(route('dashboard.profiles.update.type', {profileId: this.profile.id}), {
+            this.profileTypeForm.post(route('dashboard.profiles.update.type', {profile: this.profile.id}), {
                 preserveScroll: false
             });
         },

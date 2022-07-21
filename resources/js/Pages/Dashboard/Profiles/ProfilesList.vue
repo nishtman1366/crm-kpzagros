@@ -204,7 +204,8 @@
                                 <template v-for="profile in profiles.data">
                                     <tr :key="profile.id">
                                         <td class="list-table-body-cell">
-                                            <svg v-if="profile.terminals && profile.terminals.length > 0" title="ترمینال‌ها" :data-container="`profile-${profile.id}`"
+                                            <svg v-if="profile.terminals && profile.terminals.length > 0"
+                                                 title="ترمینال‌ها" :data-container="`profile-${profile.id}`"
                                                  v-b-tooltip.hover style="width:24px;height:24px" viewBox="0 0 24 24"
                                                  class="terminals-box text-indigo-500 hover:text-indigo-400 cursor-pointer">
                                                 <path fill="currentColor"
@@ -248,14 +249,6 @@
                                                     <i id="view-device-button" class="material-icons">folder_shared</i>
                                                 </button>
                                             </InertiaLink>
-                                            <a target="_blank"
-                                               :href="route('dashboard.profiles.delivery.form',{profile: profile.id})"
-                                               class="tooltip-box text-purple-600 hover:text-purple-900">
-                                                <button title="گواهی تحویل"
-                                                        v-b-tooltip.hover>
-                                                    <i id="view-license-button" class="material-icons">file_download</i>
-                                                </button>
-                                            </a>
                                             <button
                                                 v-if="profile.status==1 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
                                                 v-on:click="updateProfileStatus(profile.id,2)"
@@ -279,7 +272,7 @@
                                         class="hidden bg-gray-100">
                                         <td class="list-table-body-cell" colspan="2">نوع ترمینال: <span
                                             class="font-bold">{{ terminal.typeText }}</span></td>
-                                        <td class="list-table-body-cell" >سریال دستگاه: <span
+                                        <td class="list-table-body-cell">سریال دستگاه: <span
                                             class="font-bold">{{ terminal.device && terminal.device.serial }}</span>
                                         </td>
                                         <td class="list-table-body-cell" colspan="2">مدل دستگاه: <span
@@ -292,8 +285,16 @@
                                                 terminal.device_connection_type && terminal.device_connection_type.name
                                             }}</span>
                                         </td>
-                                        <td class="list-table-body-cell" colspan="2">وضعیت: <span
+                                        <td class="list-table-body-cell">وضعیت: <span
                                             class="font-bold">{{ terminal.statusText }}</span></td>
+                                        <td class="list-table-body-cell"><a target="_blank"
+                                                                            :href="route('dashboard.profiles.terminal.delivery.form',{profile: profile.id,terminal:terminal.id})"
+                                                                            class="tooltip-box text-purple-600 hover:text-purple-900">
+                                            <button title="گواهی تحویل"
+                                                    v-b-tooltip.hover>
+                                                <i id="view-license-button" class="material-icons">file_download</i>
+                                            </button>
+                                        </a></td>
                                     </tr>
                                 </template>
                                 </tbody>

@@ -341,18 +341,6 @@ class ProfileController extends Controller
         ]);
     }
 
-    public function deliveryForm(Profile $profile, Request $request)
-    {
-        $profile->load('customer', 'user', 'psp', 'business', 'accounts', 'accounts.account', 'accounts.account.bank', 'deviceType', 'deviceType.type', 'device', 'messages', 'licenses', 'licenses.type');
-
-        $pdfWrapper = new PdfWrapper();
-        $pdf = $pdfWrapper->loadView('pdf.profile_deliver_form', compact('profile'), [], [
-            'mode' => 'utf-8',
-        ]);
-        $fileName = is_null($profile->customer) ? 'deliveryForm.pdf' : Str::slug($profile->customer->fullName) . '.pdf';
-        return $pdf->download($fileName);
-    }
-
     public function update(Profile $profile, Request $request)
     {
         $user = Auth::user();
@@ -402,12 +390,9 @@ class ProfileController extends Controller
         return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id])->with(['message' => 'تغییر وضعیت پرونده صورت گرفت.']);
     }
 
-    public function setType(Request $request)
+    public function setType(Profile $profile, Request $request)
     {
         $user = Auth::user();
-        $profileId = $request->route('profileId');
-        $profile = Profile::find($profileId);
-        if (is_null($profile)) return response()->json(['message' => 'اطلاعات پرونده یافت نشد'], 404);
 
         $type = $request->get('type');
         if ($type == 'TRANSFER') {
@@ -417,12 +402,12 @@ class ProfileController extends Controller
                 'previous_national_code' => 'required|numeric|digits:10',
                 'previous_mobile' => 'required|numeric|digits:11',
             ]);
-            if (!LicenseController::has('transfer_file', $profileId)) {
+            if (!LicenseController::has('transfer_file', $profile->id)) {
                 $request->validateWithBag('profileTypeForm', [
                     'transfer_file' => 'required|image',
                 ]);
             }
-            if (!LicenseController::has('transfer_payment_file', $profileId)) {
+            if (!LicenseController::has('transfer_payment_file', $profile->id)) {
                 $request->validateWithBag('profileTypeForm', [
                     'transfer_payment_file' => 'required|image',
                 ]);
@@ -443,13 +428,13 @@ class ProfileController extends Controller
         $profile->save();
 
         if ($request->hasFile('transfer_file') && $type == 'TRANSFER') {
-            LicenseController::upload($request->file('transfer_file'), 'transfer_file', $profileId);
+            LicenseController::upload($request->file('transfer_file'), 'transfer_file', $profile->id);
         }
 
         if ($request->hasFile('transfer_payment_file') && $type == 'TRANSFER') {
-            LicenseController::upload($request->file('transfer_payment_file'), 'transfer_payment_file', $profileId);
+            LicenseController::upload($request->file('transfer_payment_file'), 'transfer_payment_file', $profile->id);
         }
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId])->with(['message' => $message]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile->id])->with(['message' => $message]);
 
     }
 
