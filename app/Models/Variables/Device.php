@@ -43,6 +43,9 @@ class Device extends Model
             case 3:
                 return 'نصب شده';
                 break;
+            case 4:
+                return 'رزرو شده';
+                break;
         }
     }
 

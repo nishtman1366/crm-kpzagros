@@ -14,212 +14,162 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class TerminalController extends Controller
 {
-    public function updateSerial(Profile $profile, Terminal $terminal, Request $request)
+    public function update(Profile $profile, Terminal $terminal, Request $request)
     {
-        $request->validateWithBag('serialForm', [
-            'device_id' => 'required|exists:devices,id'
-        ]);
-        if ($terminal->profile_id !== $profile->id) throw new UnauthorizedHttpException('', 'دسترسی غیرمجاز');
-        $profileStatus = 0;
-        $messageStatus = 0;
-        if ($terminal->status === 7) {
-            $terminal->new_device_id = (int)$request->get('device_id');
-            $terminal->status = 8;
-            $terminal->save();
-
-            $profileStatus = 14;
-            $messageStatus = 14;
-        } elseif ($terminal->status === 8) {
-
-        } else {
-            $request->merge(['reject_reason' => null]);
-            $terminal->fill($request->all());
-            $terminal->save();
-
-            $deviceId = (int)$request->get('device_id');
-            $device = Device::find($deviceId);
-            $device->transport_status = 2;
-            $device->save();
-
-            $profileStatus = 6;
-            $messageStatus = 6;
-        }
-
-        $profile->status = $profileStatus;
-        $profile->save();
-        $user = Auth::user();
-        setProfileMessage($messageStatus, $user, $profile, null);
-
-
-        return redirect()->back();
-    }
-
-    public function terminalNumber(Profile $profile, Terminal $terminal, Request $request)
-    {
+        $validationArray = [];
+        $actions = ['new', 'confirm', 'terminal', 'reject', 'install', 'change', 'changeSerial', 'confirmChange', 'cancelChange', 'cancel', 'confirmCancel', 'cancelCancel'];
         $request->validateWithBag('terminalForm', [
-            'terminal_number' => 'required|unique:terminals,terminal_number'
+            'action' => 'required|in:' . implode(',', $actions)
         ]);
-        if ($terminal->profile_id !== $profile->id) throw new UnauthorizedHttpException('', 'دسترسی غیرمجاز');
+        if ($terminal->profile_id !== $profile->id) throw new UnauthorizedHttpException('', 'ترمینال به پرونده تعلق ندارد.');
 
-        $terminal->fill($request->all());
-        $terminal->save();
+        $action = $request->get('action', 'new');
+        $terminalData = [];
+        $profileData = [];
+        $messageStatus = null;
+        $message = null;
+        switch ($action) {
+            default:
+            case 'new':
+                /*
+                * انتخاب سریال
+                */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.device_id' => 'required|exists:devices,id'
+                ]);
+                $device = Device::find($request->get('terminal')['device_id']);
+                $device->transport_status = 2;
+                $device->psp_status = 1;
+                $device->save();
+                $messageStatus = 6;
+                break;
+            case 'terminal':
+                /*
+                * ثبت شماره ترمینال
+                 */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.terminal_number' => 'required|unique:terminals,terminal_number'
+                ]);
+                $device = Device::find($request->get('terminal')['device_id']);
+                $device->transport_status = 2;
+                $device->psp_status = 2;
+                $device->save();
+                $messageStatus = 7;
+                break;
+            case 'reject':
+                /*
+                * رد سریال انتخاب شده
+                 */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.reject_reason' => 'required'
+                ]);
 
-        $profile->status = 7;
-        $profile->save();
-        $user = Auth::user();
-        setProfileMessage(7, $user, $profile, null);
+                $terminal->device->transport_status = 1;
+                $terminal->device->psp_status = 1;
+                $terminal->device->save();
+                $messageStatus = 13;
+                break;
+            case 'install':
+                /*
+                  * نصب دستگاه
+                 */
+                $terminal->setup_date = now();
+                $terminal->device->transport_status = 3;
+                $terminal->device->psp_status = 2;
+                $terminal->device->save();
 
-        return redirect()->back();
-    }
+                $messageStatus = 8;
+                break;
+            case 'change':
+                /*
+                 * درخواست جابجایی
+                 */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.change_reason' => 'required',
+                    'terminal.new_device_type_id' => 'required',
+                ]);
+                $messageStatus = 14;
+                break;
+            case 'changeSerial':
+                $request->validateWithBag('terminalForm', [
+                    'terminal.device_id' => 'required|exists:devices,id'
+                ]);
+                $device = Device::find($request->get('terminal')['new_device_id']);
+                $device->transport_status = 4;
+                $device->psp_status = 1;
+                $device->save();
+                $messageStatus = 15;
+                break;
+            case 'confirmChange':
+                /*
+                 * تایید جابجایی
+                 */
+                $terminal->device->transport_status = 1;
+                $terminal->device->psp_status = 1;
+                $terminal->device->save();
 
-    public function rejectSerial(Profile $profile, Terminal $terminal, Request $request)
-    {
-        $request->validateWithBag('rejectSerialForm', [
-            'reject_reason' => 'required',
-        ]);
-        $terminal->fill($request->all());
-        $terminal->save();
+                $device = Device::find($request->get('terminal')['device_id']);
+                $device->transport_status = 2;
+                $device->psp_status = 2;
+                $device->save();
 
-        $device = Device::find($terminal->device_id);
-        $device->transport_status = 1;
-        $device->psp_status = 1;
-        $device->save();
+                $messageStatus = 17;
+                break;
+            case 'cancelChange':
+                /*
+                 * رد جابجایی
+                 */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.reject_reason' => 'required'
+                ]);
 
-        $profile->status = 13;
-        $profile->save();
-        $user = Auth::user();
-        setProfileMessage(13, $user, $profile, null);
+                $device = Device::find($request->get('terminal')['reserved_device_id']);
+                $device->transport_status = 1;
+                $device->psp_status = 1;
+                $device->save();
 
-        return redirect()->back();
-    }
+                $messageStatus = 16;
+                break;
+            case 'cancel':
+                /*
+                 * درخواست ابطال
+                 */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.cancel_reason' => 'required',
+                ]);
+                break;
+            case 'confirmCancel':
+                /*
+                 * تایید ابطال
+                 */
 
-    public function install(Profile $profile, Terminal $terminal, Request $request)
-    {
-        $request->merge(['setup_date' => now()]);
-        $terminal->fill($request->all());
-        $terminal->save();
-        $user = Auth::user();
-
-        $terminal->device->transport_status = 3;
-        $terminal->device->psp_status = 2;
-        $terminal->device->save();
-
-
-        $profile->status = 8;
-        $profile->save();
-        setProfileMessage(8, $user, $profile, null);
-        return redirect()->back();
-    }
-
-    public function cancelSerial(Profile $profile, Terminal $terminal, Request $request)
-    {
-        $request->validateWithBag('cancelRequestForm', [
-            'cancel_reason' => 'required',
-        ]);
-
-        $user = Auth::user();
-        $terminal->fill($request->all());
-        $terminal->save();
-        $profile->status = 12;
-        $profile->save();
-        setProfileMessage(12, $user, $profile, null);
-        return redirect()->back();
-    }
-
-    public function confirmCancelSerial(Profile $profile, Terminal $terminal, Request $request)
-    {
-        $status = (int)$request->get('status');
-        $validationArray = [
-            'status' => 'required'
-        ];
-        if ($status === 10) {
-            $validationArray = array_merge(['cancelCancelMessage' => 'required']);
-            $status = 6;
-        }
-        $request->validateWithBag('confirmCancelForm', $validationArray, [
-            'cancelCancelMessage.required' => 'علت رد درخواست ابطال ضروری است'
-        ]);
-
-        $terminal->status = $status;
-        $terminal->save();
-
-        if ($status === 5) {
-            $terminal->device->transport_status = 1;
-            $terminal->device->psp_status = 1;
-            $terminal->device->save();
-
-            $profile->status = 13;
-            $profile->save();
-        }
-
-        $user = Auth::user();
-        setProfileMessage($status == 5 ? 9 : 20, $user, $profile, $request->get('cancelCancelMessage'));
-        return redirect()->back();
-    }
-
-    public function changeSerial(Profile $profile, Terminal $terminal, Request $request)
-    {
-        $request->validateWithBag('changeSerialRequestForm', [
-            'change_reason' => 'required',
-            'new_device_type_id' => 'required',
-        ]);
-
-        $user = Auth::user();
-        $terminal->fill($request->all());
-        $terminal->save();
-
-
-        $profile->status = 14;
-        $profile->save();
-        setProfileMessage(14, $user, $profile, null);
-        return redirect()->back();
-    }
-
-    public function confirmChangeSerial(Profile $profile, Terminal $terminal, Request $request)
-    {
-        $status = (int)$request->get('status');
-        $eventStatus = 17;
-        $validationArray = [
-            'status' => 'required'
-        ];
-        if ($status === 9) {
-            $validationArray = array_merge(['cancelChangeMessage' => 'required']);
-            $status = 6;
-            $eventStatus = 16;
-        }
-        $request->validateWithBag('confirmChangeSerialForm', $validationArray, [
-            'cancelChangeMessage.required' => 'علت رد درخواست جابجایی ضروری است'
-        ]);
-
-        if ($status === 3) {
-            $oldDevice = Device::find($terminal->device_id);
-            if (!is_null($oldDevice)) {
-                $oldDevice->transport_status = 1;
-                $oldDevice->psp_status = 1;
-                $oldDevice->save();
-            }
-
-            $newDevice = Device::find($terminal->new_device_id);
-            if (!is_null($newDevice)) {
-                $newDevice->transport_status = 2;
-                $newDevice->psp_status = 2;
-                $newDevice->save();
-            }
-
-            $profile->status = 7;
-            $profile->save();
+                $device = Device::find($request->get('terminal')['reserved_device_id']);
+                $device->transport_status = 1;
+                $device->psp_status = 1;
+                $device->save();
+                $messageStatus = 9;
+                break;
+            case 'cancelCancel':
+                /*
+                 * رد ابطال
+                 */
+                $request->validateWithBag('terminalForm', [
+                    'terminal.reject_reason' => 'required'
+                ]);
+                $message = $request->get('terminal')['reject_reason'];
+                $messageStatus = 18;
+                break;
         }
 
-        $terminal->device_type_id = $terminal->new_device_type_id;
-        $terminal->device_id = $terminal->new_device_id;
-        $terminal->new_device_type_id = null;
-        $terminal->new_device_id = null;
-        $terminal->change_reason = null;
-        $terminal->status = $status;
+        $terminal->fill($request->get('terminal'));
         $terminal->save();
 
+        $profile->fill($request->get('profile'));
+        $profile->save();
+
         $user = Auth::user();
-        setProfileMessage($eventStatus, $user, $profile, $request->get('cancelChangeMessage'));
+        setProfileMessage($messageStatus, $user, $profile, $message);
+
         return redirect()->back();
     }
 
@@ -236,5 +186,4 @@ class TerminalController extends Controller
         $fileName = is_null($profile->customer) ? 'deliveryForm.pdf' : Str::slug($profile->customer->fullName) . '.pdf';
         return $pdf->download($fileName);
     }
-
 }

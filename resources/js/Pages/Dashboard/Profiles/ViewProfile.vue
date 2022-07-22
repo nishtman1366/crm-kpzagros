@@ -699,54 +699,59 @@
                                         <div v-if="terminal.reject_reason" class="lg:col-span-3 text-red-500">
                                             {{ terminal.reject_reason }}
                                         </div>
-                                        <div v-if="terminal.cancel_reason || terminal.change_reason" class="lg:col-span-2">علت درخواست جابجایی / فسخ</div>
-                                        <div v-if="terminal.cancel_reason || terminal.change_reason" class="lg:col-span-2 text-red-500 font-bold">
+                                        <div v-if="terminal.cancel_reason || terminal.change_reason"
+                                             class="lg:col-span-2">علت درخواست جابجایی / فسخ
+                                        </div>
+                                        <div v-if="terminal.cancel_reason || terminal.change_reason"
+                                             class="lg:col-span-2 text-red-500 font-bold">
                                             {{ terminal.cancel_reason || terminal.change_reason }}
                                         </div>
                                         <div
-                                            class="col-span-2 flex items-center justify-center space-x-reverse space-x-2">
+                                            class="col-span-2 lg:col-span-6 flex items-center justify-center space-x-reverse space-x-2">
                                             <jet-button
-                                                v-if="profile.status === 5 && (terminal.status === 0 || terminal.status === 2)"
-                                                @click.native="viewDevicesModal(terminal)"
+                                                v-if="(profile.status === 5 || profile.status === 13) && (terminal.status === 0 || terminal.status === 2)"
+                                                @click.native="selectSerial(terminal)"
                                                 class="terminal-actions border-green-600 text-green-600 hover:text-green-700"
                                                 title="انتخاب دستگاه">
                                                 انتخاب دستگاه
                                                 <i class="material-icons">keyboard_hide</i>
                                             </jet-button>
-                                            <button v-if="terminal.status === 3"
+                                            <button v-if="terminal.status === 9 || terminal.status === 3"
                                                     v-on:click="installDevice(terminal)"
                                                     class="terminal-actions border-green-600 text-green-600 hover:text-green-700"
                                                     title="نصب دستگاه">
                                                 نصب دستگاه
                                                 <i class="material-icons">phonelink_setup</i>
                                             </button>
-                                            <button v-if="terminal.status === 3 || terminal.status === 6"
-                                                    v-on:click="changeSerialRequest(terminal)"
-                                                    class="terminal-actions border-yellow-600 text-yellow-600 hover:text-yellow-700"
-                                                    title="جابجایی سریال">
+                                            <button
+                                                v-if="terminal.status === 6 || terminal.status === 9 || terminal.status === 3"
+                                                v-on:click="changeSerialRequest(terminal)"
+                                                class="terminal-actions border-yellow-600 text-yellow-600 hover:text-yellow-700"
+                                                title="جابجایی سریال">
                                                 جابجایی سریال
                                                 <i class="material-icons">undo</i>
                                             </button>
                                             <button
                                                 v-if="profile.status===14 && terminal.status === 7 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='AGENT')"
-                                                v-on:click="viewDevicesModal(terminal,true)"
+                                                v-on:click="selectSerial(terminal,true)"
                                                 class="terminal-actions border-blue-600 text-blue-600 hover:text-blue-700"
                                                 title="تخصیص سریال جدید">
                                                 تخصیص سریال جدید
                                                 <i class="material-icons">change_circle</i>
                                             </button>
                                             <button
-                                                v-if="terminal.status == 8 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
+                                                v-if="terminal.status === 8 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.level==='OFFICE')"
                                                 v-on:click="confirmChangeSerial(terminal)"
                                                 class="terminal-actions border-blue-600 text-blue-600 hover:text-blue-700"
                                                 title="تایید جابجایی">
                                                 تایید جابجایی
                                                 <i class="material-icons">change_circle</i>
                                             </button>
-                                            <button v-if="terminal.status == 6"
-                                                    v-on:click="cancelRequest(terminal)"
-                                                    class="terminal-actions border-red-600 text-red-600 hover:text-red-700"
-                                                    title="درخواست فسخ">
+                                            <button
+                                                v-if="terminal.status === 6 || terminal.status === 9 || terminal.status === 3"
+                                                v-on:click="cancelRequest(terminal)"
+                                                class="terminal-actions border-red-600 text-red-600 hover:text-red-700"
+                                                title="درخواست فسخ">
                                                 درخواست فسخ
                                                 <i class="material-icons">cancel</i>
                                             </button>
@@ -1053,9 +1058,8 @@
                     </jet-button>
                 </template>
             </jet-confirmation-modal>
-
             <!-- انتخاب سریال -->
-            <jet-confirmation-modal :show="viewSearchModal" @close="viewSearchModal = false">
+            <jet-confirmation-modal :show="viewSearchModal" @close="closeSerialModal">
                 <template #title>
                     جستجوی شماره سریال
                 </template>
@@ -1071,7 +1075,8 @@
                                 مدل انتخاب شده: {{ newDeviceType.name }}</p>
                         </div>
                         <div v-if="loadingDevicesList"
-                        class="text-center text-lg font-bold my-3 animate-bounce">در حال بارگذاری لیست دستگاه‌ها...</div>
+                             class="text-center text-lg font-bold my-3 animate-bounce">در حال بارگذاری لیست دستگاه‌ها...
+                        </div>
                         <div v-else class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
                             <input type="text"
                                    :disabled="loadingDevicesList"
@@ -1122,7 +1127,9 @@
                                         </td>
                                         <td class="px-6 py-4 text-center text-gray-900">
                                             <button type="button"
-                                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                                    :disabled="selectedTerminal.device_id===device.id"
+                                                    :class="selectedTerminal.device_id===device.id ? 'bg-gray-100 text-gray-500' : 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'"
+                                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
                                                     v-on:click="selectDevice(device)">
                                                 انتخاب
                                             </button>
@@ -1135,13 +1142,13 @@
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button @click.native="viewSearchModal = false">
+                    <jet-secondary-button @click.native="closeSerialModal">
                         انصراف
                     </jet-secondary-button>
                 </template>
             </jet-confirmation-modal>
             <!-- تایید سریال انتخاب شده -->
-            <jet-confirmation-modal :show="confirmSerial" @close="confirmSerial = false">
+            <jet-confirmation-modal :show="confirmSerial" @close="closeConfirmSerialModal">
                 <template #title>
                     تایید شماره سریال
                 </template>
@@ -1162,12 +1169,12 @@
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button @click.native="confirmSerial = false">
+                    <jet-secondary-button @click.native="closeConfirmSerialModal">
                         انصراف
                     </jet-secondary-button>
-                    <jet-danger-button class="ml-2" @click.native="submitSerial"
-                                       :class="{ 'opacity-25': serialForm.processing }"
-                                       :disabled="serialForm.processing">
+                    <jet-danger-button class="ml-2" @click.native="updateTerminal"
+                                       :class="{ 'opacity-25': terminalForm.processing }"
+                                       :disabled="terminalForm.processing">
                         تایید
                     </jet-danger-button>
                 </template>
@@ -1222,21 +1229,23 @@
                                        placeholder="شماره پایانه"
                                        ref="terminal_id"
                                        id="terminal_id"
-                                       v-model="terminalForm.terminal_number"/>
-                                <jet-input-error :message="terminalForm.error('terminal_number')"
+                                       v-model="terminalForm.terminal.terminal_number"/>
+                                <jet-input-error :message="terminalForm.error('terminal.terminal_number')"
                                                  class="mt-2"/>
                             </div>
                         </div>
                         <div>
                             <p>مدل دستگاه: <span
-                                class="font-bold">{{
+                                class="font-bold">
+                                {{
                                     selectedTerminal && selectedTerminal.device_type && selectedTerminal.device_type.name
-                                }}</span>
+                                }}
+                            </span>
                             </p>
                             <p>سریال: <span
-                                class="font-bold">{{
-                                    selectedTerminal && selectedTerminal.device && selectedTerminal.device.serial
-                                }}</span>
+                                class="font-bold">
+                                {{ selectedTerminal && selectedTerminal.device && selectedTerminal.device.serial }}
+                            </span>
                             </p>
                         </div>
                     </div>
@@ -1245,18 +1254,18 @@
                     <jet-secondary-button class="ml-2" @click.native="closeTerminalModal">
                         انصراف
                     </jet-secondary-button>
-                    <jet-button class="ml-2 bg-green-600" @click.native="submitTerminalNumber"
+                    <jet-button class="ml-2 bg-green-600" @click.native="updateTerminal"
                                 :class="{ 'opacity-25': terminalForm.processing }"
                                 :disabled="terminalForm.processing">
                         تایید
                     </jet-button>
-                    <jet-danger-button class="ml-2" @click.native="viewRejectSerialModal=true">
+                    <jet-danger-button class="ml-2" @click.native="rejectSerialModal">
                         عدم تایید سریال
                     </jet-danger-button>
                 </template>
             </jet-confirmation-modal>
             <!-- عدم تایید سریال -->
-            <jet-confirmation-modal :show="viewRejectSerialModal" @close="viewRejectSerialModal = false">
+            <jet-confirmation-modal :show="viewRejectSerialModal" @close="closeRejectSerialModal">
                 <template #title>
                     عدم تایید سریال
                 </template>
@@ -1269,24 +1278,24 @@
                             placeholder="علت عدم تایید"
                             ref="reject_serial_reason"
                             id="reject_serial_reason"
-                            v-model="rejectSerialForm.reject_reason"/>
-                        <jet-input-error :message="rejectSerialForm.error('reject_reason')"
+                            v-model="terminalForm.terminal.reject_reason"/>
+                        <jet-input-error :message="terminalForm.error('terminal.reject_reason')"
                                          class="mt-2"/>
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button class="ml-2" @click.native="viewRejectSerialModal = false">
+                    <jet-secondary-button class="ml-2" @click.native="closeRejectSerialModal">
                         انصراف
                     </jet-secondary-button>
-                    <jet-button class="ml-2 bg-green-600" @click.native="submitRejectSerialForm"
-                                :class="{ 'opacity-25': rejectSerialForm.processing }"
-                                :disabled="rejectSerialForm.processing">
+                    <jet-button class="ml-2 bg-green-600" @click.native="updateTerminal"
+                                :class="{ 'opacity-25': terminalForm.processing }"
+                                :disabled="terminalForm.processing">
                         ذخیره
                     </jet-button>
                 </template>
             </jet-confirmation-modal>
             <!-- درخواست فسخ -->
-            <jet-confirmation-modal :show="viewCancelRequestModal" @close="viewCancelRequestModal = false">
+            <jet-confirmation-modal :show="viewCancelRequestModal" @close="closeCancelRequest">
                 <template #title>
                     درخواست فسخ ترمینال
                 </template>
@@ -1300,25 +1309,25 @@
                                 placeholder="علت فسخ"
                                 ref="cancel_reason"
                                 id="cancel_reason"
-                                v-model="cancelRequestForm.cancel_reason"/>
-                            <jet-input-error :message="cancelRequestForm.error('cancel_reason')"
+                                v-model="terminalForm.terminal.cancel_reason"/>
+                            <jet-input-error :message="terminalForm.error('terminal.cancel_reason')"
                                              class="mt-2"/>
                         </div>
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button class="ml-2" @click.native="viewCancelRequestModal = false">
+                    <jet-secondary-button class="ml-2" @click.native="closeCancelRequest">
                         انصراف
                     </jet-secondary-button>
-                    <jet-danger-button class="ml-2" @click.native="submitCancelRequest"
-                                       :class="{ 'opacity-25': cancelRequestForm.processing }"
-                                       :disabled="cancelRequestForm.processing">
+                    <jet-danger-button class="ml-2" @click.native="updateTerminal"
+                                       :class="{ 'opacity-25': terminalForm.terminal.processing }"
+                                       :disabled="terminalForm.terminal.processing">
                         ارسال
                     </jet-danger-button>
                 </template>
             </jet-confirmation-modal>
             <!-- تایید یا رد فسخ -->
-            <jet-confirmation-modal :show="viewConfirmCancelModal" @close="viewConfirmCancelModal = false">
+            <jet-confirmation-modal :show="viewConfirmCancelModal" @close="closeConfirmCancel">
                 <template #title>
                     تایید فسخ پرونده
                 </template>
@@ -1330,21 +1339,21 @@
                         </div>
                         <div class="flex">
                             <jet-button
-                                @click.native="confirmCancelForm.status=5"
-                                :class="confirmCancelForm.status===5 ? 'bg-green-600' : 'bg-green-300'"
+                                @click.native="cancelChangeStatus('confirmCancel')"
+                                :class="terminalForm.action==='confirmCancel' ? 'bg-green-600' : 'bg-green-300'"
                                 class="mx-auto hover:bg-green-500">
                                 تایید
                             </jet-button>
                             <jet-button
-                                @click.native="confirmCancelForm.status=10"
-                                :class="confirmCancelForm.status===10 ? 'bg-red-600' : 'bg-red-300'"
+                                @click.native="cancelChangeStatus('cancelCancel')"
+                                :class="terminalForm.action==='cancelCancel' ? 'bg-red-600' : 'bg-red-300'"
                                 class="mx-auto">
                                 رد درخواست
                             </jet-button>
                         </div>
-                        <jet-input-error :message="confirmCancelForm.error('status')"
+                        <jet-input-error :message="terminalForm.error('status')"
                                          class="mt-2"/>
-                        <div v-if="confirmCancelForm.status===10">
+                        <div v-if="terminalForm.action==='cancelCancel'">
                             <label for="message"
                                    class="block text-sm font-medium text-gray-700">علت رد درخواست</label>
                             <textarea
@@ -1352,25 +1361,25 @@
                                 placeholder="علت رد درخواست"
                                 ref="message"
                                 id="message"
-                                v-model="confirmCancelForm.cancelCancelMessage"/>
-                            <jet-input-error :message="confirmCancelForm.error('cancelCancelMessage')"
+                                v-model="terminalForm.terminal.reject_reason"/>
+                            <jet-input-error :message="terminalForm.error('terminal.reject_reason')"
                                              class="mt-2"/>
                         </div>
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button class="ml-2" @click.native="viewCancelModal = false">
+                    <jet-secondary-button class="ml-2" @click.native="closeConfirmCancel">
                         انصراف
                     </jet-secondary-button>
-                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="submitCancel"
-                                :class="{ 'opacity-25': confirmCancelForm.processing }"
-                                :disabled="confirmCancelForm.processing">
+                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="updateTerminal"
+                                :class="{ 'opacity-25': terminalForm.processing }"
+                                :disabled="terminalForm.processing">
                         ارسال
                     </jet-button>
                 </template>
             </jet-confirmation-modal>
             <!-- جابجایی سریال-->
-            <jet-confirmation-modal :show="viewChangeSerialRequestModal" @close="viewChangeSerialRequestModal = false">
+            <jet-confirmation-modal :show="viewChangeSerialRequestModal" @close="closeChangeSerialRequest">
                 <template #title>
                     جابجایی سریال
                 </template>
@@ -1384,8 +1393,8 @@
                                 placeholder="علت درخواست جابجایی"
                                 ref="change_reason"
                                 id="change_reason"
-                                v-model="changeSerialRequestForm.change_reason"/>
-                            <jet-input-error :message="changeSerialRequestForm.error('change_reason')"
+                                v-model="terminalForm.terminal.change_reason"/>
+                            <jet-input-error :message="terminalForm.error('terminal.change_reason')"
                                              class="mt-2"/>
                         </div>
                         <div>
@@ -1418,24 +1427,24 @@
                                     </button>
                                 </div>
                             </div>
-                            <jet-input-error :message="changeSerialRequestForm.error('new_device_type_id')"
+                            <jet-input-error :message="terminalForm.error('terminal.new_device_type_id')"
                                              class="mt-2"/>
                         </div>
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button class="ml-2" @click.native="viewChangeSerialRequestModal = false">
+                    <jet-secondary-button class="ml-2" @click.native="closeChangeSerialRequest">
                         انصراف
                     </jet-secondary-button>
-                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="submitChangeSerialRequest"
-                                :class="{ 'opacity-25': changeSerialRequestForm.processing }"
-                                :disabled="changeSerialRequestForm.processing">
+                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="updateTerminal"
+                                :class="{ 'opacity-25': terminalForm.processing }"
+                                :disabled="terminalForm.processing">
                         ارسال
                     </jet-button>
                 </template>
             </jet-confirmation-modal>
             <!-- تایید یا رد جابجایی -->
-            <jet-confirmation-modal :show="viewConfirmChangeSerialModal" @close="viewConfirmChangeSerialModal = false">
+            <jet-confirmation-modal :show="viewConfirmChangeSerialModal" @close="closeConfirmChangeSerial">
                 <template #title>
                     تایید جابجایی پرونده
                 </template>
@@ -1445,7 +1454,10 @@
                             <p class="text-lg">علت درخواست جابجایی</p>
                             <p class="text-md">{{ selectedTerminal && selectedTerminal.change_reason }}</p>
                         </div>
-                        <div class="my-3 p-2">
+                        <div v-if="loadingNewDeviceInfo" class="text-center animate-bounce text-lg my-3">در حال دریافت
+                            اطلاعات...
+                        </div>
+                        <div v-else class="my-3 p-2">
                             <p class="text-lg">دستگاه انتخاب شده جدید:</p>
                             <table class="w-full">
                                 <thead>
@@ -1488,23 +1500,23 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="flex">
+                        <div v-if="!loadingNewDeviceInfo" class="flex">
                             <jet-button
-                                @click.native="confirmChangeSerialForm.status=3"
-                                :class="confirmChangeSerialForm.status==3 ? 'bg-green-600' : ''"
+                                @click.native="confirmChangeStatus('confirm')"
+                                :class="terminalForm.action==='confirmChange' ? 'bg-green-600' : ''"
                                 class="border-green-600 bg-green-300 mx-auto hover:bg-green-500 hover:text-white">
                                 تایید
                             </jet-button>
                             <jet-button
-                                @click.native="confirmChangeSerialForm.status=9"
-                                :class="confirmChangeSerialForm.status==9 ? 'bg-red-600' : ''"
+                                @click.native="confirmChangeStatus('cancel')"
+                                :class="terminalForm.action==='cancelChange' ? 'bg-red-600' : ''"
                                 class="border-red-600 bg-red-300 mx-auto hover:bg-red-500 hover:text-white">
                                 رد درخواست
                             </jet-button>
                         </div>
-                        <jet-input-error :message="confirmChangeSerialForm.error('status')"
+                        <jet-input-error :message="terminalForm.error('status')"
                                          class="mt-2"/>
-                        <div v-if="confirmChangeSerialForm.status===9">
+                        <div v-if="terminalForm.action==='cancelChange'">
                             <label for="change_message"
                                    class="block text-sm font-medium text-gray-700">علت رد درخواست</label>
                             <textarea
@@ -1512,19 +1524,19 @@
                                 placeholder="علت رد درخواست"
                                 ref="change_message"
                                 id="change_message"
-                                v-model="confirmChangeSerialForm.cancelChangeMessage"/>
-                            <jet-input-error :message="confirmChangeSerialForm.error('cancelChangeMessage')"
+                                v-model="terminalForm.terminal.reject_reason"/>
+                            <jet-input-error :message="terminalForm.error('terminal.reject_reason')"
                                              class="mt-2"/>
                         </div>
                     </div>
                 </template>
                 <template #footer>
-                    <jet-secondary-button class="ml-2" @click.native="viewChangeSerialModal = false">
+                    <jet-secondary-button class="ml-2" @click.native="closeConfirmChangeSerial">
                         انصراف
                     </jet-secondary-button>
-                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="submitConfirmChangeSerial"
-                                :class="{ 'opacity-25': confirmChangeSerialForm.processing }"
-                                :disabled="confirmChangeSerialForm.processing">
+                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="updateTerminal"
+                                :class="{ 'opacity-25': terminalForm.processing }"
+                                :disabled="terminalForm.processing">
                         ارسال
                     </jet-button>
                 </template>
@@ -1617,7 +1629,6 @@ export default {
                 resetOnSuccess: true
             }),
             submitProfileFormLoading: false,
-
             /*
             جستجوی و انتخاب سریال برای ترمینال
              */
@@ -1625,14 +1636,6 @@ export default {
             selectedDevice: null,
             confirmSerial: false,
             loadingDevicesList: false,
-            serialForm: this.$inertia.form({
-                '_method': 'PUT',
-                device_id: null,
-                status: 1,
-            }, {
-                bag: 'serialForm',
-                resetOnSuccess: false,
-            }),
             submitSerialFormLoading: false,
             /*
             ثبت شماره پذیرنده
@@ -1650,8 +1653,22 @@ export default {
             viewTerminalModal: false,
             terminalForm: this.$inertia.form({
                 '_method': 'PUT',
-                terminal_number: this.selectedTerminal && this.selectedTerminal.terminal_number,
-                status: 3,
+                action: null,
+                terminal: {
+                    terminal_number: null,
+                    device_type_id: null,
+                    device_id: null,
+                    reject_reason: null,
+                    cancel_reason: null,
+                    new_device_type_id: null,
+                    new_device_id: null,
+                    change_reason: null,
+                    status: null,
+                    reserved_device_id: null,
+                },
+                profile: {
+                    status: null
+                },
             }, {
                 bag: 'terminalForm',
                 resetOnSuccess: false,
@@ -1661,40 +1678,15 @@ export default {
             */
             rejectSerialReason: null,
             viewRejectSerialModal: false,
-            rejectSerialForm: this.$inertia.form({
-                '_method': 'PUT',
-                reject_reason: null,
-                status: 2,
-            }, {
-                bag: 'rejectSerialForm',
-                resetOnSuccess: true
-            }),
-
             /*
             درخواست فسخ ترمینال
             */
             viewCancelRequestModal: false,
-            cancelRequestForm: this.$inertia.form({
-                '_method': 'PUT',
-                cancel_reason: null,
-                status: 4,
-            }, {
-                bag: 'cancelRequestForm',
-                resetOnSuccess: true
-            }),
             /*
             تایید فسخ ترمینال
             */
             viewConfirmCancelModal: false,
-            confirmCancelForm: this.$inertia.form({
-                '_method': 'PUT',
-                cancelCancelMessage: null,
-                status: null,
-            }, {
-                bag: 'confirmCancelForm',
-                resetOnSuccess: true
-            }),
-
+            loadingNewDeviceInfo: false,
             /*
             درخواست جابجایی سریال
             */
@@ -1703,29 +1695,11 @@ export default {
             oldDeviceTypeId: '',
             newDeviceTypeId: '',
             newDeviceType: null,
-            changeSerialRequestForm: this.$inertia.form({
-                '_method': 'PUT',
-                change_reason: '',
-                new_device_type_id: '',
-                status: 7,
-            }, {
-                bag: 'changeSerialRequestForm',
-                resetOnSuccess: true
-            }),
             /*
             تایید یا رد سریال جدید
             */
             viewConfirmChangeSerialModal: false,
             newDevice: null,
-            confirmChangeSerialForm: this.$inertia.form({
-                '_method': 'PUT',
-                cancelChangeMessage: null,
-                status: null,
-            }, {
-                bag: 'confirmChangeSerialForm',
-                resetOnSuccess: true
-            }),
-
             /*
             بارگذاری مدارک
             */
@@ -1843,21 +1817,6 @@ export default {
                 this.profile.messages.reverse();
             })
         },
-        submitTerminal() {
-            this.submitTerminalFormLoading = true;
-            this.terminalForm.post(route('dashboard.profiles.update.terminal', {
-                profileId: this.profile.id,
-                byAdmin: true
-            }), {
-                preserveScroll: true
-            })
-                .then(response => {
-                    if (!this.terminalForm.hasErrors()) {
-
-                    }
-                    this.submitTerminalFormLoading = false;
-                })
-        },
 
         onTransferFileChange(e) {
             const file = e.target.files[0];
@@ -1911,37 +1870,52 @@ export default {
                 })
         },
 
+        async updateTerminalForm(terminal, action) {
+            this.terminalForm.action = action;
+            this.terminalForm.terminal.terminal_number = terminal.terminal_number;
+            this.terminalForm.terminal.device_type_id = terminal.device_type_id;
+            this.terminalForm.terminal.device_id = terminal.device_id;
+            this.terminalForm.terminal.reject_reason = terminal.reject_reason;
+            this.terminalForm.terminal.cancel_reason = terminal.cancel_reason;
+            this.terminalForm.terminal.new_device_type_id = terminal.new_device_type_id;
+            this.terminalForm.terminal.new_device_id = terminal.new_device_id;
+            this.terminalForm.terminal.change_reason = terminal.change_reason;
+            this.terminalForm.terminal.status = terminal.status;
 
-        viewDevicesModal(terminal, change) {
+            this.terminalForm.profile.status = this.profile.status;
+        },
+
+        selectSerial(terminal, change) {
             this.selectedTerminal = terminal;
-            this.search.results = [];
-            this.devices = [];
-            this.viewSearchModal = true;
-            let queryString = '?';
-            let deviceTypeId = terminal.device_type_id;
-            this.loadingDevicesList = true;
-            if (change) {
-                deviceTypeId = terminal.new_device_type_id;
-                queryString = '?change=true';
-            }
-            axios.get(route('dashboard.devices.types', {type: deviceTypeId}))
-                .then(response => {
-                    this.newDeviceType = response.data;
-                    axios.get(`dashboard/devices/${terminal.id}`)
-                        .then(response => {
-                            this.devices = response.data;
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        }).finally(() => {
-                        this.loadingDevicesList = false;
-                    });
-                })
-                .catch(error => {
-                    console.log(error);
-                })
-
-
+            let action = change ? 'changeSerial' : 'new';
+            this.updateTerminalForm(terminal, action).then(() => {
+                this.search.results = [];
+                this.devices = [];
+                this.viewSearchModal = true;
+                let queryString = '?';
+                let deviceTypeId = terminal.device_type_id;
+                this.loadingDevicesList = true;
+                if (change) {
+                    deviceTypeId = terminal.new_device_type_id;
+                    queryString = '?change=true';
+                }
+                axios.get(route('dashboard.devices.types', {type: deviceTypeId}))
+                    .then(response => {
+                        this.newDeviceType = response.data;
+                        axios.get(`dashboard/devices/${terminal.id}`)
+                            .then(response => {
+                                this.devices = response.data;
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            }).finally(() => {
+                            this.loadingDevicesList = false;
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+            });
         },
         searchDeviceSerials() {
             let serial = this.$refs.search_serial.value;
@@ -1952,26 +1926,78 @@ export default {
         },
         selectDevice(device) {
             this.selectedDevice = device;
+            if (this.terminalForm.action === 'changeSerial') {
+                this.terminalForm.terminal.status = 8;
+                this.terminalForm.profile.status = 15;
+                this.terminalForm.terminal.new_device_id = device.id;
+            } else if (this.terminalForm.action === 'new') {
+                this.terminalForm.terminal.status = 1;
+                this.terminalForm.profile.status = 6;
+                this.terminalForm.terminal.device_id = device.id;
+            }
+            this.terminalForm.terminal.reject_reason = null;
+            this.terminalForm.terminal.cancel_reason = null;
             this.confirmSerial = true;
         },
-        submitSerial() {
-            this.serialForm.device_id = this.selectedDevice.id;
-            this.serialForm.post(route('dashboard.profiles.update.serial', {
+        closeSerialModal() {
+            this.viewSearchModal = false;
+            this.$refs.search_serial.value = '';
+            this.search.serial = '';
+            this.search.results = [];
+            this.selectedTerminal = null;
+            this.selectedDevice = null;
+            this.terminalForm.reset();
+        },
+        closeConfirmSerialModal() {
+            this.confirmSerial = false;
+            this.terminalForm.reset();
+        },
+        installDevice(terminal) {
+            this.selectedTerminal = terminal;
+            this.updateTerminalForm(terminal, 'install').then(() => {
+                this.terminalForm.terminal.status = 6;
+                this.terminalForm.profile.status = 8;
+                this.updateTerminal();
+            });
+        },
+        updateTerminal() {
+            this.terminalForm.put(route('dashboard.profiles.terminals.update', {
                 profile: this.profile.id,
                 terminal: this.selectedTerminal.id
             }))
                 .then(response => {
-                    if (!this.serialForm.hasErrors()) {
-                        this.confirmSerial = false;
-                        this.viewSearchModal = false;
-                        this.$refs.search_serial.value = '';
-                        this.search.serial = '';
-                        this.profileId = '';
-                        this.selectedProfile = null;
-                        this.search.results = [];
+                    if (!this.terminalForm.hasErrors()) {
+                        switch (this.terminalForm.action) {
+                            default:
+                            case 'new':
+                                this.closeSerialModal();
+                                this.closeConfirmSerialModal();
+                                break;
+                            case 'terminal':
+                            case 'reject':
+                                this.closeTerminalModal();
+                                this.closeRejectSerialModal();
+                                break;
+                            case 'change':
+                                this.closeChangeSerialRequest();
+                                break;
+                            case 'cancelChange':
+                            case 'confirmChange':
+                                this.closeConfirmChangeSerial();
+                                break;
+                            case 'cancel':
+                                this.closeCancelRequest();
+                                break;
+                            case 'confirmCancel':
+                            case 'cancelCancel':
+                                this.closeConfirmCancel();
+                                break;
+                        }
+                        this.terminalForm.reset();
                     }
-                })
+                });
         },
+
         /*
         ثبت شماره پذیرنده
          */
@@ -1993,148 +2019,169 @@ export default {
         ثبت شماره ترمینال
          */
         showTerminalModal(terminal) {
-            this.viewTerminalModal = true;
             this.selectedTerminal = terminal;
-        },
-        submitTerminalNumber() {
-            this.terminalForm.put(route('dashboard.profiles.update.terminal', {
-                profile: this.profile.id,
-                terminal: this.selectedTerminal.id
-            })).then(response => {
-                if (!this.terminalForm.hasErrors()) {
-                    this.closeTerminalModal();
-                }
-            })
+            this.updateTerminalForm(terminal, 'terminal').then(() => {
+                this.viewTerminalModal = true;
+                this.terminalForm.terminal.status = 3;
+                this.terminalForm.profile.status = 7;
+            });
         },
         closeTerminalModal() {
-            this.terminalForm.reset();
             this.viewTerminalModal = false;
             this.selectedTerminal = null;
+            this.terminalForm.reset();
         },
         /*
         رد سریال
          */
-        submitRejectSerialForm() {
-            this.rejectSerialForm.post(route('dashboard.profiles.update.reject_serial', {
-                profile: this.profile.id,
-                terminal: this.selectedTerminal.id
-            }))
-                .then(response => {
-                    if (!this.rejectSerialForm.hasErrors()) {
-                        this.viewTerminalModal = false;
-                        this.viewRejectSerialModal = false;
-                        this.selectedTerminal = null;
-                    }
-                })
+        rejectSerialModal() {
+            this.viewRejectSerialModal = true;
+            this.terminalForm.action = 'reject';
+            this.terminalForm.terminal.device_id = null;
+            this.terminalForm.terminal.status = 0;
+            this.terminalForm.profile.status = 13;
         },
-        /*
-        نصب دستگاه
-        */
-        installDevice(terminal) {
-            let form = this.$inertia.form({status: 6});
-            form.put(route('dashboard.profiles.update.install', {
-                profile: this.profile.id,
-                terminal: terminal.id
-            }));
+        closeRejectSerialModal() {
+            this.viewRejectSerialModal = false;
+            this.terminalForm.reset();
         },
         /*
         درخواست فسخ ترمینال
          */
         cancelRequest(terminal) {
             this.selectedTerminal = terminal;
-            this.viewCancelRequestModal = true;
+            this.updateTerminalForm(terminal, 'cancel').then(() => {
+                this.terminalForm.terminal.status = 4;
+                this.terminalForm.profile.status = 12;
+                this.viewCancelRequestModal = true;
+            });
         },
-        submitCancelRequest() {
-            this.cancelRequestForm.post(route('dashboard.profiles.update.cancel_terminal', {
-                profile: this.profile.id,
-                terminal: this.selectedTerminal.id
-            }))
-                .then(response => {
-                    if (!this.cancelRequestForm.hasErrors()) {
-                        this.viewCancelRequestModal = false;
-                        this.selectedTerminal = null;
-                    }
-                })
+        closeCancelRequest() {
+            this.viewCancelRequestModal = false;
         },
         /*
         تایید فسخ ترمینال
          */
         confirmCancel(terminal) {
             this.selectedTerminal = terminal;
-            this.cancelReason = terminal.cancel_reason;
-            this.viewConfirmCancelModal = true;
+            this.updateTerminalForm(terminal, 'cancel').then(() => {
+                this.viewConfirmCancelModal = true;
+            });
+
         },
-        submitCancel() {
-            this.confirmCancelForm.post(route('dashboard.profiles.update.confirm_cancel', {
-                profile: this.profile.id,
-                terminal: this.selectedTerminal.id
-            }))
-                .then(response => {
-                    if (!this.confirmCancelForm.hasErrors()) {
-                        this.selectedTerminal = null;
-                        this.viewConfirmCancelModal = false;
-                    }
-                })
+        cancelChangeStatus(status) {
+            if (status === 'confirmCancel') {
+                this.terminalForm.terminal.status = 5;
+                this.terminalForm.profile.status = 9;
+                this.terminalForm.terminal.reserved_device_id = this.selectedTerminal.device_id;
+                this.terminalForm.action = 'confirmCancel';
+            } else if (status === 'cancelCancel') {
+                if (this.selectedTerminal && this.selectedTerminal.device && this.selectedTerminal.device.transport_status === 3) {
+                    this.terminalForm.terminal.status = 6;
+                    this.terminalForm.profile.status = 8;
+                } else {
+                    this.terminalForm.terminal.status = 3;
+                    this.terminalForm.profile.status = 7;
+                }
+                this.terminalForm.terminal.cancel_reason = null;
+                this.terminalForm.action = 'cancelCancel';
+            }
+        },
+        closeConfirmCancel() {
+            this.viewConfirmCancelModal = false;
         },
         /*
         درخواست جابجایی
          */
         changeSerialRequest(terminal) {
-            this.viewChangeSerialRequestModal = true;
             this.selectedTerminal = terminal;
-            this.oldDeviceTypeId = terminal.device_type_id;
-            this.changeSerialRequestForm.new_device_type_id = terminal.device_type_id;
-            axios.get('dashboard/deviceTypes/' + terminal.id)
-                .then(response => {
-                    this.deviceTypes = response.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
+            this.updateTerminalForm(terminal, 'change').then(() => {
+                this.viewChangeSerialRequestModal = true;
+                this.selectedTerminal = terminal;
+                this.oldDeviceTypeId = terminal.device_type_id;
+                this.terminalForm.terminal.new_device_type_id = terminal.device_type_id;
+                axios.get('dashboard/deviceTypes/' + terminal.id)
+                    .then(response => {
+                        this.deviceTypes = response.data;
+                        this.selectNewDeviceType(terminal.device_type_id);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            })
+
         },
         selectNewDeviceType(newDeviceTypeId) {
             this.oldDeviceTypeId = newDeviceTypeId;
-            this.changeSerialRequestForm.new_device_type_id = newDeviceTypeId;
+            this.terminalForm.terminal.new_device_id = null;
+            this.terminalForm.terminal.new_device_type_id = newDeviceTypeId;
+            this.terminalForm.terminal.reject_reason = null;
+            this.terminalForm.terminal.status = 7;
+            this.terminalForm.profile.status = 14;
         },
-        submitChangeSerialRequest() {
-            this.changeSerialRequestForm.post(route('dashboard.profiles.update.change_serial', {
-                profile: this.profile.id,
-                terminal: this.selectedTerminal.id
-            }))
-                .then(response => {
-                    if (!this.changeSerialRequestForm.hasErrors()) {
-                        this.viewChangeSerialRequestModal = false;
-                        this.selectedTerminal = null;
-                        this.oldDeviceTypeId = null;
-                    }
-                })
+        closeChangeSerialRequest() {
+            this.viewChangeSerialRequestModal = false;
+            this.oldDeviceTypeId = null;
         },
         /*
         تایید یا رد درخواست جابجایی
          */
         confirmChangeSerial(terminal) {
             this.selectedTerminal = terminal;
-            axios.get(route('api.dashboard.devices.view', {device: terminal.new_device_id}))
-                .then(response => {
-                    this.newDevice = response.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-            this.viewConfirmChangeSerialModal = true;
+            this.updateTerminalForm(terminal, 'confirmChange').then(() => {
+                this.confirmChangeStatus('confirm')
+                this.viewConfirmChangeSerialModal = true;
+                this.loadingNewDeviceInfo = true;
+                axios.get(route('api.dashboard.devices.view', {device: terminal.new_device_id}))
+                    .then(response => {
+                        this.newDevice = response.data;
+                        this.terminalForm.terminal.status = 3;
+                        this.terminalForm.profile.status = 6;
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    })
+                    .finally(() => {
+                        this.loadingNewDeviceInfo = false;
+                    });
+            });
         },
-        submitConfirmChangeSerial() {
-            this.confirmChangeSerialForm.post(route('dashboard.profiles.update.confirm_change', {
-                profile: this.profile,
-                terminal: this.selectedTerminal
-            })).then(response => {
-                if (!this.confirmChangeSerialForm.hasErrors()) {
-                    this.viewConfirmChangeSerialModal = false;
-                    this.selectedTerminal = null;
-                }
-            })
+        closeConfirmChangeSerial() {
+            this.viewConfirmChangeSerialModal = false;
+            this.loadingNewDeviceInfo = false;
         },
+        confirmChangeStatus(status) {
+            if (status === 'confirm') {
+                this.terminalForm.terminal.status = 3;
+                this.terminalForm.profile.status = 8;
+                this.terminalForm.terminal.device_type_id = this.selectedTerminal.new_device_type_id;
+                this.terminalForm.terminal.device_id = this.selectedTerminal.new_device_id;
+                this.terminalForm.terminal.reject_reason = null;
+                this.terminalForm.terminal.cancel_reason = null;
+                this.terminalForm.terminal.new_device_type_id = null;
+                this.terminalForm.terminal.new_device_id = null;
+                this.terminalForm.terminal.change_reason = null;
+                this.terminalForm.action = 'confirmChange';
+            } else if (status === 'cancel') {
+                if (this.selectedTerminal && this.selectedTerminal.device && this.selectedTerminal.device.transport_status === 3) {
+                    this.terminalForm.terminal.status = 6;
+                    this.terminalForm.profile.status = 8;
 
+                } else {
+                    this.terminalForm.terminal.status = 3;
+                    this.terminalForm.profile.status = 7;
+                }
+
+                this.terminalForm.action = 'cancelChange';
+                this.terminalForm.terminal.reserved_device_id = this.selectedTerminal.new_device_id;
+                this.terminalForm.terminal.device_type_id = this.selectedTerminal.device_type_id;
+                this.terminalForm.terminal.device_id = this.selectedTerminal.device_id;
+                this.terminalForm.terminal.cancel_reason = null;
+                this.terminalForm.terminal.new_device_type_id = null;
+                this.terminalForm.terminal.new_device_id = null;
+                this.terminalForm.terminal.change_reason = null;
+            }
+        }
     },
     computed: {
         canEditLicenses() {

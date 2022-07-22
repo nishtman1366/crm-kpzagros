@@ -159,9 +159,9 @@ return [
         'agahi_file_1' => 'تصویر آگهی ثبت',
         'agahi_file_2' => 'تصویر آگهی تاسیس',
 
-        'business_category_code'=>'صنف مرتبط',
-        'business_subCategory_code'=>'صنف مرتبط تکمیلی',
-        'tax_code'=>'کد مالیاتی',
+        'business_category_code' => 'صنف مرتبط',
+        'business_subCategory_code' => 'صنف مرتبط تکمیلی',
+        'tax_code' => 'کد مالیاتی',
 
         'ostan_id' => 'استان',
         'shahrestan_id' => 'شهرستان',
@@ -243,7 +243,14 @@ return [
         'ticket_type_id' => 'واحد پشتیبانی',
         'agent_id' => 'کاربر پشتیبانی',
 
-        'parameters'=>'متغیرها',
-        'terminal_number'=>'شماره پایانه'
+        'parameters' => 'متغیرها',
+        'terminal_number' => 'شماره پایانه',
+        'terminal.terminal_number' => 'شماره پایانه',
+        'terminal.reject_reason' => 'علت عدم تایید',
+        'terminal.cancel_reason' => 'دلیل فسخ',
+        'terminal.change_reason' => 'دلیل جابجایی',
+        'terminal.change_message' => 'دلیل رد درخواست جابجایی',
+        'terminal.new_device_id' => 'سریال جدید',
+        'terminal.new_device_type_id' => 'مدل دستگاه جدید',
     ],
 ];

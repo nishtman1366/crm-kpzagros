@@ -170,6 +170,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             });
 
             Route::get('terminals/{terminal}/deliveryForm', [\App\Http\Controllers\Profiles\TerminalController::class, 'deliveryForm'])->name('terminal.delivery.form');
+            Route::put('terminals/{terminal}', [\App\Http\Controllers\Profiles\TerminalController::class, 'update'])->name('terminals.update');
         });
 
 
