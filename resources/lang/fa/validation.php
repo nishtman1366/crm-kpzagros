@@ -214,6 +214,7 @@ return [
         'ref_code' => 'کد پیگیری پرداخت',
         'payment_date' => 'تاریخ پرداخت',
 
+        'business_type' => 'نوع کسب و کار',
 
         'pattern' => 'کد الگو',
         'notification_type_id' => 'نوع اعلان',
