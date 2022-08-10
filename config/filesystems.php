@@ -56,7 +56,7 @@ return [
             'password' => 'Nil00f@r1869',
             'root' => 'public_html/licenses/',
             'url' => 'http://storage.kpzagros-crm.com/licenses',
-            'passive' => true,
+            'passive' => false,
             'ignorePassiveAddress' => true,
             'ssl' => false,
             'port' => 21,
