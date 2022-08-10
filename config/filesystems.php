@@ -57,7 +57,7 @@ return [
             'root' => 'public_html/licenses/',
             'url' => 'http://storage.kpzagros-crm.com/licenses',
             'passive' => true,
-            'ignorePassiveAddress' => false,
+            'ignorePassiveAddress' => true,
             'ssl' => false,
             'port' => 21,
         ],
