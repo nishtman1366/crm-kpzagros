@@ -51,10 +51,10 @@ return [
 
         'licenses' => [
             'driver' => 'ftp',
-            'host' => '45.159.115.178',
-            'username' => 'root',
+            'host' => 'storage.kpzagros-crm.com',
+            'username' => 'zagros@storage.kpzagros-crm.com',
             'password' => 'Nil00f@r1869',
-            'root' => '/var/www/kpzagros/',
+            'root' => 'public_html/licenses/',
             'url' => 'http://storage.kpzagros-crm.com/licenses',
             'passive' => false,
             'ignorePassiveAddress' => true,
