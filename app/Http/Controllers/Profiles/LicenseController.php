@@ -62,17 +62,18 @@ class LicenseController extends Controller
         } else {
             $fileName = $type->file_name . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         }
-        $file->storeAs('profiles/' . $profileId, $fileName, 'licenses');
+        $disk = 'public';
+        $file->storeAs('profiles/' . $profileId, $fileName, $disk);
 
         if (is_null($accountId)) {
             License::updateOrCreate(
                 ['profile_id' => $profileId, 'license_type_id' => $type->id],
-                ['file' => $fileName]
+                ['file' => $fileName, 'disk' => $disk]
             );
         } else {
             License::updateOrCreate(
                 ['profile_id' => $profileId, 'license_type_id' => $type->id, 'account_id' => $accountId],
-                ['file' => $fileName]
+                ['file' => $fileName, 'disk' => $disk]
             );
         }
     }
@@ -157,7 +158,7 @@ class LicenseController extends Controller
         $license = License::find($licenseId);
         if (!is_null($license)) {
             if ($license->profile_id !== $profile->id) throw new UnprocessableEntityHttpException('شما اجازه دسترسی به این پرونده را ندارید');
-            Storage::disk('licenses')->delete('profiles/' . $license->profile_id . '/' . $license->file);
+            Storage::disk($license->disk)->delete('profiles/' . $license->profile_id . '/' . $license->file);
             $license->delete();
         }
 
@@ -173,7 +174,7 @@ class LicenseController extends Controller
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
 
-            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
+            $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
             $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
             \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $license->file), $stream);
             $files[] = $fileItem;
