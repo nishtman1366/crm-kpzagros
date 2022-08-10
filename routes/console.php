@@ -66,14 +66,14 @@ Artisan::command('setProfileId', function () {
 });
 
 Artisan::command('transfer', function () {
-    $directories = \Illuminate\Support\Facades\Storage::disk('public')->directories('profiles');
+    $directories = \Illuminate\Support\Facades\Storage::disk('licenses')->directories('profiles');
     foreach ($directories as $directory) {
-        \Illuminate\Support\Facades\Storage::disk('licenses')->makeDirectory($directory);
+        \Illuminate\Support\Facades\Storage::disk('licenses_local')->makeDirectory($directory);
         print(sprintf('Directory %s created', $directory) . PHP_EOL);
-        $files = \Illuminate\Support\Facades\Storage::disk('public')->files($directory);
+        $files = \Illuminate\Support\Facades\Storage::disk('licenses')->files($directory);
         foreach ($files as $file) {
-            $stream = \Illuminate\Support\Facades\Storage::disk('public')->readStream($file);
-            \Illuminate\Support\Facades\Storage::disk('licenses')->writeStream($file, $stream);
+            $stream = \Illuminate\Support\Facades\Storage::disk('licenses')->readStream($file);
+            \Illuminate\Support\Facades\Storage::disk('licenses_local')->writeStream($file, $stream);
             print(sprintf('File %s created', $file) . PHP_EOL);
         }
         print(sprintf('directory %s fully coped to new disk', $directory) . PHP_EOL);
@@ -85,7 +85,9 @@ Artisan::command('transfer', function () {
 Artisan::command('categories', function () {
     \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\Businesses\CategoryImport, public_path('files/business_categories.xlsx'));
 });
-
+Artisan::command('cities', function () {
+    \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\Cities\PasargadCities, public_path('files/pasargad_cities.xlsx'));
+});
 Artisan::command('changeTerminals', function () {
     \App\Models\Profiles\Profile::with('deviceType')
         ->orderBy('id', 'ASC')
@@ -109,42 +111,42 @@ Artisan::command('changeTerminals', function () {
         });
 });
 
-function terminalStatusBaseOnProfileStatus($status)
-{
-    switch ($status) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-            return 0;
-        case 6:
-            return 1;
-        case 7:
-            return 3;
-        case 8:
-            return 6;
-        case 9:
-            return 5;
-        case 10:
-        case 11:
-        case 255:
-            return false;
-        case 12:
-            return 4;
-        case 13:
-            return 2;
-        case 14:
-            return 7;
-        case 15:
-            return 8;
-        case 16:
-            return 9;
-        case 17:
-            return 10;
-    }
-}
+//function terminalStatusBaseOnProfileStatus($status)
+//{
+//    switch ($status) {
+//        case 0:
+//        case 1:
+//        case 2:
+//        case 3:
+//        case 4:
+//        case 5:
+//            return 0;
+//        case 6:
+//            return 1;
+//        case 7:
+//            return 3;
+//        case 8:
+//            return 6;
+//        case 9:
+//            return 5;
+//        case 10:
+//        case 11:
+//        case 255:
+//            return false;
+//        case 12:
+//            return 4;
+//        case 13:
+//            return 2;
+//        case 14:
+//            return 7;
+//        case 15:
+//            return 8;
+//        case 16:
+//            return 9;
+//        case 17:
+//            return 10;
+//    }
+//}
 
 Artisan::command('updateTerminalStatuses', function () {
     \App\Models\Profiles\Terminal::with('profile')
