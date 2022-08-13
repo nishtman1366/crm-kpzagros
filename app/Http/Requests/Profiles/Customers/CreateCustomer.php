@@ -36,8 +36,6 @@ class CreateCustomer extends FormRequest
             'last_name_english' => 'required|regex:/(^[a-zA-Z0-9 ]+$)/u',
             'father' => 'required',
             'father_english' => 'required|regex:/(^[a-zA-Z0-9 ]+$)/u',
-            'national_code' => ['required', 'numeric', 'digits:10', new NationalCode($this->get('first_name'), $this->get('last_name'))],
-            'id_code' => 'required|digits_between:1,10',
             'birthday' => 'required|date',
             'gender' => ['required', Rule::in(['male', 'female']),],
             'mobile' => 'required|numeric|digits:11|starts_with:09',
@@ -58,6 +56,13 @@ class CreateCustomer extends FormRequest
                 'asasname_file' => 'required|image|mimetypes:image/jpg,image/jpeg',
                 'agahi_file_1' => 'required|image|mimetypes:image/jpg,image/jpeg',
                 'agahi_file_2' => 'required|image|mimetypes:image/jpg,image/jpeg',
+            ]);
+        }
+
+        if ($this->input('residency') === 'iranian') {
+            $validationArray = array_merge($validationArray, [
+                'national_code' => ['required', 'numeric', 'digits:10', new NationalCode($this->get('first_name'), $this->get('last_name'))],
+                'id_code' => 'required|digits_between:1,10',
             ]);
         }
 
