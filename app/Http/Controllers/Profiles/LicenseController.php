@@ -62,7 +62,7 @@ class LicenseController extends Controller
         } else {
             $fileName = $type->file_name . (is_null($accountId) ? '' : '-' . $accountId . '') . '.' . $extension;
         }
-        $disk = 'public';
+        $disk = 'licenses';
         $file->storeAs('profiles/' . $profileId, $fileName, $disk);
 
         if (is_null($accountId)) {
