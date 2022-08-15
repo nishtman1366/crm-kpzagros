@@ -11,7 +11,7 @@ class CheckCustomerStatus
 {
     public function handle(Request $request, Closure $next)
     {
-        $customer = Customer::where('profile_id', $request->get('profile')->id)->get()->first();
+        $customer = Customer::where('profile_id', $request->profile->id)->get()->first();
         if (is_null($customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد');
         $request->merge(['customer' => $customer]);
         return $next($request);

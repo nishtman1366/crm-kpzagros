@@ -10,7 +10,7 @@ class UpdateCustomerData
 {
     public function handle(Request $request, Closure $next)
     {
-        $customer = $request->get('customer');
+        $customer = $request->customer;
         $customer->fill($request->except(['profile', 'customer']));
         $customer->save();
         return $next($request);

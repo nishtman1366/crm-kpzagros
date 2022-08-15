@@ -63,6 +63,11 @@ class UpdateCustomer extends FormRequest
                 'national_code' => ['required', 'numeric', 'digits:10', new NationalCode($this->get('first_name'), $this->get('last_name'))],
                 'id_code' => 'required|digits_between:1,10',
             ]);
+        }else{
+            $validationArray = array_merge($validationArray, [
+                'country_code' => 'required',
+                'foreign_pervasive_code' => 'required',
+            ]);
         }
 
         return $validationArray;

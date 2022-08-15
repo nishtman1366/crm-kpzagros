@@ -88,8 +88,7 @@ class Customer extends Model
 
     public function getJPassportExpireDateAttribute()
     {
-        if (is_null($this->attributes['passport_expireDate'])) return '';
-        return Jalalian::forge($this->attributes['passport_expireDate'])->format('Y/m/d');
+        return $this->attributes['passport_expireDate'];
     }
 
     public function getJRegDateAttribute()

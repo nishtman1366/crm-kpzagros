@@ -9,7 +9,7 @@ class HandleCustomerLicenses
 {
     public function handle($request, Closure $next)
     {
-        $profile = $request->get('profile');
+        $profile = $request->profile;
         if ($request->hasFile('national_card_file_1')) {
             LicenseController::upload($request->file('national_card_file_1'), 'national_card_file_1', $profile->id);
         }
