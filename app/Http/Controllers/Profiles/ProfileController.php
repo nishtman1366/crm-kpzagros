@@ -705,7 +705,9 @@ class ProfileController extends Controller
         Cache::forget(sprintf('%s.profiles.export.done', $user->id));
         Cache::forget(sprintf('%s.profiles.export.total', $user->id));
         Cache::forget(sprintf('%s.profiles.export.expiration', $user->id));
-        Storage::deleteDirectory('temp/excel/profiles/' . $directory);
+        if($directory) {
+            Storage::deleteDirectory('temp/excel/profiles/' . $directory);
+        }
     }
 
     public function cancelExportJob(Request $request)
