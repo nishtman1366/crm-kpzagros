@@ -41,13 +41,13 @@ class DeleteExportedFiles implements ShouldQueue
         $zipFile = Cache::get(sprintf('%s.profiles.export.zipFile', $this->user->id));
         if (!is_null($zipFile)) {
             Storage::disk('public')->delete(sprintf('archives/%s', $zipFile));
-            Cache::forget(sprintf('%s.profiles.export.status', $this->user->id));
-            Cache::forget(sprintf('%s.profiles.export.directory', $this->user->id));
-            Cache::forget(sprintf('%s.profiles.export.zipFileUrl', $this->user->id));
-            Cache::forget(sprintf('%s.profiles.export.zipFile', $this->user->id));
-            Cache::forget(sprintf('%s.profiles.export.done', $this->user->id));
-            Cache::forget(sprintf('%s.profiles.export.total', $this->user->id));
-            Cache::forget(sprintf('%s.profiles.export.expiration', $this->user->id));
         }
+        Cache::forget(sprintf('%s.profiles.export.status', $this->user->id));
+        Cache::forget(sprintf('%s.profiles.export.directory', $this->user->id));
+        Cache::forget(sprintf('%s.profiles.export.zipFileUrl', $this->user->id));
+        Cache::forget(sprintf('%s.profiles.export.zipFile', $this->user->id));
+        Cache::forget(sprintf('%s.profiles.export.done', $this->user->id));
+        Cache::forget(sprintf('%s.profiles.export.total', $this->user->id));
+        Cache::forget(sprintf('%s.profiles.export.expiration', $this->user->id));
     }
 }

@@ -50,7 +50,8 @@ Route::middleware('auth:sanctum')->prefix('dashboard')->namespace('App\\Http\\Co
         Route::get('{profileId}/accounts/create', 'AccountController@create');
         Route::post('{profileId}/accounts/store', 'AccountController@store');
 
-        Route::get('excel/status', [\App\Http\Controllers\Profiles\ProfileController::class, 'ExcelStatus']);
+        Route::get('excel/status', [\App\Http\Controllers\Profiles\ProfileController::class, 'excelStatus']);
+        Route::get('excel/cancel', [\App\Http\Controllers\Profiles\ProfileController::class, 'cancelExportJob']);
     });
 });
 

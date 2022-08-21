@@ -627,6 +627,8 @@ class ProfileController extends Controller
             });
         }
 
+        $this->deleteExportProcess($user);
+
         $searchQuery = $request->query('query', null);
 
         $fromDate = $request->query('fromDate', null);
@@ -657,16 +659,10 @@ class ProfileController extends Controller
         return redirect()->back();
     }
 
-    public function ExcelStatus(Request $request)
+    public function excelStatus(Request $request)
     {
+        sleep(1);
         $user = Auth::user();
-//        Cache::forget(sprintf('%s.profiles.export.status', $user->id));
-//        Cache::forget(sprintf('%s.profiles.export.directory', $user->id));
-//        Cache::forget(sprintf('%s.profiles.export.zipFileUrl', $user->id));
-//        Cache::forget(sprintf('%s.profiles.export.zipFile', $user->id));
-//        Cache::forget(sprintf('%s.profiles.export.done', $user->id));
-//        Cache::forget(sprintf('%s.profiles.export.total', $user->id));
-//        Cache::forget(sprintf('%s.profiles.export.expiration', $user->id));
         $status = Cache::get(sprintf('%s.profiles.export.status', $user->id));
         if (!is_null($status)) {
             $response = [
@@ -689,9 +685,37 @@ class ProfileController extends Controller
             }
             return response()->json($response);
         }
-        return response([
+
+        return response()->json([
             'status' => 'NotFound'
-        ])->json();
+        ]);
+    }
+
+    private function deleteExportProcess($user)
+    {
+        $zipFile = Cache::get(sprintf('%s.profiles.export.zipFile', $user->id));
+        if (!is_null($zipFile)) {
+            Storage::disk('public')->delete(sprintf('archives/%s', $zipFile));
+        }
+        $directory = Cache::get(sprintf('%s.profiles.export.directory', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.status', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.directory', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.zipFileUrl', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.zipFile', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.done', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.total', $user->id));
+        Cache::forget(sprintf('%s.profiles.export.expiration', $user->id));
+        Storage::deleteDirectory('temp/excel/profiles/' . $directory);
+    }
+
+    public function cancelExportJob(Request $request)
+    {
+        $user = Auth::user();
+        $this->deleteExportProcess($user);
+        return response()->json([
+            'status' => 'NotFound',
+            'message' => 'حذف فایل‌ها با موفقیت انجام شد.'
+        ]);
     }
 
     public function uploadExcel(Request $request)

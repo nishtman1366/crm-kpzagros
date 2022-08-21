@@ -346,4 +346,20 @@ Route::get('duplicates/{profileId}', function (\Illuminate\Http\Request $request
     return redirect()->back();
 })->name('duplicateProfiles');
 
+Route::get('cities', function () {
+    $i = 1;
+    $b = \App\Models\City::where('shaparak_code',null)->get()->plucK('id');
+    $cities = \App\Models\City::whereIn('id', $b->toArray())->orderBy('id', 'ASC')
+        ->get()
+        ->each(function ($city) {
+            $similarities = \App\Models\City::where('ostan',$city->ostan)->where('shaparak_code','!=',null)->get();
+            $city->similarities = $similarities;
+        });
+    return view('Temp.cities', compact('cities'));
+});
+Route::get('updateCity/{city}/{code}', function (\App\Models\City $city, string $code) {
+    $city->shaparak_code = $code;
+    $city->save();
+    return redirect()->back();
+})->name('update.city');
 

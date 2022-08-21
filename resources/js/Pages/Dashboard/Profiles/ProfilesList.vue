@@ -363,6 +363,12 @@
                                 <div v-if="downloadExcelResponse.status==='processing'">
                                     <div class="text-yellow-500">{{ downloadExcelResponse.message }}</div>
                                     <div>میزان پیشرفت: {{ downloadExcelResponse.complete }}%</div>
+                                    <div>
+                                        <div class="bg-gray-300 w-full h-5 rounded shadow">
+                                            <div class="h-5 rounded bg-red-400"
+                                                 :style="`width: ${downloadExcelResponse.complete}%;`"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div v-else-if="downloadExcelResponse.status==='done'">
                                     <div class="my-3 p-2 bg-green-200 border-r-4 border-green-500">
@@ -386,9 +392,12 @@
                                         {{ downloadExcelResponse.message }}
                                     </div>
                                 </div>
-                            </div>
-                            <div v-else class="my-3 p-2 bg-yellow-200 border-r-4 border-yellow-500">
-                                <p class="text-md">فرایندی در حال اجرا نمی باشد.</p>
+                                <div v-else class="text-right my-3 p-2 border-r-4 border-gray-500">
+                                    <p class="text-md">فرایندی در حال اجرا نمی باشد.</p>
+                                    <div v-if="downloadExcelResponse.message" class="my-3 p-2 bg-green-200 border-r-4 border-green-500">
+                                        {{ downloadExcelResponse.message }}
+                                    </div>
+                                </div>
                             </div>
                         </template>
                     </div>
@@ -397,6 +406,15 @@
                     <jet-secondary-button class="ml-2" @click.native="closeDownloadModal">
                         بستن
                     </jet-secondary-button>
+                    <jet-danger-button v-if="downloadExcelResponse && downloadExcelResponse.status==='processing'"
+                                       class="ml-2 hidden" @click.native="cancelExcelProcess">
+                        توقف فرایند و حذف فایل‌ها
+                    </jet-danger-button>
+                    <jet-danger-button
+                        v-if="downloadExcelResponse && (downloadExcelResponse.status==='done' || downloadExcelResponse.status==='failed')"
+                        class="ml-2" @click.native="cancelExcelProcess">
+                        حذف فایل‌ها
+                    </jet-danger-button>
                     <InertiaLink
                         v-if="!downloadExcelLoading && (!downloadExcelResponse || (downloadExcelResponse && downloadExcelResponse.status==='failed') || (downloadExcelResponse && downloadExcelResponse.status==='NotFound') || (downloadExcelResponse && downloadExcelResponse.status==='done'))"
                         :href="route('dashboard.profiles.downloadExcel',{
@@ -539,7 +557,9 @@ export default {
 
             downloadExcelLoading: false,
             viewDownloadExcelModal: false,
-            downloadExcelResponse: null
+            downloadExcelResponse: null,
+
+            exportStatusTimeout: null,
         }
     },
     mounted() {
@@ -671,9 +691,25 @@ export default {
             })
         },
         openDownloadExcelModal() {
-            this.downloadExcelLoading = true;
+            // this.downloadExcelLoading = true;
             this.viewDownloadExcelModal = true;
             axios.get('dashboard/profiles/excel/status')
+                .then(response => {
+                    this.downloadExcelResponse = response.data;
+                    if(response.data.status==='processing') {
+                        this.exportStatusTimeout = setTimeout(() => this.openDownloadExcelModal(), 3500);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.downloadExcelLoading = false;
+                })
+        },
+        cancelExcelProcess() {
+            this.downloadExcelLoading = true;
+            axios.get('dashboard/profiles/excel/cancel')
                 .then(response => {
                     this.downloadExcelResponse = response.data;
                 })
@@ -685,6 +721,7 @@ export default {
                 })
         },
         closeDownloadModal() {
+            clearTimeout(this.exportStatusTimeout);
             this.viewDownloadExcelModal = false;
             this.downloadExcelResponse = null;
         }
