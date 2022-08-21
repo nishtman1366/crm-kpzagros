@@ -46,7 +46,7 @@ class ExportProfiles implements ShouldQueue
     {
         Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'processing');
         $jDate = Jalalian::forge(now())->format('Y.m.d');
-        $directoryName = $jDate . '_' . time();
+        $directoryName = $jDate;
         Cache::put(sprintf('%s.profiles.export.directory', $this->user->id), $directoryName);
         $fileName = 'profiles.' . $jDate . '_' . time() . '.xlsx';
         Excel::store(new ProfileExport($this->profiles), 'temp/excel/profiles/' . $directoryName . '/' . $fileName);
