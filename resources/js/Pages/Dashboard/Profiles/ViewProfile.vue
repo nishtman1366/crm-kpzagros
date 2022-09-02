@@ -1163,25 +1163,36 @@
                 <template #content>
                     آیا از انتخاب این سریال مطمئن هستید؟
                     <div class="mt-4" v-if="selectedDevice">
-                        <div class="flex items-center justify-around">
-                            <div>مدل دستگاه:</div>
+                        <div class="flex items-center justify-start">
+                            <div class="w-1/2">مدل دستگاه:</div>
                             <div class="text-red-400 font-bold">
                                 {{ selectedDevice.device_type && selectedDevice.device_type.name }}
                             </div>
                         </div>
-                        <div class="flex items-center justify-around">
-                            <div>سریال دستگاه:</div>
+                        <div class="flex items-center justify-start">
+                            <div class="w-1/2">سریال دستگاه:</div>
                             <div class="text-red-400 font-bold">{{ selectedDevice.serial }}</div>
                         </div>
-                        <div class="flex items-center justify-around">
-                            <div>کد IMEI:</div>
+                        <div class="flex items-center justify-start">
+                            <div class="w-1/2">کد IMEI:</div>
                             <div v-if="selectedDevice.imei" class="text-red-400 font-bold">{{
                                     selectedDevice.imei
                                 }}
                             </div>
                             <div v-else>
-                                <jet-input type="text" class="w-full" v-model="terminalForm.terminal.imei"/>
+                                <jet-input type="text" placeholder="کد IMEI" class="w-full" v-model="terminalForm.terminal.imei"/>
                                 <jet-input-error :message="terminalForm.error('terminal.imei')" class="mt-2"/>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-start">
+                            <div class="w-1/2">شماره سیم‌کارت:</div>
+                            <div v-if="selectedDevice.sim_number" class="text-red-400 font-bold">{{
+                                    selectedDevice.sim_number
+                                }}
+                            </div>
+                            <div v-else>
+                                <jet-input type="text" placeholder="شماره سیم‌کارت" class="w-full" v-model="terminalForm.terminal.sim_number"/>
+                                <jet-input-error :message="terminalForm.error('terminal.sim_number')" class="mt-2"/>
                             </div>
                         </div>
                     </div>
@@ -1254,21 +1265,32 @@
                         </div>
                         <div>
                             <div class="flex items-center justify-around">
-                                <div>مدل دستگاه:</div>
+                                <div class="w-1/2">مدل دستگاه:</div>
                                 <div>{{ selectedTerminal && selectedTerminal.device_type && selectedTerminal.device_type.name }}</div>
                             </div>
                             <div class="flex items-center justify-around">
-                                <div>سریال:</div>
+                                <div class="w-1/2">سریال:</div>
                                 <div>{{ selectedTerminal && selectedTerminal.device && selectedTerminal.device.serial }}</div>
                             </div>
                             <div class="flex items-center justify-around">
-                                <div>کد IMEI:</div>
+                                <div class="w-1/2">کد IMEI:</div>
                                 <div v-if="selectedTerminal && selectedTerminal.device && selectedTerminal.device.imei" class="text-red-400 font-bold">
                                     {{ selectedTerminal && selectedTerminal.device && selectedTerminal.device.imei }}
                                 </div>
                                 <div v-else>
                                     <jet-input type="text" class="w-full" v-model="terminalForm.terminal.imei"/>
                                     <jet-input-error :message="terminalForm.error('terminal.imei')" class="mt-2"/>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-start">
+                                <div class="w-1/2">شماره سیم‌کارت:</div>
+                                <div v-if="selectedTerminal && selectedTerminal.device && selectedTerminal.device.sim_number" class="text-red-400 font-bold">{{
+                                        selectedTerminal && selectedTerminal.device && selectedTerminal.device.sim_number
+                                    }}
+                                </div>
+                                <div v-else>
+                                    <jet-input type="text" placeholder="شماره سیم‌کارت" class="w-full" v-model="terminalForm.terminal.sim_number"/>
+                                    <jet-input-error :message="terminalForm.error('terminal.sim_number')" class="mt-2"/>
                                 </div>
                             </div>
                         </div>
@@ -1690,6 +1712,7 @@ export default {
                     status: null,
                     reserved_device_id: null,
                     imei: null,
+                    sim_number: null,
                 },
                 profile: {
                     status: null

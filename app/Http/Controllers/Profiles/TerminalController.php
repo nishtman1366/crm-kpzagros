@@ -16,7 +16,6 @@ class TerminalController extends Controller
 {
     public function update(Profile $profile, Terminal $terminal, Request $request)
     {
-        $validationArray = [];
         $actions = ['new', 'confirm', 'terminal', 'reject', 'install', 'change', 'changeSerial', 'confirmChange', 'cancelChange', 'cancel', 'confirmCancel', 'cancelCancel'];
         $request->validateWithBag('terminalForm', [
             'action' => 'required|in:' . implode(',', $actions)
@@ -24,8 +23,6 @@ class TerminalController extends Controller
         if ($terminal->profile_id !== $profile->id) throw new UnauthorizedHttpException('', 'ترمینال به پرونده تعلق ندارد.');
 
         $action = $request->get('action', 'new');
-        $terminalData = [];
-        $profileData = [];
         $messageStatus = null;
         $message = null;
 
@@ -48,6 +45,15 @@ class TerminalController extends Controller
                     ]);
                     $device->imei = $request->get('terminal')['imei'];
                 }
+                if (is_null($device->sim_number)) {
+                    $request->validateWithBag('terminalForm', [
+                        'terminal.sim_number' => 'required|starts_with:09'
+                    ], [
+                        'terminal.sim_number.required' => 'شماره سیم‌کارت الزامیست',
+                        'terminal.sim_number.starts_with' => 'شماره سیم‌کارت اشتباه است.',
+                    ]);
+                    $device->sim_number = $request->get('terminal')['sim_number'];
+                }
                 $device->transport_status = 2;
                 $device->psp_status = 1;
                 $device->save();
@@ -58,7 +64,11 @@ class TerminalController extends Controller
                 * ثبت شماره ترمینال
                  */
                 $request->validateWithBag('terminalForm', [
-                    'terminal.terminal_number' => 'required|unique:terminals,terminal_number'
+                    'terminal.terminal_number' => 'required|unique:terminals,terminal_number',
+                    'terminal.sim_number' => 'required|starts_with:09'
+                ], [
+                    'terminal.sim_number.required' => 'شماره سیم‌کارت الزامیست',
+                    'terminal.sim_number.starts_with' => 'شماره سیم‌کارت اشتباه است.',
                 ]);
                 $device = Device::find($request->get('terminal')['device_id']);
                 if (is_null($device->imei)) {
@@ -70,6 +80,7 @@ class TerminalController extends Controller
                     ]);
                     $device->imei = $request->get('terminal')['imei'];
                 }
+                $device->sim_number = $request->get('terminal')['sim_number'];
                 $device->transport_status = 2;
                 $device->psp_status = 2;
                 $device->save();
@@ -122,6 +133,15 @@ class TerminalController extends Controller
                         'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
                     ]);
                     $device->imei = $request->get('terminal')['imei'];
+                }
+                if (is_null($device->sim_number)) {
+                    $request->validateWithBag('terminalForm', [
+                        'terminal.sim_number' => 'required|starts_with:09'
+                    ], [
+                        'terminal.sim_number.required' => 'شماره سیم‌کارت الزامیست',
+                        'terminal.sim_number.starts_with' => 'شماره سیم‌کارت اشتباه است.',
+                    ]);
+                    $device->sim_number = $request->get('terminal')['sim_number'];
                 }
                 $device->transport_status = 4;
                 $device->psp_status = 1;

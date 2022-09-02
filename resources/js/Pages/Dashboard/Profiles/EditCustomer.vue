@@ -425,15 +425,15 @@
                                                              class="mt-2"/>
                                         </div>
                                         <div class="col-span-6 md:col-span-3">
-                                            <label for="passport_expireDate"
+                                            <label for="passportExpireDate"
                                                    class="block text-sm font-medium text-gray-700">
                                                 تاریخ اعتبار پاسپورت:
                                             </label>
                                             <input type="text"
                                                    class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
-                                                   placeholder="شماره اتباع خارجه"
-                                                   ref="passport_expireDate"
-                                                   id="passport_expireDate"
+                                                   placeholder="تاریخ اعتبار پاسپورت"
+                                                   ref="passportExpireDate"
+                                                   id="passportExpireDate"
                                                    v-model="customerForm.passport_expireDate"/>
                                             <jet-input-error :message="customerForm.error('passport_expireDate')"
                                                              class="mt-2"/>
@@ -707,200 +707,204 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetInput from '@/Jetstream/Input'
-    import JetInputError from '@/Jetstream/InputError'
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
-    import ProfileSteps from "@/Pages/Dashboard/Components/ProfileSteps";
-    import JetButton from "@/Jetstream/Button";
+import Dashboard from "@/Pages/Dashboard";
+import JetInput from '@/Jetstream/Input'
+import JetInputError from '@/Jetstream/InputError'
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import ProfileSteps from "@/Pages/Dashboard/Components/ProfileSteps";
+import JetButton from "@/Jetstream/Button";
 
-    export default {
-        name: "EditCustomer",
-        components: {Dashboard, JetInput, JetButton, JetInputError, datePicker: VuePersianDatetimePicker, ProfileSteps},
-        props: {
-            profile: Object,
-            profileId: Number,
-            countries: Array
-        },
-        data() {
-            return {
-                birthday: this.profile.customer.jBirthday,
-                regDate: this.profile.customer.jRegDate,
-                customerType: this.profile.customer.type,
-                imageFiles: {
-                    nationalFile1Preview: this.profile.customer.nationalCard1Url,
-                    nationalFile2Preview: this.profile.customer.nationalCard2Url,
-                    idFilePreview: this.profile.customer.idCardUrl,
-                    agahiFile1Preview: this.profile.customer.agahi1Url,
-                    agahiFile2Preview: this.profile.customer.agahi2Url,
-                    asasnameFilePreview: this.profile.customer.asasnamehUrl,
-                },
-                fileUploadErrors: {
-                    national_card_file_1: '',
-                    national_card_file_2: '',
-                    id_file: '',
-                    asasname_file: '',
-                    agahi_file_1: '',
-                    agahi_file_2: '',
-                },
+export default {
+    name: "EditCustomer",
+    components: {Dashboard, JetInput, JetButton, JetInputError, datePicker: VuePersianDatetimePicker, ProfileSteps},
+    props: {
+        profile: Object,
+        profileId: Number,
+        countries: Array
+    },
+    data() {
+        return {
+            birthday: this.profile.customer.jBirthday,
+            regDate: this.profile.customer.jRegDate,
+            passport_expireDate: this.profile.customer.jPassportExpireDate,
+            customerType: this.profile.customer.type,
+            imageFiles: {
+                nationalFile1Preview: this.profile.customer.nationalCard1Url,
+                nationalFile2Preview: this.profile.customer.nationalCard2Url,
+                idFilePreview: this.profile.customer.idCardUrl,
+                agahiFile1Preview: this.profile.customer.agahi1Url,
+                agahiFile2Preview: this.profile.customer.agahi2Url,
+                asasnameFilePreview: this.profile.customer.asasnamehUrl,
+            },
+            fileUploadErrors: {
+                national_card_file_1: '',
+                national_card_file_2: '',
+                id_file: '',
+                asasname_file: '',
+                agahi_file_1: '',
+                agahi_file_2: '',
+            },
 
-                customerForm : this.$inertia.form({
-                    '_method': 'PUT',
-                    profile_id: this.profile.id,
-                    type: this.profile.customer.type,
-                    first_name: this.profile.customer.first_name,
-                    first_name_english: this.profile.customer.first_name_english,
-                    last_name: this.profile.customer.last_name,
-                    last_name_english: this.profile.customer.last_name_english,
-                    national_code: this.profile.customer.national_code,
-                    id_code: this.profile.customer.id_code,
-                    father: this.profile.customer.father,
-                    father_english: this.profile.customer.father_english,
-                    gender: this.profile.customer.gender,
-                    mobile: this.profile.customer.mobile,
-                    birthday: this.profile.customer.birthday,
-                    national_card_file_1: '',
-                    national_card_file_2: '',
-                    id_file: '',
-                    company_name: this.profile.customer.company_name,
-                    company_name_english: this.profile.customer.company_name_english,
-                    business_name: this.profile.customer.business_name,
-                    reg_date: this.profile.customer.reg_date,
-                    reg_code: this.profile.customer.reg_code,
-                    company_national_code: this.profile.customer.company_national_code,
-                    asasname_file: '',
-                    agahi_file_1: '',
-                    agahi_file_2: '',
+            customerForm: this.$inertia.form({
+                '_method': 'PUT',
+                profile_id: this.profile.id,
+                type: this.profile.customer.type,
+                first_name: this.profile.customer.first_name,
+                first_name_english: this.profile.customer.first_name_english,
+                last_name: this.profile.customer.last_name,
+                last_name_english: this.profile.customer.last_name_english,
+                national_code: this.profile.customer.national_code,
+                id_code: this.profile.customer.id_code,
+                father: this.profile.customer.father,
+                father_english: this.profile.customer.father_english,
+                gender: this.profile.customer.gender,
+                mobile: this.profile.customer.mobile,
+                birthday: this.profile.customer.birthday,
+                national_card_file_1: '',
+                national_card_file_2: '',
+                id_file: '',
+                company_name: this.profile.customer.company_name,
+                company_name_english: this.profile.customer.company_name_english,
+                business_name: this.profile.customer.business_name,
+                reg_date: this.profile.customer.reg_date,
+                reg_code: this.profile.customer.reg_code,
+                company_national_code: this.profile.customer.company_national_code,
+                asasname_file: '',
+                agahi_file_1: '',
+                agahi_file_2: '',
 
-                    residency: this.profile.customer.residency,
-                    country_code: this.profile.customer.country_code,
-                    foreign_pervasive_code: this.profile.customer.foreign_pervasive_code,
-                    passport_number: this.profile.customer.passport_number,
-                    passport_expireDate: this.profile.customer.passport_expireDate,
+                residency: this.profile.customer.residency,
+                country_code: this.profile.customer.country_code,
+                foreign_pervasive_code: this.profile.customer.foreign_pervasive_code,
+                passport_number: this.profile.customer.passport_number,
+                passport_expireDate: this.profile.customer.passport_expireDate,
 
-                    vital: 'alive',
+                vital: 'alive',
 
-                    birth_crtfct_serial: this.profile.customer.birth_crtfct_serial,
-                    birth_crtfct_series_letter: this.profile.customer.birth_crtfct_series_letter,
-                    birth_crtfct_series_number: this.profile.customer.birth_crtfct_series_number,
+                birth_crtfct_serial: this.profile.customer.birth_crtfct_serial,
+                birth_crtfct_series_letter: this.profile.customer.birth_crtfct_series_letter,
+                birth_crtfct_series_number: this.profile.customer.birth_crtfct_series_number,
 
 
-                    /*
-                    فیلد های این موارد باید اضافه شود.
-                     */
-                    phone: null,
-                    email: null,
-                    webSite: null,
-                    fax: null,
-                    description: null,
+                /*
+                فیلد های این موارد باید اضافه شود.
+                 */
+                phone: null,
+                email: null,
+                webSite: null,
+                fax: null,
+                description: null,
 
-                }, {
-                    bag: 'customerForm'
-                })
-            }
-        },
-        mounted() {
-
-        },
-        methods: {
-            onNationalFile1Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.national_card_file_1 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.national_card_file_1 = '';
-                this.customerForm.national_card_file_1 = e.target.files[0];
-                this.imageFiles.nationalFile1Preview = URL.createObjectURL(file);
-            },
-            onNationalFile2Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.national_card_file_2 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.national_card_file_2 = '';
-                this.customerForm.national_card_file_2 = e.target.files[0];
-                this.imageFiles.nationalFile2Preview = URL.createObjectURL(file);
-            },
-            onIdFileChange(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.id_file = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.id_file = '';
-                this.customerForm.id_file = e.target.files[0];
-                this.imageFiles.idFilePreview = URL.createObjectURL(file);
-            },
-            onAsasnameFileChange(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.asasname_file = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.asasname_file = '';
-                this.customerForm.asasname_file = e.target.files[0];
-                this.imageFiles.asasnameFilePreview = URL.createObjectURL(file);
-            },
-            onAgahiFile1Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.agahi_file_1 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.agahi_file_1 = '';
-                this.customerForm.agahi_file_1 = e.target.files[0];
-                this.imageFiles.agahiFile1Preview = URL.createObjectURL(file);
-            },
-            onAgahiFile2Change(e) {
-                const file = e.target.files[0];
-                if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
-                    this.fileUploadErrors.agahi_file_2 = 'فایل انتخاب شده نباید بیشتر از '
-                        + this.$page.configs.maximumUploadSize
-                        + 'کیلوبایت باشد.';
-                    return;
-                }
-                this.fileUploadErrors.agahi_file_2 = '';
-                this.customerForm.agahi_file_2 = e.target.files[0];
-                this.imageFiles.agahiFile2Preview = URL.createObjectURL(file);
-            },
-            resetFileUploadErrors() {
-                this.fileUploadErrors = {
-                    national_card_file_1: '',
-                    national_card_file_2: '',
-                    id_file: '',
-                    asasname_file: '',
-                    agahi_file_1: '',
-                    agahi_file_2: '',
-                };
-            },
-            selectBirthday(e) {
-                this.customerForm.birthday = e.format('YYYY/MM/DD');
-            },
-            selectRegDate(e) {
-                this.customerForm.reg_date = e.format('YYYY/MM/DD');
-            },
-            submitCustomerForm() {
-                this.customerForm.type = this.customerType;
-                this.resetFileUploadErrors();
-                this.customerForm.post(route('dashboard.profiles.customers.update', {profile: this.profileId}
-                )).then(response => {
-
-                })
-            },
+            }, {
+                bag: 'customerForm'
+            })
         }
+    },
+    mounted() {
+
+    },
+    methods: {
+        onNationalFile1Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.national_card_file_1 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.national_card_file_1 = '';
+            this.customerForm.national_card_file_1 = e.target.files[0];
+            this.imageFiles.nationalFile1Preview = URL.createObjectURL(file);
+        },
+        onNationalFile2Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.national_card_file_2 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.national_card_file_2 = '';
+            this.customerForm.national_card_file_2 = e.target.files[0];
+            this.imageFiles.nationalFile2Preview = URL.createObjectURL(file);
+        },
+        onIdFileChange(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.id_file = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.id_file = '';
+            this.customerForm.id_file = e.target.files[0];
+            this.imageFiles.idFilePreview = URL.createObjectURL(file);
+        },
+        onAsasnameFileChange(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.asasname_file = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.asasname_file = '';
+            this.customerForm.asasname_file = e.target.files[0];
+            this.imageFiles.asasnameFilePreview = URL.createObjectURL(file);
+        },
+        onAgahiFile1Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.agahi_file_1 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.agahi_file_1 = '';
+            this.customerForm.agahi_file_1 = e.target.files[0];
+            this.imageFiles.agahiFile1Preview = URL.createObjectURL(file);
+        },
+        onAgahiFile2Change(e) {
+            const file = e.target.files[0];
+            if (file.size > (this.$page.configs.maximumUploadSize * 1024)) {
+                this.fileUploadErrors.agahi_file_2 = 'فایل انتخاب شده نباید بیشتر از '
+                    + this.$page.configs.maximumUploadSize
+                    + 'کیلوبایت باشد.';
+                return;
+            }
+            this.fileUploadErrors.agahi_file_2 = '';
+            this.customerForm.agahi_file_2 = e.target.files[0];
+            this.imageFiles.agahiFile2Preview = URL.createObjectURL(file);
+        },
+        resetFileUploadErrors() {
+            this.fileUploadErrors = {
+                national_card_file_1: '',
+                national_card_file_2: '',
+                id_file: '',
+                asasname_file: '',
+                agahi_file_1: '',
+                agahi_file_2: '',
+            };
+        },
+        selectBirthday(e) {
+            this.customerForm.birthday = e.format('YYYY/MM/DD');
+        },
+        selectRegDate(e) {
+            this.customerForm.reg_date = e.format('YYYY/MM/DD');
+        },
+        selectPassportExpireDate(e) {
+            this.customerForm.passport_expireDate = e.format('YYYY/MM/DD');
+        },
+        submitCustomerForm() {
+            this.customerForm.type = this.customerType;
+            this.resetFileUploadErrors();
+            this.customerForm.post(route('dashboard.profiles.customers.update', {profile: this.profileId}
+            )).then(response => {
+
+            })
+        },
     }
+}
 </script>
 
 <style scoped>

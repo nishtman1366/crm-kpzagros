@@ -11,7 +11,7 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'device_type_id', 'serial', 'imei',
+    protected $fillable = ['user_id', 'device_type_id', 'serial', 'imei','sim_number',
         'physical_status', 'transport_status', 'psp_status', 'guarantee_start', 'guarantee_end', 'description',
         'status'];
 
