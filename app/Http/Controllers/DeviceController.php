@@ -146,6 +146,7 @@ class DeviceController extends Controller
             'device_connection_type_id' => 'required|exists:device_connection_types,id',
             'device_type_id' => 'required|exists:device_types,id',
             'serial' => 'required|unique:devices,serial',
+            'imei' => 'required|unique:devices,imei',
             'physical_status' => 'required',
             'transport_status' => 'required',
             'psp_status' => 'required',
@@ -188,6 +189,7 @@ class DeviceController extends Controller
             'device_connection_type_id' => 'required|exists:device_connection_types,id',
             'device_type_id' => 'required|exists:device_types,id',
             'serial' => 'required|unique:devices,serial,' . $device->id,
+            'imei' => 'required|unique:devices,imei,' . $device->id,
             'physical_status' => 'required',
             'transport_status' => 'required',
             'psp_status' => 'required',
@@ -348,6 +350,7 @@ class DeviceController extends Controller
             ->where('transport_status', 1)
             ->where('psp_status', 1)
             ->where('status', 2)
+//            ->limit(5)
             ->get();
 
         return $devices;

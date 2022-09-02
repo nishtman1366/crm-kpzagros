@@ -11,7 +11,7 @@ class ProfileMessage extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'profile_id', 'type', 'title', 'message'];
+    protected $fillable = ['user_id', 'profile_id', 'type', 'title', 'message', 'status'];
 
     protected $appends = ['color', 'jDate'];
 

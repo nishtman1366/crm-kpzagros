@@ -127,6 +127,6 @@ class DeviceController extends Controller
         $profile->fill($request->all());
         $profile->save();
 
-        return redirect()->route('dashboard.profiles.view', ['profileId' => $profileId]);
+        return redirect()->route('dashboard.profiles.view', ['profile' => $profile]);
     }
 }

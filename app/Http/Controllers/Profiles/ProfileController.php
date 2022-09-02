@@ -25,17 +25,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
-use Mpdf\Mpdf;
-use Mpdf\MpdfException;
-use niklasravnsborg\LaravelPdf\PdfWrapper;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use ZipArchive;
 
 class ProfileController extends Controller
 {
@@ -705,7 +699,7 @@ class ProfileController extends Controller
         Cache::forget(sprintf('%s.profiles.export.done', $user->id));
         Cache::forget(sprintf('%s.profiles.export.total', $user->id));
         Cache::forget(sprintf('%s.profiles.export.expiration', $user->id));
-        if($directory) {
+        if ($directory) {
             Storage::deleteDirectory('temp/excel/profiles/' . $directory);
         }
     }

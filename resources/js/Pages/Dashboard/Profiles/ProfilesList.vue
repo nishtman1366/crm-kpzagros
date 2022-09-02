@@ -39,7 +39,7 @@
                                         ورود اطلاعات
                                     </jet-button>
                                     <jet-button v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'"
-                                                @click.native="openDownloadExcelModal"
+                                                @click.native="openDownloadExcelModal(false)"
                                                 class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
                                         <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
                                             <path fill="currentColor"
@@ -394,7 +394,8 @@
                                 </div>
                                 <div v-else class="text-right my-3 p-2 border-r-4 border-gray-500">
                                     <p class="text-md">فرایندی در حال اجرا نمی باشد.</p>
-                                    <div v-if="downloadExcelResponse.message" class="my-3 p-2 bg-green-200 border-r-4 border-green-500">
+                                    <div v-if="downloadExcelResponse.message"
+                                         class="my-3 p-2 bg-green-200 border-r-4 border-green-500">
                                         {{ downloadExcelResponse.message }}
                                     </div>
                                 </div>
@@ -690,14 +691,16 @@ export default {
                 },
             })
         },
-        openDownloadExcelModal() {
-            // this.downloadExcelLoading = true;
+        openDownloadExcelModal(refresh) {
+            if (refresh === false) {
+                this.downloadExcelLoading = true;
+            }
             this.viewDownloadExcelModal = true;
             axios.get('dashboard/profiles/excel/status')
                 .then(response => {
                     this.downloadExcelResponse = response.data;
-                    if(response.data.status==='processing') {
-                        this.exportStatusTimeout = setTimeout(() => this.openDownloadExcelModal(), 3500);
+                    if (response.data.status === 'processing') {
+                        this.exportStatusTimeout = setTimeout(() => this.openDownloadExcelModal(true), 3500);
                     }
                 })
                 .catch(error => {

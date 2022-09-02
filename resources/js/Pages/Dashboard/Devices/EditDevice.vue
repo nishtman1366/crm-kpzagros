@@ -8,7 +8,7 @@
                         <div class="px-4 sm:px-0 text-justify">
                             <h3 class="text-lg font-medium leading-6 text-gray-900">اطلاعات دستگاه</h3>
                             <p v-if="device.description" class="bg-red-300 text-red-700 p-2 rounded text-lg my-2">
-                                {{device.description}}
+                                {{ device.description }}
                             </p>
                             <p class="mt-1 text-sm text-gray-600">
                                 در این بخش اطلاعات مربوط به دستگاه جدید را وارد نمایید.
@@ -47,7 +47,7 @@
                                                 v-on:click="selectDeviceConnection(connectionType.id)"
                                                 class="mx-2 sm:col-span-2 inline-flex justify-center py-2 px-4 border border-green-700 shadow-sm text-sm font-medium rounded-md bg-white hover:bg-green-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                                 :class="chosenConnectionType===connectionType.id ? 'bg-green-700 text-white' : ' text-green-600'">
-                                            {{connectionType.name}}
+                                            {{ connectionType.name }}
                                         </button>
                                         <jet-input-error :message="deviceForm.error('device_connection_type_id')"
                                                          class="mt-2"/>
@@ -69,7 +69,7 @@
                                                         stroke-width="2" stroke-linecap="round"
                                                         stroke-linejoin="round"/>
                                                 </svg>
-                                                <h1 class="text-lg">{{deviceType.name}}</h1>
+                                                <h1 class="text-lg">{{ deviceType.name }}</h1>
                                                 <button :disabled="$page.user.level==='AGENT' && device.status===2"
                                                         type="submit"
                                                         class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -107,8 +107,8 @@
                                             تاریخ شروع گارانتی:
                                         </label>
                                         <date-picker :disabled="$page.user.level==='AGENT' && device.status===2"
-                                            v-model="deviceForm.guarantee_start" ref="guarantee_start_cal"
-                                            element="guarantee_start"/>
+                                                     v-model="deviceForm.guarantee_start" ref="guarantee_start_cal"
+                                                     element="guarantee_start"/>
                                         <input type="text"
                                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                placeholder="تاریخ شروع گارانتی"
@@ -125,8 +125,8 @@
                                             تاریخ پایان گارانتی:
                                         </label>
                                         <date-picker :disabled="$page.user.level==='AGENT' && device.status===2"
-                                            v-model="deviceForm.guarantee_end" ref="guarantee_end_cal"
-                                            element="guarantee_end"/>
+                                                     v-model="deviceForm.guarantee_end" ref="guarantee_end_cal"
+                                                     element="guarantee_end"/>
                                         <input type="text"
                                                class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                placeholder="تاریخ پایان گارانتی"
@@ -136,6 +136,19 @@
                                                :disabled="$page.user.level==='AGENT' && device.status===2"
                                                readonly/>
                                         <jet-input-error :message="deviceForm.error('guarantee_end')"
+                                                         class="mt-2"/>
+                                    </div>
+                                    <div class="col-2 sm:col-span-2">
+                                        <label for="imei" class="block text-sm font-medium text-gray-700">
+                                            کد IMEI دستگاه:
+                                        </label>
+                                        <input type="text"
+                                               class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
+                                               placeholder="کد IMEI دستگاه"
+                                               ref="imei"
+                                               id="imei"
+                                               v-model="deviceForm.imei"/>
+                                        <jet-input-error :message="deviceForm.error('imei')"
                                                          class="mt-2"/>
                                     </div>
                                     <div class="col-2 sm:col-span-2">
@@ -187,8 +200,9 @@
                                         <jet-input-error :message="deviceForm.error('psp_status')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                         class="col-2 sm:col-span-2">
+                                    <div
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             مالک:
                                         </label>
@@ -199,14 +213,15 @@
                                             <option :value="$page.user.id">خودم</option>
                                             <option v-for="marketer in marketers"
                                                     :key="marketer.id"
-                                                    :value="marketer.id">{{marketer.name}}
+                                                    :value="marketer.id">{{ marketer.name }}
                                             </option>
                                         </select>
                                         <jet-input-error :message="deviceForm.error('user_id')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                         class="col-2 sm:col-span-2">
+                                    <div
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             وضعیت:
                                         </label>
@@ -255,81 +270,82 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from '@/Jetstream/Button';
-    import JetInputError from '@/Jetstream/InputError';
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from '@/Jetstream/Button';
+import JetInputError from '@/Jetstream/InputError';
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
 
-    export default {
-        name: "CreateDevice",
-        components: {Dashboard, JetButton, JetInputError, datePicker: VuePersianDatetimePicker},
-        props: {
-            deviceConnectionTypes: Array,
-            deviceTypes: Array,
-            device: Object,
-            marketers: Array,
-        },
-        data() {
-            return {
-                selectedDeviceTypes: [],
-                deviceNotFound: false,
-                chosenConnectionType: 0,
-                chosenDeviceTypes: 0,
-                imageFiles: {
-                    imageFilePreview: '',
-                },
-                deviceForm: this.$inertia.form({
-                    '_method': 'PUT',
-                    device_connection_type_id: this.device.device_type.device_connection_type_id,
-                    device_type_id: this.device.device_type_id,
-                    serial: this.device.serial,
-                    physical_status: this.device.physical_status,
-                    transport_status: this.device.transport_status,
-                    psp_status: this.device.psp_status,
-                    guarantee_start: this.device.guarantee_start,
-                    guarantee_end: this.device.guarantee_end,
-                    description: this.device.description,
-                    status: this.device.status,
-                    user_id: this.device.user_id
-                }, {
-                    bag: 'deviceForm',
-                    resetOnSuccess: false
-                })
-            }
-        },
-        mounted() {
-            this.selectDeviceConnection(this.device.device_type.device_connection_type_id);
-            this.chooseDeviceType(this.device.device_type_id);
-        },
-        methods: {
-            selectDeviceConnection(id) {
-                let typeList = [];
-                for (let type of this.deviceTypes) {
-                    if (type.device_connection_type_id == id) {
-                        typeList.push({id: type.id, name: type.name});
-                    }
+export default {
+    name: "CreateDevice",
+    components: {Dashboard, JetButton, JetInputError, datePicker: VuePersianDatetimePicker},
+    props: {
+        deviceConnectionTypes: Array,
+        deviceTypes: Array,
+        device: Object,
+        marketers: Array,
+    },
+    data() {
+        return {
+            selectedDeviceTypes: [],
+            deviceNotFound: false,
+            chosenConnectionType: 0,
+            chosenDeviceTypes: 0,
+            imageFiles: {
+                imageFilePreview: '',
+            },
+            deviceForm: this.$inertia.form({
+                '_method': 'PUT',
+                device_connection_type_id: this.device.device_type.device_connection_type_id,
+                device_type_id: this.device.device_type_id,
+                serial: this.device.serial,
+                imei: this.device.imei,
+                physical_status: this.device.physical_status,
+                transport_status: this.device.transport_status,
+                psp_status: this.device.psp_status,
+                guarantee_start: this.device.guarantee_start,
+                guarantee_end: this.device.guarantee_end,
+                description: this.device.description,
+                status: this.device.status,
+                user_id: this.device.user_id
+            }, {
+                bag: 'deviceForm',
+                resetOnSuccess: false
+            })
+        }
+    },
+    mounted() {
+        this.selectDeviceConnection(this.device.device_type.device_connection_type_id);
+        this.chooseDeviceType(this.device.device_type_id);
+    },
+    methods: {
+        selectDeviceConnection(id) {
+            let typeList = [];
+            for (let type of this.deviceTypes) {
+                if (type.device_connection_type_id == id) {
+                    typeList.push({id: type.id, name: type.name});
                 }
-                this.selectedDeviceTypes = typeList;
-                if (typeList.length === 0) this.deviceNotFound = true;
-                else this.deviceNotFound = false;
-
-                this.chosenConnectionType = id;
-                this.deviceForm.device_connection_type_id = id;
-            },
-            chooseDeviceType(id) {
-                this.deviceForm.device_type_id = id;
-                this.chosenDeviceTypes = id;
-            },
-            submitDeviceForm() {
-                console.log(this.deviceForm);
-                this.deviceForm.post(route('dashboard.devices.update', {id: this.device.id}), {
-                    preserveScroll: true
-                }).then(response => {
-
-                })
             }
+            this.selectedDeviceTypes = typeList;
+            if (typeList.length === 0) this.deviceNotFound = true;
+            else this.deviceNotFound = false;
+
+            this.chosenConnectionType = id;
+            this.deviceForm.device_connection_type_id = id;
+        },
+        chooseDeviceType(id) {
+            this.deviceForm.device_type_id = id;
+            this.chosenDeviceTypes = id;
+        },
+        submitDeviceForm() {
+            console.log(this.deviceForm);
+            this.deviceForm.post(route('dashboard.devices.update', {id: this.device.id}), {
+                preserveScroll: true
+            }).then(response => {
+
+            })
         }
     }
+}
 </script>
 
 <style scoped>

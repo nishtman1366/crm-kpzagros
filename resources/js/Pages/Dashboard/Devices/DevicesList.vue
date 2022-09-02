@@ -176,6 +176,10 @@
                                     </th>
                                     <th scope="col"
                                         class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        کد IMEI
+                                    </th>
+                                    <th scope="col"
+                                        class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         مالک
                                     </th>
                                     <th scope="col"
@@ -220,6 +224,9 @@
                                     </td>
                                     <td class="py-4 text-center text-gray-900">
                                         {{device.serial}}
+                                    </td>
+                                    <td class="py-4 text-center text-gray-900">
+                                        {{device.imei}}
                                     </td>
                                     <td class="py-4 text-center text-gray-900">
                                         {{device.user.name}}

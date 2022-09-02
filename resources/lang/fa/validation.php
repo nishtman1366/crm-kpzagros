@@ -200,6 +200,7 @@ return [
         'device_connection_type_id' => 'نوع ارتباط',
         'device_type_id' => 'مدل دستگاه',
         'serial' => 'شماره سریال',
+        'imei' => 'کد IMEI',
         'guarantee_start' => 'تاریخ شروع گارانتی',
         'guarantee_end' => 'تاریخ پایان گارانتی',
 

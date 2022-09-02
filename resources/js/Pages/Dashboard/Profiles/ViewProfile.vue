@@ -1077,7 +1077,7 @@
                         <div v-if="loadingDevicesList"
                              class="text-center text-lg font-bold my-3 animate-bounce">در حال بارگذاری لیست دستگاه‌ها...
                         </div>
-                        <div v-else class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
+                        <div v-else class="mt-3 text-center sm:mt-0 sm:ml-1 sm:text-right">
                             <input type="text"
                                    :disabled="loadingDevicesList"
                                    :readonly="loadingDevicesList"
@@ -1098,34 +1098,41 @@
                                     <thead>
                                     <tr>
                                         <th scope="col"
-                                            class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             شماره سریال
                                         </th>
                                         <th scope="col"
-                                            class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            کد IMEI
+                                        </th>
+                                        <th scope="col"
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             مدل دستگاه
                                         </th>
                                         <th scope="col"
-                                            class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             وضعیت فیزیکی
                                         </th>
                                         <th scope="col"
-                                            class="px-6 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         </th>
                                     </tr>
                                     </thead>
                                     <tbody class="bg-white divide-y divide-gray-200">
                                     <tr v-for="device in search.results" :key="device.id">
-                                        <td class="px-6 py-4 text-center text-gray-900">
+                                        <td class="px-2 py-4 text-center text-gray-900">
                                             {{ device.serial }}
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-900">
+                                        <td class="px-2 py-4 text-center text-gray-900">
+                                            {{ device.imei ? device.imei : '-' }}
+                                        </td>
+                                        <td class="px-2 py-4 text-center text-gray-900">
                                             {{ device.device_type.name }}
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-900">
+                                        <td class="px-2 py-4 text-center text-gray-900">
                                             {{ device.physicalStatusText }}
                                         </td>
-                                        <td class="px-6 py-4 text-center text-gray-900">
+                                        <td class="px-2 py-4 text-center text-gray-900">
                                             <button type="button"
                                                     :disabled="selectedTerminal.device_id===device.id"
                                                     :class="selectedTerminal.device_id===device.id ? 'bg-gray-100 text-gray-500' : 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'"
@@ -1155,17 +1162,28 @@
 
                 <template #content>
                     آیا از انتخاب این سریال مطمئن هستید؟
-
                     <div class="mt-4" v-if="selectedDevice">
-                        <p class="float-left">
-                            مدل دستگاه: <span
-                            class="text-red-400 font-bold mx-3">{{
-                                selectedDevice.device_type ? selectedDevice.device_type.name : ''
-                            }}</span>
-                        </p>
-                        <p class="float-right">
-                            سریال دستگاه: <span class="text-green-400 font-bold mx-3">{{ selectedDevice.serial }}</span>
-                        </p>
+                        <div class="flex items-center justify-around">
+                            <div>مدل دستگاه:</div>
+                            <div class="text-red-400 font-bold">
+                                {{ selectedDevice.device_type && selectedDevice.device_type.name }}
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-around">
+                            <div>سریال دستگاه:</div>
+                            <div class="text-red-400 font-bold">{{ selectedDevice.serial }}</div>
+                        </div>
+                        <div class="flex items-center justify-around">
+                            <div>کد IMEI:</div>
+                            <div v-if="selectedDevice.imei" class="text-red-400 font-bold">{{
+                                    selectedDevice.imei
+                                }}
+                            </div>
+                            <div v-else>
+                                <jet-input type="text" class="w-full" v-model="terminalForm.terminal.imei"/>
+                                <jet-input-error :message="terminalForm.error('terminal.imei')" class="mt-2"/>
+                            </div>
+                        </div>
                     </div>
                 </template>
                 <template #footer>
@@ -1235,18 +1253,24 @@
                             </div>
                         </div>
                         <div>
-                            <p>مدل دستگاه: <span
-                                class="font-bold">
-                                {{
-                                    selectedTerminal && selectedTerminal.device_type && selectedTerminal.device_type.name
-                                }}
-                            </span>
-                            </p>
-                            <p>سریال: <span
-                                class="font-bold">
-                                {{ selectedTerminal && selectedTerminal.device && selectedTerminal.device.serial }}
-                            </span>
-                            </p>
+                            <div class="flex items-center justify-around">
+                                <div>مدل دستگاه:</div>
+                                <div>{{ selectedTerminal && selectedTerminal.device_type && selectedTerminal.device_type.name }}</div>
+                            </div>
+                            <div class="flex items-center justify-around">
+                                <div>سریال:</div>
+                                <div>{{ selectedTerminal && selectedTerminal.device && selectedTerminal.device.serial }}</div>
+                            </div>
+                            <div class="flex items-center justify-around">
+                                <div>کد IMEI:</div>
+                                <div v-if="selectedTerminal && selectedTerminal.device && selectedTerminal.device.imei" class="text-red-400 font-bold">
+                                    {{ selectedTerminal && selectedTerminal.device && selectedTerminal.device.imei }}
+                                </div>
+                                <div v-else>
+                                    <jet-input type="text" class="w-full" v-model="terminalForm.terminal.imei"/>
+                                    <jet-input-error :message="terminalForm.error('terminal.imei')" class="mt-2"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -1665,6 +1689,7 @@ export default {
                     change_reason: null,
                     status: null,
                     reserved_device_id: null,
+                    imei: null,
                 },
                 profile: {
                     status: null
@@ -1998,6 +2023,17 @@ export default {
                 });
         },
 
+        updateIMEIModal(device) {
+            this.selectedDevice = device;
+            this.viewUpdateIMEIModal = true;
+        },
+        updateIMEI() {
+
+        },
+        closeUpdateIMEIModal() {
+            this.selectedDevice = null;
+            this.viewUpdateIMEIModal = false;
+        },
         /*
         ثبت شماره پذیرنده
          */

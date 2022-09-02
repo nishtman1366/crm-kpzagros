@@ -43,7 +43,7 @@
                                                 v-on:click="selectDeviceConnection(connectionType.id)"
                                                 class="mx-2 sm:col-span-2 inline-flex justify-center py-2 px-4 border border-green-700 shadow-sm text-sm font-medium rounded-md bg-white hover:bg-green-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                                                 :class="chosenConnectionType===connectionType.id ? 'bg-green-700 text-white' : ' text-green-600'">
-                                            {{connectionType.name}}
+                                            {{ connectionType.name }}
                                         </button>
                                         <jet-input-error :message="deviceForm.error('device_connection_type_id')"
                                                          class="mt-2"/>
@@ -52,10 +52,11 @@
                                         <label for="device_type_id" class="block text-sm font-medium text-gray-700">
                                             مدل دستگاه:
                                         </label>
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                                        <div v-if="selectedDeviceTypes.length==0 && !deviceNotFound" class="text-center text-lg font-bold">لطفا نوع ارتباط دستگاه را انتخاب کنید.</div>
+                                        <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                             <div v-for="deviceType in selectedDeviceTypes" :key="deviceType.id"
                                                  :class="chosenDeviceTypes===deviceType.id ? 'bg-indigo-200' : ''"
-                                                 class="text-center border rounded border-grey-600 p-3">
+                                                 class="text-center border rounded border-grey-600 p-3 transition-all">
                                                 <svg
                                                     class="mx-auto h-12 w-12 text-gray-400"
                                                     stroke="currentColor"
@@ -65,9 +66,11 @@
                                                         stroke-width="2" stroke-linecap="round"
                                                         stroke-linejoin="round"/>
                                                 </svg>
-                                                <h1 class="text-lg">{{deviceType.name}}</h1>
+                                                <h1 class="text-lg">{{ deviceType.name }}</h1>
                                                 <button type="submit"
-                                                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                        :disabled="chosenDeviceTypes===deviceType.id"
+                                                        :class="chosenDeviceTypes===deviceType.id ? 'bg-gray-100 text-gray-500' :'bg-indigo-600 hover:bg-indigo-700 text-white'"
+                                                        class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                                         v-on:click="chooseDeviceType(deviceType.id)">
                                                     <svg style="width:24px;height:24px" viewBox="0 0 24 24">
                                                         <path fill="currentColor"
@@ -131,6 +134,19 @@
                                                          class="mt-2"/>
                                     </div>
                                     <div class="col-2 sm:col-span-2">
+                                        <label for="imei" class="block text-sm font-medium text-gray-700">
+                                            کد IMEI دستگاه:
+                                        </label>
+                                        <jet-input type="text"
+                                                   class="w-full"
+                                                   placeholder="کد IMEI دستگاه"
+                                                   ref="imei"
+                                                   id="imei"
+                                                   v-model="deviceForm.imei"/>
+                                        <jet-input-error :message="deviceForm.error('imei')"
+                                                         class="mt-2"/>
+                                    </div>
+                                    <div class="col-2 sm:col-span-2">
                                         <label for="physical_status" class="block text-sm font-medium text-gray-700">
                                             وضعیت فیزیکی:
                                         </label>
@@ -176,8 +192,9 @@
                                         <jet-input-error :message="deviceForm.error('psp_status')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
-                                         class="col-2 sm:col-span-2">
+                                    <div
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             مالک:
                                         </label>
@@ -188,13 +205,15 @@
                                             <option :value="$page.user.id">خودم</option>
                                             <option v-for="marketer in marketers"
                                                     :key="marketer.id"
-                                                    :value="marketer.id">{{marketer.name}}
+                                                    :value="marketer.id">{{ marketer.name }}
                                             </option>
                                         </select>
                                         <jet-input-error :message="deviceForm.error('user_id')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'" class="col-2 sm:col-span-2">
+                                    <div
+                                        v-if="$page.user.level==='ADMIN' || $page.user.level==='OFFICE' || $page.user.level==='SUPERUSER'"
+                                        class="col-2 sm:col-span-2">
                                         <label for="status" class="block text-sm font-medium text-gray-700">
                                             وضعیت:
                                         </label>
@@ -209,7 +228,9 @@
                                         <jet-input-error :message="deviceForm.error('status')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div v-if="$page.user.level!=='ADMIN' || $page.user.level!=='OFFICE' || $page.user.level!=='SUPERUSER'" class="col-2 sm:col-span-6">
+                                    <div
+                                        v-if="$page.user.level!=='ADMIN' || $page.user.level!=='OFFICE' || $page.user.level!=='SUPERUSER'"
+                                        class="col-2 sm:col-span-6">
                                         <label for="description" class="block text-sm font-medium text-gray-700">
                                             توضیحات:
                                         </label>
@@ -241,76 +262,77 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from '@/Jetstream/Button';
-    import JetInput from '@/Jetstream/Input';
-    import JetInputError from '@/Jetstream/InputError';
-    import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from '@/Jetstream/Button';
+import JetInput from '@/Jetstream/Input';
+import JetInputError from '@/Jetstream/InputError';
+import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
 
-    export default {
-        name: "CreateDevice",
-        components: {Dashboard, JetButton, JetInputError, JetInput, datePicker: VuePersianDatetimePicker},
-        props: {
-            deviceConnectionTypes: Array,
-            deviceTypes: Array,
-            marketers: Array,
-        },
-        data() {
-            return {
-                selectedDeviceTypes: [],
-                deviceNotFound: false,
-                chosenConnectionType: 0,
-                chosenDeviceTypes: 0,
-                imageFiles: {
-                    imageFilePreview: '',
-                },
-                deviceForm: this.$inertia.form({
-                    '_method': 'POST',
-                    device_connection_type_id: '',
-                    device_type_id: '',
-                    serial: '',
-                    physical_status: 1,
-                    transport_status: 1,
-                    psp_status: 1,
-                    guarantee_start: '',
-                    guarantee_end: '',
-                    status: 1,
-                    description: '',
-                    user_id: this.$page.user.id
-                }, {
-                    bag: 'deviceForm',
-                    resetOnSuccess: false
-                })
-            }
-        },
-        methods: {
-            selectDeviceConnection(id) {
-                let typeList = [];
-                for (let type of this.deviceTypes) {
-                    if (type.device_connection_type_id == id) {
-                        typeList.push({id: type.id, name: type.name});
-                    }
+export default {
+    name: "CreateDevice",
+    components: {Dashboard, JetButton, JetInputError, JetInput, datePicker: VuePersianDatetimePicker},
+    props: {
+        deviceConnectionTypes: Array,
+        deviceTypes: Array,
+        marketers: Array,
+    },
+    data() {
+        return {
+            selectedDeviceTypes: [],
+            deviceNotFound: false,
+            chosenConnectionType: 0,
+            chosenDeviceTypes: 0,
+            imageFiles: {
+                imageFilePreview: '',
+            },
+            deviceForm: this.$inertia.form({
+                '_method': 'POST',
+                device_connection_type_id: '',
+                device_type_id: '',
+                serial: '',
+                imei: '',
+                physical_status: 1,
+                transport_status: 1,
+                psp_status: 1,
+                guarantee_start: '',
+                guarantee_end: '',
+                status: 1,
+                description: '',
+                user_id: this.$page.user.id
+            }, {
+                bag: 'deviceForm',
+                resetOnSuccess: false
+            })
+        }
+    },
+    methods: {
+        selectDeviceConnection(id) {
+            let typeList = [];
+            for (let type of this.deviceTypes) {
+                if (type.device_connection_type_id == id) {
+                    typeList.push({id: type.id, name: type.name});
                 }
-                this.selectedDeviceTypes = typeList;
-                if (typeList.length === 0) this.deviceNotFound = true;
-                else this.deviceNotFound = false;
-
-                this.chosenConnectionType = id;
-                this.deviceForm.device_connection_type_id = id;
-            },
-            chooseDeviceType(id) {
-                this.deviceForm.device_type_id = id;
-                this.chosenDeviceTypes = id;
-            },
-            submitDeviceForm() {
-                this.deviceForm.post(route('dashboard.devices.store'), {
-                    preserveScroll: true
-                }).then(response => {
-
-                })
             }
+            this.selectedDeviceTypes = typeList;
+            if (typeList.length === 0) this.deviceNotFound = true;
+            else this.deviceNotFound = false;
+
+            this.chosenConnectionType = id;
+            this.deviceForm.device_connection_type_id = id;
+        },
+        chooseDeviceType(id) {
+            this.deviceForm.device_type_id = id;
+            this.chosenDeviceTypes = id;
+        },
+        submitDeviceForm() {
+            this.deviceForm.post(route('dashboard.devices.store'), {
+                preserveScroll: true
+            }).then(response => {
+
+            })
         }
     }
+}
 </script>
 
 <style scoped>

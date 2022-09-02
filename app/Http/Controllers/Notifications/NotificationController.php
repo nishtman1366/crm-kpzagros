@@ -39,7 +39,7 @@ class NotificationController extends Controller
                     $notifiableUser = $container->customer;
                 } elseif ($type == 'REPAIRS') {
                     $notifiableUser = $container;
-                }elseif($type=='DEVICES'){
+                } elseif ($type == 'DEVICES') {
                     $notifiableUser = $container->user;
                 }
             }
