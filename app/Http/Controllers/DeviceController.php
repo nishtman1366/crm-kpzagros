@@ -13,6 +13,8 @@ use App\Models\Variables\DeviceConnectionType;
 use App\Models\Variables\DeviceType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\RequiredIf;
+use Illuminate\Validation\Rules\Unique;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -146,7 +148,10 @@ class DeviceController extends Controller
             'device_connection_type_id' => 'required|exists:device_connection_types,id',
             'device_type_id' => 'required|exists:device_types,id',
             'serial' => 'required|unique:devices,serial',
-            'imei' => 'required|unique:devices,imei',
+            'imei' => [
+                new RequiredIf(!in_array($request->get('device_connection_type_id'), [1, 4])),
+                is_null($request->get('imei')) ? '' : new Unique('devices', 'imei')
+            ],
             'physical_status' => 'required',
             'transport_status' => 'required',
             'psp_status' => 'required',
@@ -189,7 +194,10 @@ class DeviceController extends Controller
             'device_connection_type_id' => 'required|exists:device_connection_types,id',
             'device_type_id' => 'required|exists:device_types,id',
             'serial' => 'required|unique:devices,serial,' . $device->id,
-            'imei' => 'required|unique:devices,imei,' . $device->id,
+            'imei' => [
+                new RequiredIf(!in_array($request->get('device_connection_type_id'), [1, 4])),
+                is_null($request->get('imei')) ? '' : (new Unique('devices', 'imei'))->ignoreModel($device)
+            ],
             'physical_status' => 'required',
             'transport_status' => 'required',
             'psp_status' => 'required',
@@ -332,9 +340,11 @@ class DeviceController extends Controller
         return response()->json($devices);
     }
 
+
     private function getDeviceListByType(int $typeId, $user)
     {
         $devices = Device::with('deviceType')
+            ->with('deviceType.type')
             ->where(function ($query) use ($user) {
                 if ($user->isAdmin()) {
                     $query->where('user_id', $user->id);
@@ -350,7 +360,7 @@ class DeviceController extends Controller
             ->where('transport_status', 1)
             ->where('psp_status', 1)
             ->where('status', 2)
-//            ->limit(5)
+            ->limit(5)
             ->get();
 
         return $devices;

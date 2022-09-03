@@ -138,7 +138,7 @@
                                         <jet-input-error :message="deviceForm.error('guarantee_end')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div class="col-2 sm:col-span-2">
+                                    <div class="col-2 sm:col-span-2" v-if="requiredIMEI">
                                         <label for="imei" class="block text-sm font-medium text-gray-700">
                                             کد IMEI دستگاه:
                                         </label>
@@ -310,7 +310,13 @@ export default {
             }, {
                 bag: 'deviceForm',
                 resetOnSuccess: false
-            })
+            }),
+            requiredIMEI: null
+        }
+    },
+    watch: {
+        chosenConnectionType: function (val) {
+            this.requiredIMEI = (val !== 4 && val !== 1);
         }
     },
     mounted() {

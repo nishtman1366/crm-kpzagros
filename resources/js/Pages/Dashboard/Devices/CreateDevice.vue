@@ -52,7 +52,10 @@
                                         <label for="device_type_id" class="block text-sm font-medium text-gray-700">
                                             مدل دستگاه:
                                         </label>
-                                        <div v-if="selectedDeviceTypes.length==0 && !deviceNotFound" class="text-center text-lg font-bold">لطفا نوع ارتباط دستگاه را انتخاب کنید.</div>
+                                        <div v-if="selectedDeviceTypes.length==0 && !deviceNotFound"
+                                             class="text-center text-lg font-bold">لطفا نوع ارتباط دستگاه را انتخاب
+                                            کنید.
+                                        </div>
                                         <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                             <div v-for="deviceType in selectedDeviceTypes" :key="deviceType.id"
                                                  :class="chosenDeviceTypes===deviceType.id ? 'bg-indigo-200' : ''"
@@ -133,7 +136,7 @@
                                         <jet-input-error :message="deviceForm.error('guarantee_end')"
                                                          class="mt-2"/>
                                     </div>
-                                    <div class="col-2 sm:col-span-2">
+                                    <div class="col-2 sm:col-span-2" v-if="requiredIMEI">
                                         <label for="imei" class="block text-sm font-medium text-gray-700">
                                             کد IMEI دستگاه:
                                         </label>
@@ -302,7 +305,13 @@ export default {
             }, {
                 bag: 'deviceForm',
                 resetOnSuccess: false
-            })
+            }),
+            requiredIMEI: null
+        }
+    },
+    watch: {
+        chosenConnectionType: function (val) {
+            this.requiredIMEI = (val !== 4 && val !== 1);
         }
     },
     methods: {

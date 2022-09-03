@@ -35,17 +35,18 @@ class TerminalController extends Controller
                 $request->validateWithBag('terminalForm', [
                     'terminal.device_id' => 'required|exists:devices,id'
                 ]);
-                $device = Device::find($request->get('terminal')['device_id']);
-                if (is_null($device->imei)) {
-                    $request->validateWithBag('terminalForm', [
-                        'terminal.imei' => 'required|unique:devices,imei'
-                    ], [
-                        'terminal.imei.required' => 'کد IMEI الزامیست',
-                        'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
-                    ]);
-                    $device->imei = $request->get('terminal')['imei'];
-                }
-                if (is_null($device->sim_number)) {
+                $device = Device::with('deviceType')
+                    ->find($request->get('terminal')['device_id']);
+                if (!in_array($device->deviceType->device_connection_type_id, [1, 4])) {
+                    if (is_null($device->imei)) {
+                        $request->validateWithBag('terminalForm', [
+                            'terminal.imei' => 'required|unique:devices,imei'
+                        ], [
+                            'terminal.imei.required' => 'کد IMEI الزامیست',
+                            'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
+                        ]);
+                        $device->imei = $request->get('terminal')['imei'];
+                    }
                     $request->validateWithBag('terminalForm', [
                         'terminal.sim_number' => 'required|starts_with:09'
                     ], [
@@ -65,22 +66,27 @@ class TerminalController extends Controller
                  */
                 $request->validateWithBag('terminalForm', [
                     'terminal.terminal_number' => 'required|unique:terminals,terminal_number',
-                    'terminal.sim_number' => 'required|starts_with:09'
-                ], [
-                    'terminal.sim_number.required' => 'شماره سیم‌کارت الزامیست',
-                    'terminal.sim_number.starts_with' => 'شماره سیم‌کارت اشتباه است.',
                 ]);
-                $device = Device::find($request->get('terminal')['device_id']);
-                if (is_null($device->imei)) {
+                $device = Device::with('deviceType')
+                    ->find($request->get('terminal')['device_id']);
+                if (!in_array($device->deviceType->device_connection_type_id, [1, 4])) {
+                    if (is_null($device->imei)) {
+                        $request->validateWithBag('terminalForm', [
+                            'terminal.imei' => 'required|unique:devices,imei'
+                        ], [
+                            'terminal.imei.required' => 'کد IMEI الزامیست',
+                            'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
+                        ]);
+                        $device->imei = $request->get('terminal')['imei'];
+                    }
                     $request->validateWithBag('terminalForm', [
-                        'terminal.imei' => 'required|unique:devices,imei'
+                        'terminal.sim_number' => 'required|starts_with:09'
                     ], [
-                        'terminal.imei.required' => 'کد IMEI الزامیست',
-                        'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
+                        'terminal.sim_number.required' => 'شماره سیم‌کارت الزامیست',
+                        'terminal.sim_number.starts_with' => 'شماره سیم‌کارت اشتباه است.',
                     ]);
-                    $device->imei = $request->get('terminal')['imei'];
+                    $device->sim_number = $request->get('terminal')['sim_number'];
                 }
-                $device->sim_number = $request->get('terminal')['sim_number'];
                 $device->transport_status = 2;
                 $device->psp_status = 2;
                 $device->save();
@@ -122,19 +128,20 @@ class TerminalController extends Controller
                 break;
             case 'changeSerial':
                 $request->validateWithBag('terminalForm', [
-                    'terminal.device_id' => 'required|exists:devices,id'
+                    'terminal.new_device_id' => 'required|exists:devices,id'
                 ]);
-                $device = Device::find($request->get('terminal')['new_device_id']);
-                if (is_null($device->imei)) {
-                    $request->validateWithBag('terminalForm', [
-                        'terminal.imei' => 'required|unique:devices,imei'
-                    ], [
-                        'terminal.imei.required' => 'کد IMEI الزامیست',
-                        'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
-                    ]);
-                    $device->imei = $request->get('terminal')['imei'];
-                }
-                if (is_null($device->sim_number)) {
+                $device = Device::with('deviceType')
+                    ->find($request->get('terminal')['new_device_id']);
+                if (!in_array($device->deviceType->device_connection_type_id, [1, 4])) {
+                    if (is_null($device->imei)) {
+                        $request->validateWithBag('terminalForm', [
+                            'terminal.imei' => 'required|unique:devices,imei'
+                        ], [
+                            'terminal.imei.required' => 'کد IMEI الزامیست',
+                            'terminal.imei.unique' => 'کد وارد شده قبلا برای دستگاه دیگری ثبت شده است.',
+                        ]);
+                        $device->imei = $request->get('terminal')['imei'];
+                    }
                     $request->validateWithBag('terminalForm', [
                         'terminal.sim_number' => 'required|starts_with:09'
                     ], [
