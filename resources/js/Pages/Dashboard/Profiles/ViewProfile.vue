@@ -1284,11 +1284,7 @@
                             </div>
                             <div class="flex items-center justify-start">
                                 <div class="w-1/2">شماره سیم‌کارت:</div>
-                                <div v-if="selectedTerminal && selectedTerminal.device && selectedTerminal.device.sim_number" class="text-red-400 font-bold">{{
-                                        selectedTerminal && selectedTerminal.device && selectedTerminal.device.sim_number
-                                    }}
-                                </div>
-                                <div v-else>
+                                <div>
                                     <jet-input type="text" placeholder="شماره سیم‌کارت" class="w-full" v-model="terminalForm.terminal.sim_number"/>
                                     <jet-input-error :message="terminalForm.error('terminal.sim_number')" class="mt-2"/>
                                 </div>
@@ -2081,6 +2077,9 @@ export default {
             this.selectedTerminal = terminal;
             this.updateTerminalForm(terminal, 'terminal').then(() => {
                 this.viewTerminalModal = true;
+                if(terminal.device?.sim_number) {
+                    this.terminalForm.terminal.sim_number = terminal.device.sim_number;
+                }
                 this.terminalForm.terminal.status = 3;
                 this.terminalForm.profile.status = 7;
             });
