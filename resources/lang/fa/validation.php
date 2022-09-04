@@ -254,5 +254,8 @@ return [
         'terminal.change_message' => 'دلیل رد درخواست جابجایی',
         'terminal.new_device_id' => 'سریال جدید',
         'terminal.new_device_type_id' => 'مدل دستگاه جدید',
+
+        'sim_number'=>'شماره سیم‌کارت',
+        'captcha'=>'عبارت امنیتی',
     ],
 ];

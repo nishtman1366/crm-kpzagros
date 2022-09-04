@@ -2,6 +2,7 @@
 
 namespace App\Models\Variables;
 
+use App\Models\Profiles\Terminal;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use \App\Models\User;
@@ -11,7 +12,7 @@ class Device extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'device_type_id', 'serial', 'imei','sim_number',
+    protected $fillable = ['user_id', 'device_type_id', 'serial', 'imei', 'sim_number',
         'physical_status', 'transport_status', 'psp_status', 'guarantee_start', 'guarantee_end', 'description',
         'status'];
 
@@ -148,5 +149,10 @@ class Device extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function terminal()
+    {
+        return $this->belongsTo(Terminal::class, 'id', 'device_id');
     }
 }

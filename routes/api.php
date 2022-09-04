@@ -84,3 +84,5 @@ Route::get('domain', function () {
 
 Route::get('devices/{serial}', [\App\Http\Controllers\ServiceController::class, 'getDeviceBySerial']);
 Route::get('profiles/{terminal}', [\App\Http\Controllers\ServiceController::class, 'getProfileByTerminal']);
+
+Route::get('captcha', [\App\Http\Controllers\RegistrationController::class, 'refreshCaptcha'])->name('captcha.refresh');

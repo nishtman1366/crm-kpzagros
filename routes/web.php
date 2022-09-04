@@ -275,6 +275,11 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
     });
 });
 
+Route::prefix('registration')->name('registration.')->group(function () {
+    Route::get('', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('index');
+    Route::get('search/{type}/{query}', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('search');
+    Route::post('{device}', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('store');
+});
 
 Route::get('listSerials', function () {
     $profiles = Profile::with('customer')
