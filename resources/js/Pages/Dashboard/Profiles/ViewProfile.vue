@@ -1193,11 +1193,7 @@
                         </div>
                         <div class="flex items-center justify-start" v-if="requiredIMEI">
                             <div class="w-1/2">شماره سیم‌کارت:</div>
-                            <div v-if="selectedDevice.sim_number" class="text-red-400 font-bold">{{
-                                    selectedDevice.sim_number
-                                }}
-                            </div>
-                            <div v-else>
+                            <div>
                                 <jet-input type="text" placeholder="شماره سیم‌کارت" class="w-full"
                                            v-model="terminalForm.terminal.sim_number"/>
                                 <jet-input-error :message="terminalForm.error('terminal.sim_number')" class="mt-2"/>
@@ -1997,6 +1993,9 @@ export default {
             }
             this.terminalForm.terminal.reject_reason = null;
             this.terminalForm.terminal.cancel_reason = null;
+            if (device?.sim_number) {
+                this.terminalForm.terminal.sim_number = device.sim_number;
+            }
             this.confirmSerial = true;
         },
         closeSerialModal() {
