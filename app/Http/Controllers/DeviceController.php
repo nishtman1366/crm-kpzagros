@@ -360,7 +360,7 @@ class DeviceController extends Controller
             ->where('transport_status', 1)
             ->where('psp_status', 1)
             ->where('status', 2)
-            ->limit(5)
+//            ->limit(5)
             ->get();
 
         return $devices;
