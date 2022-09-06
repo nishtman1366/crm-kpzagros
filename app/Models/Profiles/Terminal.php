@@ -45,6 +45,8 @@ class Terminal extends Model
                 return 'رد درخواست جابجایی';
             case 10:
                 return 'رد درخواست ابطال';
+            case 254:
+                return 'نامشخص';
         }
     }
 

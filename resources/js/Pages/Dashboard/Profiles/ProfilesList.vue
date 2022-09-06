@@ -333,6 +333,20 @@
                             <jet-input-error :message="uploadExcelForm.error('file')"
                                              class="mt-2"/>
                         </div>
+                        <div>
+                            <label for="profiles_psp_id"
+                                   class="block text-sm font-medium text-gray-700">سرویس‌دهنده</label>
+                            <select id="profiles_psp_id" name="psp_id"
+                                    v-model="uploadExcelForm.psp_id"
+                                    class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option :value="null">سرویس دهنده</option>
+                                <option v-for="psp in psps" :key="psp.id"
+                                        :value="psp.id">{{ psp.name }}
+                                </option>
+                            </select>
+                            <jet-input-error :message="uploadExcelForm.error('psp_id')"
+                                             class="mt-2"/>
+                        </div>
                     </div>
                 </template>
                 <template #footer>
@@ -524,6 +538,7 @@ export default {
             uploadExcelForm: this.$inertia.form({
                 '_method': 'POST',
                 file: '',
+                psp_id: '',
             }, {
                 bag: 'uploadExcelForm',
                 resetOnSuccess: true

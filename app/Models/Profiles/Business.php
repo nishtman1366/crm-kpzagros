@@ -3,6 +3,7 @@
 namespace App\Models\Profiles;
 
 use App\Http\Controllers\Profiles\LicenseController;
+use App\Models\City;
 use App\Models\Variables\BusinessCategory;
 use App\Models\Variables\BusinessSubCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -113,5 +114,10 @@ class Business extends Model
     public function subCategory()
     {
         return $this->belongsTo(BusinessSubCategory::class, 'business_subCategory_code', 'id');
+    }
+
+    public function city()
+    {
+        return $this->hasOne(City::class,'id','shahr_id');
     }
 }

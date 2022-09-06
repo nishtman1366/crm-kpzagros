@@ -99,6 +99,9 @@ class Profile extends Model
             case 17:
                 return 'رد درخواست ابطال';
                 break;
+            case 254:
+                return 'نامشخص';
+                break;
             case 255:
                 return 'حذف به دلیل ادغام';
                 break;

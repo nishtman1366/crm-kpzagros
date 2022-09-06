@@ -8,6 +8,7 @@ use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Requests\Profiles\Profile\UpdateTerminal;
 use App\Imports\Profiles\CustomImport;
 use App\Imports\Profiles\ProfileImport;
+use App\Imports\Profiles\Psp\AirikPasargad;
 use App\Jobs\Profiles\CreateZipArchive;
 use App\Jobs\Profiles\DeleteExportedFiles;
 use App\Jobs\Profiles\ExportProfiles;
@@ -718,10 +719,19 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $request->validateWithBag('uploadExcelForm', [
-            'file' => 'required|file'
+            'file' => 'required|file',
+            'psp_id' => 'required|exists:psps,id'
         ]);
-        $file = $request->file('file')->store('temp/excel/profiles');
-        Excel::import(new CustomImport(), $file);
+        $importer = null;
+        switch ($request->get('psp_id')) {
+            case 14:
+                $importer = new AirikPasargad();
+                break;
+        }
+        if (!is_null($importer)) {
+            $file = $request->file('file')->store('temp/excel/profiles');
+            Excel::import($importer, $file);
+        }
         return redirect()->route('dashboard.profiles.list');
     }
 
