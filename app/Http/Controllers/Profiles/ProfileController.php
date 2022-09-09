@@ -9,6 +9,8 @@ use App\Http\Requests\Profiles\Profile\UpdateTerminal;
 use App\Imports\Profiles\CustomImport;
 use App\Imports\Profiles\ProfileImport;
 use App\Imports\Profiles\Psp\AirikPasargad;
+use App\Imports\Profiles\Psp\PardakhtNovin;
+use App\Imports\Profiles\Psp\Pasargad;
 use App\Jobs\Profiles\CreateZipArchive;
 use App\Jobs\Profiles\DeleteExportedFiles;
 use App\Jobs\Profiles\ExportProfiles;
@@ -726,6 +728,12 @@ class ProfileController extends Controller
         switch ($request->get('psp_id')) {
             case 14:
                 $importer = new AirikPasargad();
+                break;
+            case 4:
+                $importer = new Pasargad();
+                break;
+            case 6:
+                $importer = new PardakhtNovin();
                 break;
         }
         if (!is_null($importer)) {
