@@ -11,6 +11,7 @@ use App\Imports\Profiles\ProfileImport;
 use App\Imports\Profiles\Psp\AirikPasargad;
 use App\Imports\Profiles\Psp\PardakhtNovin;
 use App\Imports\Profiles\Psp\Pasargad;
+use App\Imports\Profiles\Psp\Sadad;
 use App\Jobs\Profiles\CreateZipArchive;
 use App\Jobs\Profiles\DeleteExportedFiles;
 use App\Jobs\Profiles\ExportProfiles;
@@ -734,6 +735,9 @@ class ProfileController extends Controller
                 break;
             case 6:
                 $importer = new PardakhtNovin();
+                break;
+            case 8:
+                $importer = new Sadad();
                 break;
         }
         if (!is_null($importer)) {

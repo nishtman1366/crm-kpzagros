@@ -34,7 +34,7 @@ class NationalCode implements Rule
         $customers = Customer::where('national_code', $value)->get();
         if (count($customers) === 0) return $this->checkNationalCodeAlgorithm($value);
         foreach ($customers as $customer) {
-            if (trim(str_replace('ي', 'ی', $customer->first_name)) !== trim($this->firstName) || trim(str_replace('ي', 'ی', $customer->last_name)) !== trim($this->lastName)) {
+            if ($this->manipulateCustomerName($customer->first_name) !== trim($this->firstName) || $this->manipulateCustomerName($customer->last_name) !== trim($this->lastName)) {
                 $this->messageType = 2;
                 return false;
             }
@@ -74,5 +74,14 @@ class NationalCode implements Rule
         if (($ret < 2 && $ret == $parity) || ($ret >= 2 && $ret == 11 - $parity))
             return true;
         return false;
+    }
+
+    private function manipulateCustomerName(string $name)
+    {
+        $name = str_replace('ي', 'ی', $name);
+        $name = str_replace('ك', 'ک', $name);
+        $name = trim($name);
+
+        return $name;
     }
 }

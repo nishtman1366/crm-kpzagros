@@ -32,6 +32,7 @@ class AirikPasargad implements OnEachRow, WithStartRow
         $row = $row->toArray();
         $profile = Profile::with('accounts')
             ->with('accounts.account')
+            ->where('psp_id',self::PSP_ID)
             ->where('merchant_id', $row[1])->get()->first();
         if (is_null($row[1]) || is_null($profile)) {
             $this->setProfile($row);
