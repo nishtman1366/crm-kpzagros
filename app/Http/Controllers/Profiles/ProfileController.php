@@ -41,31 +41,6 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-//        $userIdList = collect([]);
-//        if ($user->isAdmin() || $user->isAgent() || $user->isMarketer() || $user->isOffice()) {
-//            $userIdList->push($user->id);
-//        }
-//
-//        if ($user->isAdmin() || $user->isAgent() || $user->isOffice()) {
-//            if ($user->isOffice()) {
-//                $userIdList->push($user->parent_id);
-//                $childrenId = User::where('parent_id', $user->parent_id)->pluck('id');
-//            } else {
-//                $childrenId = User::where('parent_id', $user->id)->pluck('id');
-//            }
-//            $userIdList = $userIdList->merge($childrenId);
-//        }
-//
-//        if ($user->isAdmin() || $user->isOffice()) {
-//            if ($user->isOffice()) {
-//                $parentsLis = User::where('parent_id', $user->parent_id)->pluck('id');
-//            } else {
-//                $parentsLis = User::where('parent_id', $user->id)->pluck('id');
-//            }
-//            $childrenId = User::whereIn('parent_id', $parentsLis)->pluck('id');
-//            $userIdList = $userIdList->merge($childrenId);
-//        }
-
 //        DB::enableQueryLog();
         $profilesQuery = Profile::with('customer')
             ->with('psp')
@@ -186,8 +161,9 @@ class ProfileController extends Controller
             $toDate = Jalalian::fromFormat('Y-m-d', $toDate)->toCarbon()->hour(23)->minute(59)->second(59);
             $profilesQuery->where('updated_at', '<=', $toDate);
         }
+        $perPage = (int)$request->query('perPage', 25);
         $profiles = $profilesQuery->orderBy('updated_at', 'DESC')
-            ->paginate(30);
+            ->paginate($perPage);
 
         $paginatedLinks = paginationLinks($profiles->appends($request->query->all()));
 //        dd($profiles);
@@ -220,11 +196,12 @@ class ProfileController extends Controller
         $agents = [];
         if ($user->isAdmin() || $user->isSuperuser() || $user->isOffice()) {
             $id = $user->isOffice() ? $user->parent_id : $user->id;
-            $agents = User::where('level', 'AGENT')->where(function ($query) use ($user, $id) {
-                if ($user->isAdmin() || $user->isOffice()) {
-                    $query->where('parent_id', $id);
-                }
-            })->get();
+            $agents = User::with('marketers')->where('level', 'AGENT')
+                ->where(function ($query) use ($user, $id) {
+                    if ($user->isAdmin() || $user->isOffice()) {
+                        $query->where('parent_id', $id);
+                    }
+                })->get();
         }
 
         $marketers = User::where('level', 'MARKETER')
@@ -246,10 +223,13 @@ class ProfileController extends Controller
             'psps' => $psps,
             'statuses' => $statuses
         ]);
+
 //        dd([$fromDate, $toDate]);
         return Inertia::render('Dashboard/Profiles/ProfilesList',
             [
                 'profiles' => $profiles,
+
+                'perPage' => $perPage,
 
                 'psps' => $psps,
                 'pspId' => $pspId,
@@ -275,6 +255,18 @@ class ProfileController extends Controller
                 'paginatedLinks' => $paginatedLinks,
             ]
         );
+    }
+
+    public function batchJob(Request $request)
+    {
+        $profiles = $request->get('list');
+        $agentId = $request->get('agent_id');
+        $marketerId = $request->get('marketer_id');
+        $userId = !is_null($marketerId) ? $marketerId : $agentId;
+        Profile::whereIn('id', $profiles)->update([
+            'user_id' => $userId
+        ]);
+        return redirect()->back();
     }
 
     public function create(Request $request)

@@ -6,6 +6,18 @@
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                            <transition leave-active-class="transition ease-in duration-1000" leave-class="opacity-100"
+                                        leave-to-class="opacity-0">
+                                <div v-if="message"
+                                     :class="messageType==='danger' ? 'bg-red-500' : 'bg-green-500'"
+                                     class="rounded px-3 py-2 m-2 text-white flex">
+                                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M11,9H13V7H11M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M11,17H13V11H11V17Z"/>
+                                    </svg>
+                                    <div class="mx-2 text-lg font-bold">{{ message }}</div>
+                                </div>
+                            </transition>
                             <div class="grid md:grid-cols-4 gap-3">
                                 <div class="col-1 md:col-span-2">
                                     <jet-input type="text"
@@ -46,6 +58,15 @@
                                                   d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
                                         </svg>
                                         دریافت لیست
+                                    </jet-button>
+                                    <jet-button v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER' || $page.user.level==='OFFICE'"
+                                                @click.native="processBatchJob(false)"
+                                                class="my-5 mx-1 bg-yellow-600 hover:bg-yellow-500 sm:float-left">
+                                        <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                  d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
+                                        </svg>
+                                        عملیات گروهی
                                     </jet-button>
                                 </div>
                                 <div class="col-1 md:col-span-4">
@@ -136,39 +157,62 @@
                                         <option :value="2">تایید نهایی</option>
                                     </select>
                                 </div>
-                                <div class="col-1 md:col-span-4">
-                                    <date-picker
-                                        @change="submitFromDate"
-                                        v-model="from_date"
-                                        element="from_date"
-                                        ref="from_date_cal"></date-picker>
-                                    <jet-input placeholder="تاریخ شروع"
-                                               name="from_date"
-                                               id="from_date"
-                                               ref="from_date"
-                                               v-model="from_date"
-                                               readonly/>
-                                    <span class="mx-1 text-blue-500 hover:text-blue-400 cursor-pointer"
-                                          @click="clearDate('from')">حذف</span>
-                                    <date-picker
-                                        @change="submitToDate"
-                                        v-model="to_date"
-                                        element="to_date"
-                                        ref="to_date_cal"></date-picker>
-                                    <jet-input placeholder="تاریخ پایان"
-                                               name="to_date"
-                                               id="to_date"
-                                               ref="to_date"
-                                               v-model="to_date"
-                                               readonly/>
-                                    <span class="mx-1 text-blue-500 hover:text-blue-400 cursor-pointer"
-                                          @click="clearDate('to')">حذف</span>
-
+                                <div class="col-1 md:col-span-4 flex items-center justify-between">
+                                    <div>
+                                        <date-picker
+                                            @change="submitFromDate"
+                                            v-model="from_date"
+                                            element="from_date"
+                                            ref="from_date_cal"></date-picker>
+                                        <jet-input placeholder="تاریخ شروع"
+                                                   name="from_date"
+                                                   id="from_date"
+                                                   ref="from_date"
+                                                   v-model="from_date"
+                                                   readonly/>
+                                        <span class="mx-1 text-blue-500 hover:text-blue-400 cursor-pointer"
+                                              @click="clearDate('from')">حذف</span>
+                                        <date-picker
+                                            @change="submitToDate"
+                                            v-model="to_date"
+                                            element="to_date"
+                                            ref="to_date_cal"></date-picker>
+                                        <jet-input placeholder="تاریخ پایان"
+                                                   name="to_date"
+                                                   id="to_date"
+                                                   ref="to_date"
+                                                   v-model="to_date"
+                                                   readonly/>
+                                        <span class="mx-1 text-blue-500 hover:text-blue-400 cursor-pointer"
+                                              @click="clearDate('to')">حذف</span>
+                                    </div>
+                                    <div class=" flex items-center justify-between space-x-reverse space-x-2">
+                                        <jet-label for="per_page" value="تعداد در صفحه"/>
+                                        <select id="per_page"
+                                                name="per_page"
+                                                ref="per_page"
+                                                v-model="per_page"
+                                                autocomplete="per_page"
+                                                v-on:change="submitSearchForm"
+                                                title="تعداد در صفحه"
+                                                v-b-tooltip.hover
+                                                class="mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <option v-for="i in [5,10,25,50,100,250,500]" :key="i"
+                                                    :value="i">{{ i }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
+                                    <th>
+                                        <input type="checkbox"
+                                               ref="toggleSelect"
+                                               v-on:click="toggleSelectItems"
+                                               class="border border-gray-300 bg-white text-indigo-500 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    </th>
                                     <th scope="col" colspan="2"
                                         class="list-table-header-cell">
                                         نام پذیرنده
@@ -203,6 +247,15 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                 <template v-for="profile in profiles.data">
                                     <tr :key="profile.id">
+                                        <td class="text-center">
+                                            <input type="checkbox"
+                                                   :name="'device_id['+profile.id+']'"
+                                                   :id="'device_id['+profile.id+']'"
+                                                   :ref="'device_id['+profile.id+']'"
+                                                   :value="profile.id"
+                                                   class="border border-gray-300 bg-white text-indigo-500 shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                   v-model="batchJobs.list">
+                                        </td>
                                         <td class="list-table-body-cell">
                                             <svg v-if="profile.terminals && profile.terminals.length > 0"
                                                  title="ترمینال‌ها" :data-container="`profile-${profile.id}`"
@@ -449,6 +502,82 @@
                     </InertiaLink>
                 </template>
             </jet-confirmation-modal>
+            <!-- عملیات گروهی  -->
+            <jet-confirmation-modal :show="viewBatchJobModal" @close="viewBatchJobModal = false">
+                <template #title>
+                    عملیات گروهی
+                </template>
+                <template #content>
+                    <div class="w-full mt-3 text-center sm:mt-0 sm:text-right">
+                        <div class="mt-2 text-center">
+                            <jet-button class="my-1 hover:bg-green-500"
+                                        :class="batchJobs.type==='changeOwner' ? 'bg-green-600' : 'bg-green-300'"
+                                        @click.native="batchJobs.type='changeOwner'">تغییر مالکیت
+                            </jet-button>
+                            <jet-input-error
+                                :message="batchJobs.error('type')"
+                                class="mt-2"/>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <jet-label class=" text-lg">تعداد پرونده‌های انتخاب شده: {{ batchJobs.list.length }}
+                            </jet-label>
+                            <jet-input-error
+                                :message="batchJobs.error('list')"
+                                class="mt-2"/>
+                        </div>
+                        <jet-section-border/>
+                        <div v-if="batchJobs.type==='changeOwner'" class="mt-1">
+                            <div class="flex items-center justify-around">
+                                <div>
+                                    <jet-label class="mx-3" for="batch-job-agents">نماینده جدید</jet-label>
+                                    <select name="owners" id="batch-job-agents" ref="agents"
+                                            v-model="selectedAgent"
+                                            class="mt-1 mx-3 block py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option v-for="agent in agents" :key="agent.id" :value="agent">
+                                            {{ agent.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <jet-label class="mx-3" for="batch-job-marketers" value="بازاریاب جدید (اختیاری)"></jet-label>
+                                    <select name="owners" id="batch-job-marketers" ref="marketers"
+                                            v-model="batchJobs.marketer_id"
+                                            class="mt-1 mx-3 block py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option v-for="marketer in selectedAgentMarketers" :key="marketer.id"
+                                                :value="marketer.id">
+                                            {{ marketer.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div  class="mt-2 text-center">
+                                <jet-button class="my-1 hover:bg-purple-500"
+                                            @click.native="batchJobs.agent_id=2;batchJobs.marketer_id=null;selectedAgent=null"
+                                            :class="batchJobs.agent_id===2 ? 'bg-purple-600' : 'bg-purple-300'">دفتر مرکزی کیان‌پرداز</jet-button>
+                            </div>
+                            <jet-input-error
+                                :message="batchJobs.error('owner_id')"
+                                class="mt-2 mx-3"/>
+                        </div>
+
+                        <p v-if="batchJobs.processing" class="my-3 mx-2 text-indigo-600">در حال انجام عملیات
+                            گروهی...</p>
+                        <jet-action-message :on="batchJobs.recentlySuccessful" class="my-3 mx-2 text-green-600">
+                            عملیات گروهی با موفقیت انجام شد.
+                        </jet-action-message>
+                    </div>
+                </template>
+                <template #footer>
+                    <jet-secondary-button class="ml-2" @click.native="viewBatchJobModal = false">
+                        انصراف
+                    </jet-secondary-button>
+                    <jet-button class="ml-2 bg-blue-600 hover:bg-blue-500" @click.native="submitBatchJob"
+                                :class="{ 'opacity-25': batchJobs.processing }"
+                                :disabled="batchJobs.processing">
+                        ارسال
+                    </jet-button>
+                </template>
+            </jet-confirmation-modal>
         </template>
     </Dashboard>
 </template>
@@ -462,6 +591,9 @@ import JetDangerButton from '@/Jetstream/DangerButton';
 import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 import JetInputError from '@/Jetstream/InputError';
 import JetInput from '@/Jetstream/Input';
+import JetLabel from '@/Jetstream/Label';
+import JetSectionBorder from '@/Jetstream/SectionBorder';
+import JetActionMessage from '@/Jetstream/ActionMessage';
 import Pagination from "@/Pages/Dashboard/Components/Pagination";
 import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
 
@@ -470,11 +602,14 @@ export default {
     components: {
         Dashboard,
         JetButton,
+        JetSectionBorder,
+        JetActionMessage,
         JetConfirmationModal,
         JetDangerButton,
         JetSecondaryButton,
         JetInputError,
         JetInput,
+        JetLabel,
         Pagination,
         datePicker: VuePersianDatetimePicker,
     },
@@ -482,6 +617,8 @@ export default {
         searchQuery: String,
 
         profiles: Object,
+
+        perPage: Number,
 
         psps: Array,
         pspId: String,
@@ -507,6 +644,7 @@ export default {
     data() {
         return {
             status_id: null,
+            per_page: null,
             psp_id: null,
             agent_id: null,
             marketer_id: null,
@@ -521,6 +659,22 @@ export default {
                 status: '',
             }, {
                 bag: 'profileForm',
+                resetOnSuccess: true
+            }),
+
+            viewBatchJobModal: false,
+            message: null,
+            messageType: null,
+            selectedAgent: null,
+            selectedAgentMarketers: [],
+            batchJobs: this.$inertia.form({
+                '_method': 'POST',
+                list: [],
+                type: null,
+                agent_id: null,
+                marketer_id: null
+            }, {
+                bag: 'batchJobs',
                 resetOnSuccess: true
             }),
 
@@ -578,8 +732,17 @@ export default {
             exportStatusTimeout: null,
         }
     },
+    watch: {
+        selectedAgent: function ($val) {
+            if($val) {
+                this.batchJobs.agent_id = $val.id;
+                this.selectedAgentMarketers = $val.marketers;
+            }
+        }
+    },
     mounted() {
         this.query = this.searchQuery;
+        this.per_page = this.perPage;
         this.psp_id = this.pspId;
         this.status_id = this.statusId;
         this.agent_id = this.agentId;
@@ -601,6 +764,43 @@ export default {
         });
     },
     methods: {
+        toggleSelectItems() {
+            if (this.batchJobs.list.length === 0) {
+                for (let profile of this.profiles.data) {
+                    this.batchJobs.list.push(profile.id);
+                }
+            } else {
+                this.batchJobs.list = [];
+            }
+        },
+        processBatchJob() {
+            if (this.batchJobs.list.length > 0) {
+                this.viewBatchJobModal = true;
+            } else {
+                this.message = 'لطفا پرونده‌های مورد نظر را انتخاب نمایید.';
+                this.messageType = 'danger';
+                setTimeout(() => {
+                    this.message = null;
+                    this.messageType = null;
+                }, 2000);
+            }
+        },
+        submitBatchJob() {
+            this.batchJobs.post(route('dashboard.profiles.batchJob'))
+                .then(response => {
+                    if (this.batchJobs.recentlySuccessful) {
+                        this.message = 'عملیات گروهی با موفقیت انجام شد.';
+                        this.messageType = null;
+                        setTimeout(() => {
+                            this.message = null;
+                            this.messageType = null;
+                        }, 2000);
+                        this.viewBatchJobModal = false;
+                        this.$refs.toggleSelect.checked = false;
+                    }
+                });
+        },
+
         statusColors(status) {
             switch (status) {
                 case 0:
@@ -647,7 +847,6 @@ export default {
                 })
         },
 
-
         uploadExcel() {
             this.viewUploadExcelModal = true;
         },
@@ -668,6 +867,7 @@ export default {
                 method: 'get',
                 data: {
                     query: this.query,
+                    perPage: this.per_page,
                     pspId: this.psp_id,
                     statusId: this.status_id,
                     agentId: this.agent_id,
@@ -695,6 +895,7 @@ export default {
                 method: 'get',
                 data: {
                     query: this.query,
+                    perPage: this.per_page,
                     pspId: this.psp_id,
                     statusId: this.status_id,
                     agentId: this.agent_id,
