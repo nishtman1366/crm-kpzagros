@@ -32,7 +32,7 @@ class DeviceController extends Controller
 
         $deviceTypes = DeviceType::where('status', 1)->get();
 
-        $psps = Psp::orderBy('name', 'ASC')->get();
+        $psps = Psp::where('id', '!=', 4)->orderBy('name', 'ASC')->get();
 
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/CreateDevice', [
@@ -82,10 +82,11 @@ class DeviceController extends Controller
     {
         if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
         $terminals = $profile->terminals;
-        if (count($terminals)===0) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
+        if (count($terminals) === 0) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
         $connectionTypes = DeviceConnectionType::orderBy('id', 'ASC')->get();
         $deviceTypes = DeviceType::where('status', 1)->get();
-        $psps = Psp::orderBy('name', 'ASC')->get();
+        $psps = Psp::where('id', '!=', 4)->orderBy('name', 'ASC')->get();
+//        $psps = Psp::orderBy('name', 'ASC')->get();
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/EditDevice', [
             'profileId' => $profile->id,
@@ -99,7 +100,7 @@ class DeviceController extends Controller
         ]);
     }
 
-    public function update(Profile $profile,Request $request)
+    public function update(Profile $profile, Request $request)
     {
         if (is_null($profile->customer)) throw new NotFoundHttpException('اطلاعات مشتری یافت نشد.');
         $deviceType = $profile->deviceType;
