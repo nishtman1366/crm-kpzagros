@@ -23,8 +23,6 @@ use App\Models\Variables\Device;
 use App\Models\Variables\DevicePsp;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
-use App\Rules\ChangeSerial;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
@@ -541,6 +539,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
         $profilesQuery = Profile::with('customer')
+            ->with('terminals')
             ->withCount('accounts')
             ->with('user')
             ->with('user.parent')
@@ -568,7 +567,7 @@ class ProfileController extends Controller
                 $query->where('status', $statusId);
             });
         } else {
-            $profilesQuery->where('status', '>=', 1);
+            $profilesQuery->where('status', '>=', 2);
         }
 
 //        $marketers = [];
@@ -636,7 +635,9 @@ class ProfileController extends Controller
         $jDate = Jalalian::forge(now())->format('Y.m.d');
         $i = 1;
         $excelJobList = collect();
-        $profilesQuery->orderBy('id', 'ASC')->chunk(999, function ($profiles) use (&$excelJobList, $jDate, &$i, $user) {
+        $profilesQuery->orderBy('id', 'ASC')
+            ->limit(100)
+            ->chunk(999, function ($profiles) use (&$excelJobList, $jDate, &$i, $user) {
             $excelJobList->push(new ExportProfiles($profiles, $user));
             $i++;
         });
@@ -651,7 +652,6 @@ class ProfileController extends Controller
 
     public function excelStatus(Request $request)
     {
-        sleep(1);
         $user = Auth::user();
         $status = Cache::get(sprintf('%s.profiles.export.status', $user->id));
         if (!is_null($status)) {

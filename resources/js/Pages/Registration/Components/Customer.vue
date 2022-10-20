@@ -52,7 +52,7 @@
                         {{ terminal.device && terminal.device.serial }}
                     </td>
                 </tr>
-                <tr>
+                <tr v-if="terminal.device">
                     <td colspan="3" class="text-left">
                         <jet-button @click.native="selectDevice(terminal.device)">ثبت اطلاعات</jet-button>
                     </td>

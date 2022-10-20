@@ -63,7 +63,7 @@
                     {{ device && device.serial }}
                 </td>
             </tr>
-            <tr>
+            <tr v-if="device">
                 <td colspan="3" class="text-left">
                     <jet-button @click.native="selectDevice(device)">ثبت اطلاعات</jet-button>
                 </td>

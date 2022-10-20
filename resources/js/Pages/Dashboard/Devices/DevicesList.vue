@@ -591,7 +591,7 @@
                 this.batchJobs.post(route('dashboard.devices.batchJob'))
                     .then(response => {
                         if (this.batchJobs.recentlySuccessful) {
-                            this.message = 'لطفا دستگاه های مورد نظر را انتخاب نمایید.';
+                            this.message = 'عملیات گروهی با موفقیت انجام شد.';
                             this.messageType = null;
                             setTimeout(() => {
                                 this.message = null;

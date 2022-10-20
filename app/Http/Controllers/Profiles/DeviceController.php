@@ -72,6 +72,9 @@ class DeviceController extends Controller
         $request->merge(['profile_id' => $profile->id]);
         Terminal::create($request->all());
 
+        if ($profile->status != 0) {
+            $profile->status = 5;
+        }
         $profile->psp_id = $request->get('psp_id');
         $profile->save();
 

@@ -108,6 +108,7 @@
                                                 class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border-gray-300 rounded-md border"
                                                 ref="psp_id"
                                                 id="psp_id"
+                                                :disabled="profile && profile.psp_id"
                                                 v-model="deviceTypeForm.psp_id">
                                             <option value="">انتخاب کنید:</option>
                                             <option v-for="psp in psps" :key="psp.id" :value="psp.id">
@@ -207,7 +208,7 @@ export default {
                 device_physical_status: null,
                 device_type_id: '',
                 device_connection_type_id: '',
-                psp_id: '',
+                psp_id: this.profile?.psp_id,
             }, {
                 bag: 'deviceTypeForm',
                 resetOnSuccess: false
