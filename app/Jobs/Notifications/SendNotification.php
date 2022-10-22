@@ -33,7 +33,7 @@ class SendNotification implements ShouldQueue
      * @param string $type
      * @param string $apiCode
      */
-    public function __construct(BatchNotification $notification, string $reception = '', array $receptions = [], string $type = 'pattern', string $apiCode = 'RwoB81G8VWdrZ4xc-GmNp96xPlk1rvdcYmUGnSCvWZY=')
+    public function __construct(BatchNotification $notification, string $reception = '', array $receptions = [], string $type = 'pattern', string $apiCode = 'IRE7mq1Ht-kaB2d_4lF5EIXByN-hS1AsUIuQiLmpSas=')
     {
         $this->notification = $notification;
         $this->reception = $reception;
@@ -74,7 +74,7 @@ class SendNotification implements ShouldQueue
     {
         $client = new  Client($this->apiCode);
         try {
-            $bulkId = $client->send('+98club', $this->receptions, $this->notification->body);
+            $bulkId = $client->send('+989999150632', $this->receptions, $this->notification->body);
             $this->notification->bulk_id = $bulkId;
             $this->notification->save();
             Log::channel('notifications')->info('Bulk Id:' . $bulkId . ' - - - - Receptions count: ' . count($this->receptions) . ' - - - - id: ' . $this->notification->id);
