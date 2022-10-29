@@ -61,7 +61,11 @@ class BatchNotification extends Model
         $list = explode(',', $parameters);
         foreach ($list as $item) {
             $value = explode('=', $item);
-            $items[trim($value[0])] = trim($value[1]);
+            if (count($value) > 1) {
+                $items[trim($value[0])] = trim($value[1]);
+            } else {
+                $items[trim($value[0])] = '';
+            }
         }
 
         return $items;
