@@ -26,6 +26,9 @@ class HandleInertiaRequests
         if ($request->session()->has('message')) {
             Inertia::share('message', $request->session()->get('message'));
         }
+        if ($request->session()->has('paymentRequest')) {
+            Inertia::share('paymentRequest', $request->session()->get('paymentRequest'));
+        }
 
         $configs = [];
         $domain = request()->getHttpHost();

@@ -53,31 +53,22 @@ class Repair extends Model
         switch ($this->attributes['status']) {
             case 1:
                 return 'ثبت شده';
-                break;
             case 2:
                 return 'دریافت شده توسط واحد فنی';
-                break;
             case 3:
                 return 'در صف تعمیر';
-                break;
             case 4:
                 return 'تعمیر شده';
-                break;
             case 5:
                 return 'در انتظار پرداخت';
-                break;
             case 6:
                 return 'پرداخت شده';
-                break;
             case 7:
                 return 'عودت شده';
-                break;
             case 8:
                 return 'غیرقابل تعمیر';
-                break;
             default:
                 return 'ثبت موقت';
-                break;
         }
     }
 

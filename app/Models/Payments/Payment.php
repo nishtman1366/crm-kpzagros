@@ -2,6 +2,7 @@
 
 namespace App\Models\Payments;
 
+use App\Models\Repairs\Repair;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,22 +12,22 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type_id', 'user_id', 'repair_id', 'return_device_id', 'profile_id', 'amount', 'reg_code', 'ref_code', 'status', 'tracking_code', 'date'];
+    protected $fillable = ['type_id', 'user_id', 'repair_id', 'return_device_id', 'profile_id', 'amount', 'reg_code', 'ref_code', 'status', 'tracking_code', 'date', 'description'];
 
     protected $appends = ['jDate', 'statusText'];
 
     public function getStatusTextAttribute()
     {
         switch ($this->attributes['status']) {
+            default:
             case 0:
                 return 'ثبت موقت';
-                break;
             case 1:
                 return 'ثبت شده';
-                break;
             case 2:
                 return 'تایید شده';
-                break;
+            case 255:
+                return 'خطا در پرداخت';
         }
     }
 
@@ -44,5 +45,10 @@ class Payment extends Model
     public function type()
     {
         return $this->hasOne(Type::class, 'id', 'type_id');
+    }
+
+    public function repair()
+    {
+        return $this->belongsTo(Repair::class);
     }
 }

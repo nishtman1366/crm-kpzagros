@@ -44,7 +44,8 @@
                             </div>
                         </template>
                         <template #form>
-                            <div class="col-span-6 flex justify-start items-end" v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
+                            <div class="col-span-6 flex justify-start items-end"
+                                 v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
                                 <div class="ml-3">
                                     <jet-label for="admin_status" value="وضعیت"/>
                                     <select id="admin_status" name="admin_status" ref="admin_status"
@@ -57,7 +58,8 @@
                                         </option>
                                     </select>
                                 </div>
-                                <jet-button type="button" @click.native="submitUpdateStatusByAdminForm">ذخیره</jet-button>
+                                <jet-button type="button" @click.native="submitUpdateStatusByAdminForm">ذخیره
+                                </jet-button>
                             </div>
                             <div class="col-span-6" v-if="$page.user.level==='ADMIN' || $page.user.level==='SUPERUSER'">
                                 <jet-section-border/>
@@ -491,14 +493,23 @@
                 </template>
                 <template #content>
                     <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
-                        <div>
-                            <jet-secondary-button class="text-gray-300">پرداخت آنلاین</jet-secondary-button>
+                        <div class="flex items-center justify-between mt-8">
                             <jet-button
+                                :class="{ 'bg-green-500 hover:bg-green-400': submitPaymentForm.type==1 }"
+                                class="border-green-500 bg-green-200 hover:bg-green-400 active:bg-green-600 text-gray-900" @click.native="requestOnlinePayment">پرداخت آنلاین
+                            </jet-button>
+                            <jet-button
+                                @click.native="submitPaymentForm.type=2;requestOnlinePaymentLoading=false"
                                 :class="{ 'bg-blue-500 hover:bg-blue-400': submitPaymentForm.type==2 }"
-                                class="border-blue-500 bg-blue-200 hover:bg-blue-400 active:bg-blue-600">واریز به حساب
+                                class="border-blue-500 bg-blue-200 hover:bg-blue-400 active:bg-blue-600 text-gray-900">واریز به حساب
                             </jet-button>
                         </div>
-                        <div class="grid grid-cols-2 mt-3" v-if="submitPaymentForm.type==2">
+                        <div class="mt-3" v-if="requestOnlinePaymentLoading">
+                            <div class="text-center text-lg">
+                                در حال ارسال به درگاه پرداخت
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 mt-3" v-else-if="submitPaymentForm.type==2">
                             <div class="col-span-2 sm:col-span-1">
                                 <jet-label for="ref_code" value="کد پیگیری پرداخت"></jet-label>
                                 <jet-input name="ref_code"
@@ -528,7 +539,7 @@
                         </div>
                     </div>
                 </template>
-                <template #footer>
+                <template #footer v-if="!requestOnlinePaymentLoading">
                     <jet-secondary-button class="ml-2" @click.native="viewPaymentModal = false">
                         انصراف
                     </jet-secondary-button>
@@ -555,6 +566,7 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 import JetSectionBorder from '@/Jetstream/SectionBorder'
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     name: "View",
@@ -620,15 +632,19 @@ export default {
             }, {
                 bag: 'updateRepairStatusForm',
             }),
+
+            requestOnlinePaymentLoading: false,
             submitPaymentForm: this.$inertia.form({
                 '_method': 'PUT',
-                type: 2,
+                type: null,
                 ref_code: '',
                 payment_date: '',
                 status: 6,
             }, {
                 bag: 'submitPaymentForm',
             }),
+
+
             updateStatusByAdminForm: this.$inertia.form({
                 '_method': 'PUT',
                 status: this.repair.status,
@@ -638,6 +654,23 @@ export default {
         }
     },
     methods: {
+        requestOnlinePayment() {
+            this.submitPaymentForm.type=1;
+            this.requestOnlinePaymentLoading = true;
+            Inertia.visit(route('dashboard.payments.ipg.request', {type: 'repairs', id: this.repair.id}), {
+                onSuccess: () => {
+                    this.viewPaymentModal = true;
+                    if (this.$page.paymentRequest && this.$page.paymentRequest.status === 'success') {
+                        window.location.href = this.$page.paymentRequest.redirectUrl;
+                    } else {
+                        console.log('error');
+                    }
+                    this.requestOnlinePaymentLoading = false;
+                }
+            },{
+                preserveState: true,
+            });
+        },
         showPaymentModal() {
             this.viewPaymentModal = true;
         },

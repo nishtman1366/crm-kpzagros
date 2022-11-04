@@ -266,7 +266,7 @@ class RepairController extends Controller
         return $trackingCode;
     }
 
-    private function saveEvent($user, $repair, $status, $title = null, $message = null, $notification = true)
+    public static function saveEvent($user, $repair, $status, $title = null, $message = null, $notification = true)
     {
         if (is_null($title)) {
             switch ($status) {

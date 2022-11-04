@@ -122,6 +122,10 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
     });
 
     Route::prefix('payments')->name('payments.')->namespace('Payments')->group(function () {
+        Route::prefix('ipg')->name('ipg.')->group(function(){
+            Route::get('{type}/{id}/request', [\App\Http\Controllers\Payments\PaymentController::class,'ipgRequest'])->name('request');
+            Route::get('{trackingCode}/verify', [\App\Http\Controllers\Payments\PaymentController::class,'ipgVerify'])->name('verify');
+        });
         Route::get('{paymentId}/confirm', 'PaymentController@confirm')->name('confirm');
     });
 
@@ -150,6 +154,7 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('new', 'ProfileController@create')->name('create');
         Route::get('excel', 'ProfileController@downloadExcel')->name('downloadExcel');
         Route::post('excel', 'ProfileController@uploadExcel')->name('uploadExcel');
+        Route::post('batchJob', [\App\Http\Controllers\Profiles\ProfileController::class, 'batchJob'])->name('batchJob');
 
         Route::prefix('{profile}')->group(function () {
             Route::prefix('update')->name('update.')->group(function () {
@@ -279,6 +284,7 @@ Route::prefix('registration')->name('registration.')->group(function () {
     Route::get('', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('index');
     Route::get('search/{type}/{query}', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('search');
     Route::post('{device}', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('store');
+    Route::post('create/{type}/{query}', [\App\Http\Controllers\RegistrationController::class, 'create'])->name('create');
 });
 
 Route::get('listSerials', function () {
