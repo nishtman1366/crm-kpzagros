@@ -464,7 +464,7 @@
                                 در انتظار پرداخت
                             </jet-button>
                             <jet-button
-                                v-if="repair.status==5 && ($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL')"
+                                v-if="repair.status==5"
                                 @click.native="showPaymentModal"
                                 type="button"
                                 class="mx-2 bg-green-600 hover:bg-green-500 active:bg-green-700"
@@ -498,7 +498,7 @@
                                 :class="{ 'bg-green-500 hover:bg-green-400': submitPaymentForm.type==1 }"
                                 class="border-green-500 bg-green-200 hover:bg-green-400 active:bg-green-600 text-gray-900" @click.native="requestOnlinePayment">پرداخت آنلاین
                             </jet-button>
-                            <jet-button
+                            <jet-button v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL'"
                                 @click.native="submitPaymentForm.type=2;requestOnlinePaymentLoading=false"
                                 :class="{ 'bg-blue-500 hover:bg-blue-400': submitPaymentForm.type==2 }"
                                 class="border-blue-500 bg-blue-200 hover:bg-blue-400 active:bg-blue-600 text-gray-900">واریز به حساب
