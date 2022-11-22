@@ -123,7 +123,6 @@ class BatchNotificationController extends Controller
                 foreach ($receptions as $reception) {
                     $list[] = $reception->reception;
                 }
-//                Log::channel('notifications')->info('count: ' . count($list));
                 dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, '', $list, 'club'))
                     ->onQueue('notificationsQueue');
             });

@@ -135,7 +135,6 @@ class ProfileExport implements FromCollection, WithHeadings
             $this->mergeList[] = ['start' => $start, 'end' => $start + $profile->terminals->count()];
             $j++;
         }
-        Log::channel('daily')->error(json_encode($list->toArray()));
 
         return $list;
     }
@@ -207,7 +206,6 @@ class ProfileExport implements FromCollection, WithHeadings
             'شماره جواز',
             'تاریخ جواز',
         ];
-        Log::channel('daily')->info($this->collection->max('accounts_count'));
         return array_merge($headings, $accountsHeading);
     }
 
@@ -216,9 +214,7 @@ class ProfileExport implements FromCollection, WithHeadings
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $event->sheet->getDelegate()->setRightToLeft(true);
-//                foreach ($this->mergeList as $item) {
                 $event->sheet->getDelegate()->mergeCells('A1:A5');
-//                }
             }
         ];
     }

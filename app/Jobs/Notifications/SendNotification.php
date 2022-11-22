@@ -79,16 +79,6 @@ class SendNotification implements ShouldQueue
                 $reception->save();
             }
         }
-        Log::channel('notifications')->info(json_encode($response));
-
-//        try {
-//            $bulkId = $client->sendPattern(trim($this->notification->pattern), '+985000125475', $this->reception, $this->notification->parametersList);
-//            Log::channel('notifications')->info('Bulk Id:' . $bulkId . ' - - - - Reception: ' . $this->reception . ' - - - - Pattern: ' . $this->notification->pattern);
-//        } catch (Error $e) {
-//            Log::channel('notifications')->error('Error: ' . json_encode($e->unwrap()));
-//        } catch (HttpException $e) {
-//            Log::channel('notifications')->error('Exception: ' . $e->getMessage());
-//        }
     }
 
     private function sendByClub()
