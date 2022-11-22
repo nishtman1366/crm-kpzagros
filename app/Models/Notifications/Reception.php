@@ -11,7 +11,7 @@ class Reception extends Model
 
     protected $table = 'notifications_receptions';
 
-    protected $fillable = ['c', 'reception', 'status'];
+    protected $fillable = ['batch_notification_id', 'reception', 'status'];
 
     protected $appends=['statusText'];
 
