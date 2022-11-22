@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Imports\Notifications\Receptions;
 use App\Models\Config;
 use App\Models\Notifications\BatchNotification;
+use App\Models\Notifications\Reception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -94,20 +95,27 @@ class BatchNotificationController extends Controller
         $id = (int)$request->route('id');
         $batchNotification = BatchNotification::find($id);
         if (is_null($batchNotification)) throw new NotFoundHttpException('اعلان گروهی یافت نشد.');
+        $sendAgain = $request->get('sendAgain',false);
 
         if ($batchNotification->type === 'pattern') {
             $i = 1;
-            $batchNotification->receptions()->chunk(50, function ($receptions) use ($batchNotification, &$i) {
+            $batchNotification->receptions()->chunk(50, function ($receptions) use ($batchNotification, &$i, $sendAgain) {
                 foreach ($receptions as $reception) {
                     if (!is_null($reception->reception) && $reception->reception != '') {
-                        $list[] = $reception->reception;
-                        dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, $reception->reception))
-                            ->onQueue('notificationsQueue')
-                            ->delay(($i * 10));
+                        if ($reception->status === 1 && $sendAgain) {
+                            $list[] = $reception->reception;
+                            dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, $reception->reception))
+                                ->onQueue('notificationsQueue')
+                                ->delay(($i * 10));
+                        } elseif ($reception->status === 0) {
+                            $list[] = $reception->reception;
+                            dispatch(new \App\Jobs\Notifications\SendNotification($batchNotification, $reception->reception))
+                                ->onQueue('notificationsQueue')
+                                ->delay(($i * 10));
+                        }
                     }
                 }
                 $i++;
-//                Log::channel('notifications')->info('count: ' . count($list));
             });
         } elseif ($batchNotification->type === 'club') {
             $batchNotification->receptions()->chunk(10000, function ($receptions) use ($batchNotification) {
@@ -133,37 +141,10 @@ class BatchNotificationController extends Controller
 
         $notification = BatchNotification::withCount('receptions')->find($id);
         if (is_null($notification)) throw new NotFoundHttpException('اعلان گروهی یافت نشد.');
-        $apiKey = 'RwoB81G8VWdrZ4xc-GmNp96xPlk1rvdcYmUGnSCvWZY=';
-        $client = new Client($apiKey);
-        try {
-            $data = $client->getMessage($notification->bulk_id);
-            $notification->valid_recipients = $data->validRecipientsCount;
-            $notification->cost = $data->cost;
-            $notification->payback_cost = $data->paybackCost;
-            $notification->status = $this->handleNotificationStatus($data->status);
-            $notification->save();
+        $receptions = Reception::where('batch_notification_id', $notification->id)->paginate(30);
+        $paginatedLinks = paginationLinks($receptions->appends($request->query->all()));
 
-            $notification->cost = number_format($notification->cost);
-            $notification->payback_cost = number_format($notification->payback_cost);
-            $notification->valid_recipients = number_format($notification->valid_recipients);
-            $notification->receptions_count = number_format($notification->receptions_count);
-        } catch (Error $e) {
-            dd($e);
-        } catch (HttpException $e) {
-            dd($e);
-        }
-
-        try {
-            $list = $client->fetchStatuses($notification->bulk_id, ($page === 0 ? 0 : $page - 1), $limit);
-            $receptions = $list[0];
-            $pagination = $list[1];
-        } catch (Error $e) {
-            dd($e);
-        } catch (HttpException $e) {
-            dd($e);
-        }
-
-        return Inertia::render('Dashboard/Notifications/Details', compact('notification', 'receptions', 'pagination'));
+        return Inertia::render('Dashboard/Notifications/Details', compact('notification', 'receptions', 'paginatedLinks'));
     }
 
     private function handleNotificationStatus(string $status)

@@ -3,6 +3,9 @@
 namespace App\Jobs\Notifications;
 
 use App\Models\Notifications\BatchNotification;
+use App\Models\Notifications\Reception;
+use Cryptommer\Smsir\Objects\VerifyResponse;
+use Cryptommer\Smsir\Smsir;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -59,24 +62,42 @@ class SendNotification implements ShouldQueue
 
     private function sendByPattern()
     {
-        $client = new  Client($this->apiCode);
-        try {
-            $bulkId = $client->sendPattern(trim($this->notification->pattern), '+985000125475', $this->reception, $this->notification->parametersList);
-            Log::channel('notifications')->info('Bulk Id:' . $bulkId . ' - - - - Reception: ' . $this->reception . ' - - - - Pattern: ' . $this->notification->pattern);
-        } catch (Error $e) {
-            Log::channel('notifications')->error('Error: ' . json_encode($e->unwrap()));
-        } catch (HttpException $e) {
-            Log::channel('notifications')->error('Exception: ' . $e->getMessage());
+//        $client = new Client($this->apiCode);
+        $client = smsir::Send();
+        $parameters = [];
+        foreach ($this->notification->parametersList as $key => $value) {
+            $parameters[] = new \Cryptommer\Smsir\Objects\Parameters($key, $value);
         }
+        /**
+         * @var  VerifyResponse $response
+         */
+        $response = $client->Verify($this->reception, $this->notification->pattern, $parameters);
+        if ($response && $response->getStatus() == 1) {
+            $reception = Reception::where('batch_notification_id', $this->notification->id)->where('reception', $this->reception)->get()->first();
+            if (!is_null($reception)) {
+                $reception->status = $response->getStatus();
+                $reception->save();
+            }
+        }
+        Log::channel('notifications')->info(json_encode($response));
+
+//        try {
+//            $bulkId = $client->sendPattern(trim($this->notification->pattern), '+985000125475', $this->reception, $this->notification->parametersList);
+//            Log::channel('notifications')->info('Bulk Id:' . $bulkId . ' - - - - Reception: ' . $this->reception . ' - - - - Pattern: ' . $this->notification->pattern);
+//        } catch (Error $e) {
+//            Log::channel('notifications')->error('Error: ' . json_encode($e->unwrap()));
+//        } catch (HttpException $e) {
+//            Log::channel('notifications')->error('Exception: ' . $e->getMessage());
+//        }
     }
 
     private function sendByClub()
     {
         $client = new  Client($this->apiCode);
         try {
-            $bulkId = $client->send('+989999150632', $this->receptions, $this->notification->body);
-            $this->notification->bulk_id = $bulkId;
-            $this->notification->save();
+            $bulkId = $client->send('+9810008331420000', $this->receptions, $this->notification->body);
+//            $this->notification->bulk_id = $bulkId;
+//            $this->notification->save();
             Log::channel('notifications')->info('Bulk Id:' . $bulkId . ' - - - - Receptions count: ' . count($this->receptions) . ' - - - - id: ' . $this->notification->id);
         } catch (Error $e) {
             Log::channel('notifications')->error('Error: ' . json_encode($e->unwrap()));

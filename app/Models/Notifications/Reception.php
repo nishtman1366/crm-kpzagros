@@ -11,5 +11,13 @@ class Reception extends Model
 
     protected $table = 'notifications_receptions';
 
-    protected $fillable = ['batch_notification_id', 'reception', 'status'];
+    protected $fillable = ['c', 'reception', 'status'];
+
+    protected $appends=['statusText'];
+
+    public function getStatusTextAttribute()
+    {
+        if($this->status===1) return 'ارسال موفق';
+        return 'نامشخص';
+    }
 }

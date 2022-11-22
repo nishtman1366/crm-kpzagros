@@ -68,37 +68,34 @@
                                         {{ notification.sentDate }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        <button v-if="notification.status==0"
-                                                class="text-indigo-600 hover:text-indigo-900"
+                                        <button v-b-tooltip="'ویرایش'" class="text-indigo-600 hover:text-indigo-900"
                                                 @click="editNotification(notification)">
                                             <svg style="display:inline;width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                       d="M23.5,17L18.5,22L15,18.5L16.5,17L18.5,19L22,15.5L23.5,17M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,17C12.5,17 12.97,16.93 13.42,16.79C13.15,17.5 13,18.22 13,19V19.45L12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5C17,4.5 21.27,7.61 23,12C22.75,12.64 22.44,13.26 22.08,13.85C21.18,13.31 20.12,13 19,13C18.22,13 17.5,13.15 16.79,13.42C16.93,12.97 17,12.5 17,12A5,5 0 0,0 12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17Z"/>
                                             </svg>
                                         </button>
-                                        <inertia-link v-else
-                                                      class="text-indigo-600 hover:text-indigo-900"
+                                        <inertia-link v-b-tooltip="'سابقه ارسال'" class="text-yellow-600 hover:text-yellow-900"
                                                       :href="route('dashboard.notifications.details',{id:notification.id})">
                                             <svg style="display:inline;width:24px;height:24px" viewBox="0 0 24 24">
-                                                <path fill="currentColor"
-                                                      d="M23.5,17L18.5,22L15,18.5L16.5,17L18.5,19L22,15.5L23.5,17M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,17C12.5,17 12.97,16.93 13.42,16.79C13.15,17.5 13,18.22 13,19V19.45L12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5C17,4.5 21.27,7.61 23,12C22.75,12.64 22.44,13.26 22.08,13.85C21.18,13.31 20.12,13 19,13C18.22,13 17.5,13.15 16.79,13.42C16.93,12.97 17,12.5 17,12A5,5 0 0,0 12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17Z"/>
+                                                <path fill="currentColor" d="M21 11.11V5C21 3.9 20.11 3 19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H11.11C12.37 22.24 14.09 23 16 23C19.87 23 23 19.87 23 16C23 14.09 22.24 12.37 21 11.11M12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3M5 19V5H7V7H17V5H19V9.68C18.09 9.25 17.08 9 16 9H7V11H11.1C10.5 11.57 10.04 12.25 9.68 13H7V15H9.08C9.03 15.33 9 15.66 9 16C9 17.08 9.25 18.09 9.68 19H5M16 21C13.24 21 11 18.76 11 16S13.24 11 16 11 21 13.24 21 16 18.76 21 16 21M16.5 16.25L19.36 17.94L18.61 19.16L15 17V12H16.5V16.25Z" />
                                             </svg>
                                         </inertia-link>
-                                        <button class="text-green-600 hover:text-green-900"
+                                        <button v-b-tooltip="'گیرندگان'" class="text-green-600 hover:text-green-900"
                                                 @click.nativ="viewReceptions(notification)">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                       d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z"/>
                                             </svg>
                                         </button>
-                                        <button @click="sendNotification(notification)"
+                                        <button v-b-tooltip="'ارسال'" @click="sendNotification(notification)"
                                                 class="text-blue-600 hover:text-blue-900">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                       d="M13 17H17V14L22 18.5L17 23V20H13V17M20 4H4A2 2 0 0 0 2 6V18A2 2 0 0 0 4 20H11.35A5.8 5.8 0 0 1 11 18A6 6 0 0 1 22 14.69V6A2 2 0 0 0 20 4M20 8L12 13L4 8V6L12 11L20 6Z"/>
                                             </svg>
                                         </button>
-                                        <InertiaLink method="DELETE"
+                                        <InertiaLink v-b-tooltip="'حذف'" method="DELETE"
                                                      :href="route('dashboard.notifications.destroy',{id:notification.id})"
                                                      class="text-red-600 hover:text-red-900">
                                             <svg class="inline" style="width:24px;height:24px" viewBox="0 0 24 24">
@@ -249,6 +246,10 @@
                             </p>
                             <p>تعداد گیرندگان: <span class="font-bold">{{ notification.receptions_count }}</span></p>
                         </div>
+                        <div class="mt-8">
+                            <input type="checkbox" id="sendAgain" name="sendAgain" class="border-gray-400 border rounded-sm" v-model="sendNotificationForm.sendAgain"/>
+                            <label for="sendAgain">ارسال مجدد به گیرندگان قدیمی</label>
+                        </div>
                     </div>
                 </template>
                 <template #footer>
@@ -304,7 +305,9 @@ export default {
                 bag: 'receptionsForm'
             }),
             viewSendNotificationModal: false,
-            sendNotificationForm: this.$inertia.form({})
+            sendNotificationForm: this.$inertia.form({
+                sendAgain:false
+            })
         }
     },
     computed: {

@@ -30,47 +30,24 @@
                                     </th>
                                 </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="reception in receptions" :key="reception.recipient">
+                                <tbody v-if="receptions" class="bg-white divide-y divide-gray-200">
+                                <tr v-for="reception in receptions.data" :key="reception.reception">
                                     <td style="direction: ltr" class="px-6 py-4 text-center text-gray-900">
-                                        {{reception.recipient}}
+                                        {{reception.reception}}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{reception.status}}
+                                        {{reception.statusText}}
                                     </td>
                                 </tr>
                                 </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="mx-1 my-2 bg-gray-50 flex justify-between items-center w-full">
-                                            <div></div>
-                                            <div>
-                                                <span v-for="item in numbers" :key="item"
-                                                      @click="viewPage(item)"
-                                                      :class="(item-1)===pagination.page ? 'bg-blue-600 text-white' : 'bg-blue-200'"
-                                                      class="mx-1 p-1 hover:bg-blue-300 transition duration-300 ease-in-out cursor-pointer rounded inline-flex items-center justify-center w-12 h-12"
-                                                >
-                                                    {{item}}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <select id="limit"
-                                                        @change="viewPage()"
-                                                        name="limit"
-                                                        v-model="form.limit">
-                                                    <option :value="10">10</option>
-                                                    <option :value="25">25</option>
-                                                    <option :value="50">50</option>
-                                                    <option :value="100">100</option>
-                                                    <option :value="500">500</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tfoot>
                             </table>
+                            <pagination
+                                :urlsArray="paginatedLinks"
+                                :total-rows="receptions.total"
+                                :previousPageUrl="receptions.prev_page_url"
+                                :nextPageUrl="receptions.next_page_url"
+                            >
+                            </pagination>
                         </div>
                     </div>
                 </div>
@@ -81,55 +58,28 @@
 
 <script>
     import Dashboard from "@/Pages/Dashboard";
+    import Pagination from "@/Pages/Dashboard/Components/Pagination";
 
     export default {
         name: "Details",
         components: {
-            Dashboard
+            Dashboard,Pagination
         },
         props: {
             notification: Object,
-            receptions: Array,
-            pagination: Object
+            receptions: Object,
+            paginatedLinks: Object,
         },
         data() {
             return {
-                form: this.$inertia.form({
-                    limit: this.pagination.limit,
-                    page: this.pagination.page
-                })
+
             }
         },
         computed: {
-            numbers: function () {
-                let pages = this.pagination.pages;
-                let current = this.pagination.page;
-                console.log(current);
-                if (current < 9) {
-                    return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-                } else if (current >= (pages - 10)) {
-                    return [(pages - 10), (pages - 9), (pages - 8), (pages - 7), (pages - 6), (pages - 5), (pages - 4), (pages - 3), (pages - 2), (pages - 1)];
-                } else {
-                    return [
-                        (current - 4),
-                        (current - 3),
-                        (current - 2),
-                        (current - 1),
-                        current,
-                        (current + 1),
-                        (current + 2),
-                        (current + 3),
-                        (current + 4),
-                        (current + 8)
-                    ];
-                }
-            }
+
         },
         methods: {
-            viewPage(page) {
-                this.form.page = page;
-                this.form.submit('get', route('dashboard.notifications.details', {id: this.notification.id}));
-            }
+
         }
     }
 </script>
