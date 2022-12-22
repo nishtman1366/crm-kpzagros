@@ -1,6 +1,6 @@
 <template>
     <Dashboard>
-        <template #breadcrumb> / پشتیبانی / مشاهده درخواست / درخواست شماره {{ticket.code | persianDigit}}</template>
+        <template #breadcrumb> / پشتیبانی / مشاهده درخواست / درخواست شماره {{ ticket.code | persianDigit }}</template>
         <template #dashboardContent>
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -13,14 +13,17 @@
                             </div>
                             <div class="flex justify-between mx-3 my-2">
                                 <div class="rounded bg-gray-200 px-2 py-1 font-bold">تاریخ ارسال:
-                                    {{ticket.createDate | persianDigit}}
+                                    {{ ticket.createDate | persianDigit }}
                                 </div>
                                 <div class="rounded bg-gray-200 px-2 py-1 font-bold">آخرین بروزرسانی:
-                                    {{ticket.updateDate | persianDigit}}
+                                    {{ ticket.updateDate | persianDigit }}
                                 </div>
-                                <div class="rounded bg-gray-200 px-2 py-1 font-bold">وضعیت: {{ticket.statusText}}</div>
-                                <div class="rounded bg-gray-200 px-2 py-1 font-bold">واحد: {{ticket.type &&
-                                    ticket.type.name}}
+                                <div class="rounded bg-gray-200 px-2 py-1 font-bold">وضعیت: {{ ticket.statusText }}
+                                </div>
+                                <div class="rounded bg-gray-200 px-2 py-1 font-bold">واحد: {{
+                                        ticket.type &&
+                                        ticket.type.name
+                                    }}
                                 </div>
                             </div>
                             <div class="m-3 text-left">
@@ -47,44 +50,64 @@
                                     رخدادها
                                 </jet-button>
                             </div>
-                            <div class="flex border border-gray-200 rounded mx-2 my-3">
-                                <div class="w-1/4 py-3 bg-gray-100">
-                                    <div><img class="mx-auto" :src="ticket.user.profile_photo_url"/></div>
-                                    <div class="text-center font-bold">{{ticket.user && ticket.user.name}}</div>
+                            <template v-if="!($page.user.level==='SUPERUSER' || $page.user.level==='ADMIN' || $page.user.agent_id!==null) && (ticket.password && !$page.userAuthorizedForTicket)">
+                                <div class="text-red-500 border border-red-500 bg-red-100 py-3 px-2 m-4">
+                                    <p class="text-2xl text-center">این پیام بوسیله رمز محافظت شده است.</p>
+                                    <p class="text-xl text-center">جهت مشاهده پیام، رمز آن را وارد نمایید.</p>
+                                    <div class="w-full md:w-1/3 mx-auto">
+                                        <div class="flex items-center justify-around">
+                                            <jet-input type="password" v-model="passwordForm.password"/>
+                                            <jet-button @click.native="authorizeForTicket">مشاهده پیام</jet-button>
+                                        </div>
+                                        <jet-input-error :message="passwordForm.error('password')"/>
+                                    </div>
                                 </div>
-                                <div class="p-3 w-full">
-                                    <div class="text-lg font-bold my-3">{{ticket.title}}</div>
-                                    <div class="my-3">{{ticket.body}}</div>
-                                    <div class="border-t border-gray-200" v-if="ticket.files.length > 0">
-                                        <p class="font-bold">پیوست ها:</p>
-                                        <div class="mt-1 text-blue-500 hover:text-blue-400 flex justify-between"
-                                             v-for="file in ticket.files" :key="file.id">
-                                            <span class="w-3/4 truncate"><a :href="file.url" target="_blank">{{file.name}}</a></span>
-                                            <span>{{Math.round(file.size / 1024)}} کیلوبایت</span>
+                            </template>
+                            <template v-else>
+                                <div class="flex border border-gray-200 rounded mx-2 my-3">
+                                    <div class="w-1/4 py-3 bg-gray-100">
+                                        <div><img class="mx-auto" :src="ticket.user.profile_photo_url"/></div>
+                                        <div class="text-center font-bold">{{ ticket.user && ticket.user.name }}</div>
+                                    </div>
+                                    <div class="p-3 w-full">
+                                        <div class="text-lg font-bold my-3">{{ ticket.title }}</div>
+                                        <div class="my-3">{{ ticket.body }}</div>
+                                        <div class="border-t border-gray-200" v-if="ticket.files.length > 0">
+                                            <p class="font-bold">پیوست ها:</p>
+                                            <div class="mt-1 text-blue-500 hover:text-blue-400 flex justify-between"
+                                                 v-for="file in ticket.files" :key="file.id">
+                                                <span class="w-3/4 truncate"><a :href="file.url"
+                                                                                target="_blank">{{ file.name }}</a></span>
+                                                <span>{{ Math.round(file.size / 1024) }} کیلوبایت</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div v-for="reply in ticket.replies" class="flex border border-gray-200 rounded mx-2 my-3">
-                                <div class="w-1/4 py-3 bg-gray-100">
-                                    <div><img class="mx-auto" :src="reply.user.profile_photo_url"/></div>
-                                    <div class="text-center font-bold">{{reply.user && reply.user.name}}</div>
-                                    <div class="text-center bg-gray-200 rounded mx-2 my-1">{{reply.createDate |
-                                        persianDigit}}
+                                <div v-for="reply in ticket.replies"
+                                     class="flex border border-gray-200 rounded mx-2 my-3">
+                                    <div class="w-1/4 py-3 bg-gray-100">
+                                        <div><img class="mx-auto" :src="reply.user.profile_photo_url"/></div>
+                                        <div class="text-center font-bold">{{ reply.user && reply.user.name }}</div>
+                                        <div class="text-center bg-gray-200 rounded mx-2 my-1">{{
+                                                reply.createDate |
+                                                    persianDigit
+                                            }}
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="p-3 w-full">
-                                    <div class="my-3">{{reply.body}}</div>
-                                    <div class="border-t border-gray-200" v-if="reply.files.length > 0">
-                                        <p class="font-bold">پیوست ها:</p>
-                                        <div class="mt-1 text-blue-500 hover:text-blue-400 flex justify-between"
-                                             v-for="file in reply.files" :key="file.id">
-                                            <span class="w-3/4 truncate"><a :href="file.url" target="_blank">{{file.name}}</a></span>
-                                            <span>{{Math.round(file.size / 1024)}} کیلوبایت</span>
+                                    <div class="p-3 w-full">
+                                        <div class="my-3">{{ reply.body }}</div>
+                                        <div class="border-t border-gray-200" v-if="reply.files.length > 0">
+                                            <p class="font-bold">پیوست ها:</p>
+                                            <div class="mt-1 text-blue-500 hover:text-blue-400 flex justify-between"
+                                                 v-for="file in reply.files" :key="file.id">
+                                                <span class="w-3/4 truncate"><a :href="file.url"
+                                                                                target="_blank">{{ file.name }}</a></span>
+                                                <span>{{ Math.round(file.size / 1024) }} کیلوبایت</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -111,8 +134,8 @@
                                 <ul>
                                     <li v-for="(file,index) in replyForm.files" :key="file"
                                         class="w-full flex justify-between">
-                                        <span class="w-3/4 truncate">{{file.name}}</span>
-                                        <span class="text-left" style="direction:ltr">{{file.size}} bytes</span>
+                                        <span class="w-3/4 truncate">{{ file.name }}</span>
+                                        <span class="text-left" style="direction:ltr">{{ file.size }} bytes</span>
                                         <span @click="deleteFile(index)"
                                               class="text-red-500 hover:text-red-400 cursor-pointer">حذف</span>
                                     </li>
@@ -126,16 +149,15 @@
                     <jet-secondary-button @click.native="newReplyModal=false">انصراف</jet-secondary-button>
                 </template>
             </jet-dialog>
-
             <jet-dialog :show="eventsModal" @close="eventsModal=false">
                 <template #title>رویدادها</template>
                 <template #content>
                     <div class="">
                         <div v-for="event in ticket.events" :key="event.id"
                              class="border-b border-gray-200 pb-2 mx-3 mb-2">
-                            <p class="font-bold">{{event.title}} <span
-                                class="text-gray-600 text-sm px-2">{{event.date}}</span></p>
-                            <p>{{event.body}}</p>
+                            <p class="font-bold">{{ event.title }} <span
+                                class="text-gray-600 text-sm px-2">{{ event.date }}</span></p>
+                            <p>{{ event.body }}</p>
                         </div>
                     </div>
                 </template>
@@ -143,7 +165,6 @@
                     <jet-secondary-button @click.native="eventsModal=false">بستن</jet-secondary-button>
                 </template>
             </jet-dialog>
-
             <jet-dialog :show="transferModal" @close="transferModal=false">
                 <template #title>انتقال درخواست</template>
                 <template #content>
@@ -183,99 +204,109 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from "@/Jetstream/Button"
-    import JetDialog from "@/Jetstream/DialogModal"
-    import JetSecondaryButton from "@/Jetstream/SecondaryButton"
-    import JetLabel from "@/Jetstream/Label"
-    import JetInputError from "@/Jetstream/InputError"
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from "@/Jetstream/Button"
+import JetDialog from "@/Jetstream/DialogModal"
+import JetSecondaryButton from "@/Jetstream/SecondaryButton"
+import JetLabel from "@/Jetstream/Label"
+import JetInputError from "@/Jetstream/InputError"
+import JetInput from "@/Jetstream/Input"
 
-    export default {
-        name: "ViewTicket",
-        components: {Dashboard, JetButton, JetDialog, JetSecondaryButton, JetLabel, JetInputError},
-        props: {
-            ticket: Object,
-            types: Array,
-            agents: Array,
+export default {
+    name: "ViewTicket",
+    components: {Dashboard, JetButton, JetDialog, JetSecondaryButton, JetLabel, JetInputError, JetInput},
+    props: {
+        ticket: Object,
+        types: Array,
+        agents: Array,
+    },
+    data() {
+        return {
+            newReplyModal: false,
+            eventsModal: false,
+            transferModal: false,
+            replyForm: this.$inertia.form({
+                body: null,
+                files: [],
+            }),
+            ticketType: null,
+            agentsList: [],
+            ticketForm: this.$inertia.form({
+                status: null,
+                agent_id: this.ticket.agent_id,
+                ticket_type_id: this.ticket.ticket_type_id,
+            }, {
+                bag: 'ticketForm'
+            }),
+            passwordForm: this.$inertia.form({
+                password: null
+            }, {
+                bag: 'passwordForm'
+            })
+        }
+    },
+    computed: {
+        replyButtonStatus: function () {
+            let isAgent = this.$page.user.level === 'SUPERUSER' || this.$page.user.level === 'ADMIN' || this.$page.user.agent_id !== null;
+            let isUser = this.$page.user.level === 'AGENT' || this.$page.user.level === 'MARKETER';
+            let userId = this.$page.user.id;
+            let ticketId = this.ticket.user_id;
+            let isOwner = ticketId === userId;
+            let status = this.ticket.status;
+
+            if (status === 99) return false;
+            if (!isAgent && (status === 0 || status === 1 || status === 4)) return false;
+            if (isUser && !(status === 2 || status === 3)) return false;
+            return true;
+        }
+    },
+    watch: {
+        ticketType: function (val) {
+            this.ticketForm.ticket_type_id = val;
+            this.agentsList = this.agents.filter(agent => {
+                return agent.ticket_type_id === val;
+            });
+        }
+    },
+    methods: {
+        newReply() {
+            this.replyForm.reset();
+            this.newReplyModal = true;
         },
-        data() {
-            return {
-                newReplyModal: false,
-                eventsModal: false,
-                transferModal: false,
-                replyForm: this.$inertia.form({
-                    body: null,
-                    files: [],
-                }),
-                ticketType: null,
-                agentsList: [],
-                ticketForm: this.$inertia.form({
-                    status: null,
-                    agent_id: this.ticket.agent_id,
-                    ticket_type_id: this.ticket.ticket_type_id,
-                }, {
-                    bag: 'ticketForm'
+        handleTicketFiles(e) {
+            let files = e.target.files;
+            for (let i = 0; i < files.length; i++) {
+                this.replyForm.files.push(files[i]);
+            }
+        },
+        deleteFile(index) {
+            this.replyForm.files.splice(index, 1);
+        },
+        submitNewReply() {
+            this.replyForm.post(route('dashboard.tickets.reply.store', {id: this.ticket.id}))
+                .then(response => {
+                    if (!this.replyForm.hasErrors()) {
+                        this.newReplyModal = false;
+                    }
                 })
-            }
         },
-        computed: {
-            replyButtonStatus: function () {
-                let isAgent = this.$page.user.level === 'SUPERUSER' || this.$page.user.level === 'ADMIN' || this.$page.user.agent_id !== null;
-                let isUser = this.$page.user.level === 'AGENT' || this.$page.user.level === 'MARKETER';
-                let userId = this.$page.user.id;
-                let ticketId = this.ticket.user_id;
-                let isOwner = ticketId === userId;
-                let status = this.ticket.status;
+        updateTicket(status) {
+            this.ticketForm.status = status;
+            this.ticketForm.put(route('dashboard.tickets.update', {id: this.ticket.id}))
+                .then(response => {
 
-                if (status === 99) return false;
-                if (!isAgent && (status === 0 || status === 1 || status === 4)) return false;
-                if (isUser && !(status === 2 || status === 3)) return false;
-                return true;
-            }
+                })
         },
-        watch: {
-            ticketType: function (val) {
-                this.ticketForm.ticket_type_id = val;
-                this.agentsList = this.agents.filter(agent => {
-                    return agent.ticket_type_id === val;
-                });
-            }
+        transferTicket() {
+            this.ticketForm.reset();
+            this.transferModal = true;
         },
-        methods: {
-            newReply() {
-                this.replyForm.reset();
-                this.newReplyModal = true;
-            },
-            handleTicketFiles(e) {
-                let files = e.target.files;
-                for (let i = 0; i < files.length; i++) {
-                    this.replyForm.files.push(files[i]);
-                }
-            },
-            deleteFile(index) {
-                this.replyForm.files.splice(index, 1);
-            },
-            submitNewReply() {
-                this.replyForm.post(route('dashboard.tickets.reply.store', {id: this.ticket.id}))
-                    .then(response => {
-                        if (!this.replyForm.hasErrors()) {
-                            this.newReplyModal = false;
-                        }
-                    })
-            },
-            updateTicket(status) {
-                this.ticketForm.status = status;
-                this.ticketForm.put(route('dashboard.tickets.update', {id: this.ticket.id}))
-                    .then(response => {
 
-                    })
-            },
-            transferTicket() {
-                this.ticketForm.reset();
-                this.transferModal = true;
-            },
+        authorizeForTicket(){
+            this.passwordForm.post(route('dashboard.tickets.authorizeForPassword',{ticket:this.ticket.id}))
         }
     }
+}
 </script>
 
 <style scoped>

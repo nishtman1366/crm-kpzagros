@@ -407,7 +407,7 @@
                                 </div>
                             </template>
                         </template>
-                        <template #actions>
+                        <template #actions v-if="$page.user.level!=='ACCOUNTING'">
                             <jet-action-message :on="updateRepairForm.recentlySuccessful" class="mr-3">
                                 ذخیره شد.
                             </jet-action-message>

@@ -12,18 +12,26 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $type = $request->route('type', null);
+        $search = $request->query('search');
         $type = strtoupper($type);
         $user = Auth::user();
-        $users = User::with('parent')->where(function ($query) use ($type, $user) {
-            $query->where('level', $type);
-            if ($user->level != 'SUPERUSER') {
-                if ($type != 'ADMIN') {
-                    $query->where('parent_id', $user->id);
+        $users = User::with('parent')
+            ->where(function ($query) use ($type, $user, $search) {
+                $query->where('level', $type);
+                if ($user->level != 'SUPERUSER') {
+                    if ($type != 'ADMIN') {
+                        $query->where('parent_id', $user->id);
+                    }
                 }
-            }
-        })
+                if (!is_null($search)) $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery->where('name', 'LIKE', '%' . $search . '%')
+                        ->orWhere('mobile', 'LIKE', '%' . $search . '%')
+                        ->orWhere('email', 'LIKE', '%' . $search . '%')
+                        ->orWhere('username', 'LIKE', '%' . $search . '%');
+                });
+            })
             ->orderBy('id', 'ASC')->paginate();
-
+        $users->appends(request()->query())->links();
         $paginatedLinks = paginationLinks($users);
 
         $usersType = $this->returnUsersType($type);
@@ -34,6 +42,7 @@ class UserController extends Controller
             'type' => $type,
             'usersType' => $usersType,
             'users' => $users,
+            'search' => $search,
             'paginatedLinks' => $paginatedLinks
         ]);
     }
@@ -76,6 +85,7 @@ class UserController extends Controller
         ]);
         $type = $request->route('type');
         $request->merge(['level' => strtoupper($type)]);
+//        dd($request->all());
         User::create($request->all());
 
         return redirect()->route('dashboard.users.list', ['type' => $type]);
@@ -136,6 +146,12 @@ class UserController extends Controller
                 return 'نماینده';
             case 'MARKETER':
                 return 'بازاریاب';
+            case 'TECHNICAL':
+                return 'کارشناسان فنی';
+            case 'OFFICE':
+                return 'کارمندان دفتر';
+            case 'ACCOUNTING':
+                return 'حسابداری';
         }
     }
 }

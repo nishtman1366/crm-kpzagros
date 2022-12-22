@@ -1,16 +1,27 @@
 <template>
     <Dashboard>
-        <template #breadcrumb> / لیست {{usersType}}</template>
+        <template #breadcrumb> / لیست {{ usersType }}</template>
         <template #dashboardContent>
             <div class="flex flex-col">
                 <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                            <jet-button class="m-5 sm:float-left">
-                                <InertiaLink :href="route('dashboard.users.create',{type:type})">
-                                    ثبت کاربر جدید
-                                </InertiaLink>
-                            </jet-button>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center flex-1">
+                                    <jet-input @keyup.enter.native="searchUsers" placeholder="جستجو در نام، نام کاربری، شماره موبایل، ایمیل کاربران" type="text" name="search" id="search"
+                                               v-model="searchQuery" class="flex-1"/>
+                                    <jet-button @click.native="searchUsers" class="m-5 sm:float-left">
+                                        جستجو
+                                    </jet-button>
+                                </div>
+                                <div>
+                                    <jet-button class="m-5 sm:float-left">
+                                        <InertiaLink :href="route('dashboard.users.create',{type:type})">
+                                            ثبت کاربر جدید
+                                        </InertiaLink>
+                                    </jet-button>
+                                </div>
+                            </div>
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead>
                                 <tr>
@@ -37,21 +48,24 @@
                                 <tr v-for="user in users.data" :key="user.id">
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         <div class="text-sm text-gray-900">
-                                            {{user.name}}
-                                            <span v-if="user.parent" class="text-indigo-600">(نماینده: {{user.parent ? user.parent.name : ''}})</span>
+                                            {{ user.name }}
+                                            <span v-if="user.parent"
+                                                  class="text-indigo-600">(نماینده: {{
+                                                    user.parent ? user.parent.name : ''
+                                                }})</span>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{user.mobile}}
+                                        {{ user.mobile }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
-                                        {{user.username}}
+                                        {{ user.username }}
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
                                         <span
                                             :class="statusColors(user.status)"
                                             class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full">
-                                          {{user.statusText}}
+                                          {{ user.statusText }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 text-center text-gray-900">
@@ -90,33 +104,48 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetButton from '@/Jetstream/Button';
-    import Pagination from "@/Pages/Dashboard/Components/Pagination";
+import Dashboard from "@/Pages/Dashboard";
+import JetButton from '@/Jetstream/Button';
+import JetLabel from '@/Jetstream/Label';
+import JetInput from '@/Jetstream/Input';
+import Pagination from "@/Pages/Dashboard/Components/Pagination";
+import {Inertia} from "@inertiajs/inertia";
 
-    export default {
-        name: "UsersList",
-        components: {Dashboard, JetButton, Pagination},
-        props: {
-            type: String,
-            usersType: String,
-            users: Object,
-            paginatedLinks: Array,
-
-        },
-        methods: {
-            statusColors(status) {
-                switch (status) {
-                    case 0:
-                        return 'bg-yellow-100 text-yellow-800';
-                    case 1:
-                        return 'bg-green-100 text-green-800';
-                    case 2:
-                        return 'bg-red-100 text-red-800';
+export default {
+    name: "UsersList",
+    components: {Dashboard, JetButton, JetLabel, JetInput, Pagination},
+    props: {
+        type: String,
+        usersType: String,
+        search: String,
+        users: Object,
+        paginatedLinks: Array,
+    },
+    data() {
+        return {
+            searchQuery: this.search
+        }
+    },
+    methods: {
+        searchUsers() {
+            Inertia.visit(route('dashboard.users.list',{type:this.type}),{
+                data: {
+                    search : this.searchQuery,
                 }
+            })
+        },
+        statusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 1:
+                    return 'bg-green-100 text-green-800';
+                case 2:
+                    return 'bg-red-100 text-red-800';
             }
         }
     }
+}
 </script>
 
 <style scoped>

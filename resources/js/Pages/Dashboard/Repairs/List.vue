@@ -18,7 +18,7 @@
                                     </button>
                                 </div>
                                 <div class="col-1 sm:col-span-2">
-                                    <InertiaLink :href="route('dashboard.repairs.create',)">
+                                    <InertiaLink :href="route('dashboard.repairs.create',)" v-if="$page.user.level!=='ACCOUNTING'">
                                         <jet-button class="my-5 mx-1 sm:float-left">
                                             <svg style="width:24px;height:24px;display: inline" viewBox="0 0 24 24">
                                                 <path fill="currentColor"

@@ -251,6 +251,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::put('{id}', 'TicketController@update')->name('update');
         Route::delete('{id}', 'TicketController@destroy')->name('destroy');
 
+        Route::post('{ticket}', [\App\Http\Controllers\Tickets\TicketController::class,'authorizeForPassword'])->name('authorizeForPassword');
+
         Route::post('{id}/reply', 'ReplyController@store')->name('reply.store');
 
         Route::prefix('types')->name('types.')->group(function () {
@@ -266,6 +268,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::put('{id}', 'AgentController@update')->name('update');
             Route::delete('{id}', 'AgentController@destroy')->name('destroy');
         });
+
+
     });
 
     Route::prefix('notifications')->name('notifications.')->namespace('Notifications')->group(function () {

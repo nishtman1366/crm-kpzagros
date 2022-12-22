@@ -12,9 +12,9 @@
                     <div class="user-info">
                         <inertia-link :href="route('profile.show')">
                           <span class="user-name">
-                            <strong>{{$page.user.name}}</strong>
+                            <strong>{{ $page.user.name }}</strong>
                           </span></inertia-link>
-                        <span class="user-role">{{$page.user.levelText}}</span>
+                        <span class="user-role">{{ $page.user.levelText }}</span>
                         <span class="user-status">
                             <i class="material-icons">lens</i>
                             <span>Online</span>
@@ -45,7 +45,7 @@
                                 داشبورد
                             </inertia-link>
                         </li>
-                        <template v-if="$page.user.level!='TECHNICAL'">
+                        <template v-if="$page.user.level!='TECHNICAL' && $page.user.level!='ACCOUNTING'">
                             <li class="header-menu" data-child="#menu-profiles">
                                 پذیرندگان
                             </li>
@@ -73,7 +73,7 @@
                             </li>
                             <li id="menu-devices" class="submenu">
                                 <ul class="sidebar-submenu">
-                                    <li v-if="$page.user.level!='TECHNICAL' || $page.user.level!='MARKETER'"
+                                    <li v-if="$page.user.level!='TECHNICAL' && $page.user.level!='MARKETER' && $page.user.level!='ACCOUNTING'"
                                         class="sidebar-dropdown">
                                         <inertia-link :href="route('dashboard.devices.list')">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">dock</i>
@@ -95,11 +95,22 @@
                                 </ul>
                             </li>
                         </template>
-                        <template v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                        <template>
                             <li class="header-menu" data-child="#menu-news">
                                 اخبار و اطلاعیه ها
                             </li>
-                            <li id="menu-news" class="submenu">
+                            <li class="submenu">
+                                <ul class="sidebar-submenu">
+                                    <li>
+                                        <inertia-link :href="route('dashboard.posts.archive')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">article</i>
+                                            آرشیو اخبار
+                                        </inertia-link>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li id="menu-news" class="submenu"
+                                v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
                                 <ul class="sidebar-submenu">
                                     <li>
                                         <inertia-link :href="route('dashboard.posts.list')">
@@ -117,7 +128,7 @@
                             </li>
                         </template>
                         <template
-                            v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE'">
+                            v-if="$page.user.level!=='TECHNICAL' && $page.user.level!=='MARKETER' && $page.user.level!=='OFFICE' && $page.user.level!=='ACCOUNTING'">
                             <li class="header-menu" data-child="#menu-users">
                                 کاربران
                             </li>
@@ -151,6 +162,12 @@
                                         <inertia-link :href="route('dashboard.users.list',{type:'technical'})">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
                                             کارشناسان فنی
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'accounting'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
+                                            کاربران حسابداری
                                         </inertia-link>
                                     </li>
                                 </ul>
@@ -195,7 +212,6 @@
                             </li>
                             <li id="menu-reports" class="submenu">
                                 <ul class="sidebar-submenu">
-
                                     <li>
                                         <inertia-link :href="route('dashboard.reports.main')">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">signal_cellular_alt</i>
@@ -329,255 +345,255 @@
 </template>
 
 <script>
-    export default {
-        name: "Sidebar",
-        props: ['user'],
-        data() {
-            return {}
-        },
-        mounted() {
-            // let headers = document.querySelectorAll('.header-menu');
-            // headers.forEach(header => {
-            //     header.addEventListener('click', (e) => {
-            //         let moreIcon = document.querySelectorAll('.more').forEach(icon => {
-            //             icon.classList.remove('hidden');
-            //         });
-            //         let lessIcon = document.querySelectorAll('.less').forEach(icon => {
-            //             icon.classList.add('hidden');
-            //         })
-            //
-            //         let menuItem = e.target;
-            //         let icons = menuItem.querySelectorAll(":scope > i");
-            //         icons.forEach(icon => {
-            //             icon.classList.toggle('hidden');
-            //         })
-            //         let submenu = document.querySelector(menuItem.getAttribute('data-child'));
-            //         if (submenu) {
-            //             let submenuItems = document.querySelectorAll('.submenu');
-            //             submenuItems.forEach(sub => {
-            //                 if (sub !== submenu) {
-            //                     sub.classList.add('hidden');
-            //                 }
-            //             });
-            //             submenu.classList.toggle('hidden');
-            //         }
-            //     });
-            // });
-        },
-        methods: {}
-    }
+export default {
+    name: "Sidebar",
+    props: ['user'],
+    data() {
+        return {}
+    },
+    mounted() {
+        // let headers = document.querySelectorAll('.header-menu');
+        // headers.forEach(header => {
+        //     header.addEventListener('click', (e) => {
+        //         let moreIcon = document.querySelectorAll('.more').forEach(icon => {
+        //             icon.classList.remove('hidden');
+        //         });
+        //         let lessIcon = document.querySelectorAll('.less').forEach(icon => {
+        //             icon.classList.add('hidden');
+        //         })
+        //
+        //         let menuItem = e.target;
+        //         let icons = menuItem.querySelectorAll(":scope > i");
+        //         icons.forEach(icon => {
+        //             icon.classList.toggle('hidden');
+        //         })
+        //         let submenu = document.querySelector(menuItem.getAttribute('data-child'));
+        //         if (submenu) {
+        //             let submenuItems = document.querySelectorAll('.submenu');
+        //             submenuItems.forEach(sub => {
+        //                 if (sub !== submenu) {
+        //                     sub.classList.add('hidden');
+        //                 }
+        //             });
+        //             submenu.classList.toggle('hidden');
+        //         }
+        //     });
+        // });
+    },
+    methods: {}
+}
 </script>
 
 <style scoped lang="scss">
-    .sidebar-menu {
-        @apply border-t border-gray-200 pb-2;
+.sidebar-menu {
+    @apply border-t border-gray-200 pb-2;
 
-        .header-menu {
-            @apply cursor-pointer text-white font-bold px-3 pt-3 pb-1 block;
+    .header-menu {
+        @apply cursor-pointer text-white font-bold px-3 pt-3 pb-1 block;
 
-            :hover {
-                @apply text-indigo-500;
-            }
+        :hover {
+            @apply text-indigo-500;
+        }
 
-            i {
-                @apply h-5 w-5 text-center text-xl leading-5 align-middle;
+        i {
+            @apply h-5 w-5 text-center text-xl leading-5 align-middle;
+        }
+    }
+
+    ul {
+        li {
+            a {
+                @apply text-white inline-block w-full relative py-2 pr-3 pl-5;
+
+                i {
+
+                }
+
+                span.badge {
+                    @apply float-left mt-2;
+                }
             }
         }
+
+        li:not(.submenu):hover {
+
+            a {
+                @apply text-white;
+
+                i {
+                    @apply text-indigo-500;
+                }
+            }
+        }
+    }
+
+    .sidebar-dropdown {
+
+        div {
+            @apply bg-gray-300;
+        }
+
+    }
+
+    .sidebar-submenu {
 
         ul {
-            li {
-                a {
-                    @apply text-white inline-block w-full relative py-2 pr-3 pl-5;
+            @apply px-1 py-0;
+        }
 
-                    i {
+        li {
+            @apply pl-5 text-sm;
 
-                    }
+            a {
 
-                    span.badge {
-                        @apply float-left mt-2;
-                    }
+                .badge {
+                    @apply float-left mt-0;
                 }
-            }
 
-            li:not(.submenu):hover {
-
-                a {
-                    @apply text-white;
-
-                    i {
-                        @apply text-indigo-500;
-                    }
-                }
-            }
-        }
-
-        .sidebar-dropdown {
-
-            div {
-                @apply bg-gray-300;
-            }
-
-        }
-
-        .sidebar-submenu {
-
-            ul {
-                @apply px-1 py-0;
-            }
-
-            li {
-                @apply pl-5 text-sm;
-
-                a {
-
-                    .badge {
-                        @apply float-left mt-0;
-                    }
-
-                }
             }
         }
     }
+}
 
 
-    #sidebar {
-        /*background-color: #31353d;*/
-    }
+#sidebar {
+    /*background-color: #31353d;*/
+}
 
-    .sidebar-content {
-        @apply overflow-y-auto relative h-full;
-        /*max-height: calc(100% - 30px);*/
-        /*height: calc(100% - 30px);*/
-    }
+.sidebar-content {
+    @apply overflow-y-auto relative h-full;
+    /*max-height: calc(100% - 30px);*/
+    /*height: calc(100% - 30px);*/
+}
 
-    .sidebar-brand {
-        cursor: pointer;
-        font-size: 20px;
+.sidebar-brand {
+    cursor: pointer;
+    font-size: 20px;
 
-        .sidebar-wrapper {
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar-wrapper {
-            text-transform: uppercase;
-            font-weight: bold;
-            flex-grow: 1;
-        }
-
-        .sidebar-wrapper > a {
-            color: #818896;
-            text-transform: uppercase;
-            font-weight: bold;
-            flex-grow: 1;
-        }
-
-    }
-
-    #close-sidebar {
-        color: #bdbdbd;
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    .sidebar-header {
-        @apply border-t-2 border-gray-100;
-    }
-
-    .sidebar-content .sidebar-header {
-        padding: 20px;
-        overflow: hidden;
+    .sidebar-wrapper {
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
     }
 
     .sidebar-wrapper {
-
-        .sidebar-header {
-
-            .user-pic {
-                float: right;
-                width: 60px;
-                padding: 2px;
-                border-radius: 12px;
-                margin-left: 15px;
-                overflow: hidden;
-
-                img {
-                    object-fit: cover;
-                    height: 100%;
-                    width: 100%;
-                }
-
-            }
-
-            .user-info {
-                color: #b8bfce;
-
-                > span {
-                    display: block;
-                }
-
-                .user-role {
-                    color: #818896;
-                    font-size: 12px;
-                }
-
-                .user-status {
-                    font-size: 11px;
-                    margin-top: 4px;
-
-                    i {
-                        font-size: 8px;
-                        margin-right: 4px;
-                        color: #5cb85c;
-                    }
-
-                }
-            }
-        }
-
-        ul {
-            @apply p-0 m-0 list-none;
-        }
-
-        /* End Sidebar Menu */
+        text-transform: uppercase;
+        font-weight: bold;
+        flex-grow: 1;
     }
 
-    .sidebar-footer {
-        background: #3a3f48;
-        box-shadow: 0px -1px 5px #282c33;
-        border-top: 1px solid #464a52;
-        position: absolute;
-        width: 96%;
-        bottom: 0;
-        right: 0;
-        display: flex;
+    .sidebar-wrapper > a {
+        color: #818896;
+        text-transform: uppercase;
+        font-weight: bold;
+        flex-grow: 1;
+    }
 
-        > a {
-            color: #818896;
-            flex-grow: 1;
-            text-align: center;
-            height: 30px;
-            line-height: 30px;
-            position: relative;
+}
 
-            :first-child {
-                border-left: none;
-            }
+#close-sidebar {
+    color: #bdbdbd;
+    cursor: pointer;
+    font-size: 20px;
+}
 
-            .notification {
-                position: absolute;
-                top: 0;
+.sidebar-header {
+    @apply border-t-2 border-gray-100;
+}
+
+.sidebar-content .sidebar-header {
+    padding: 20px;
+    overflow: hidden;
+}
+
+.sidebar-wrapper {
+
+    .sidebar-header {
+
+        .user-pic {
+            float: right;
+            width: 60px;
+            padding: 2px;
+            border-radius: 12px;
+            margin-left: 15px;
+            overflow: hidden;
+
+            img {
+                object-fit: cover;
+                height: 100%;
+                width: 100%;
             }
 
         }
 
-        > a:hover {
+        .user-info {
+            color: #b8bfce;
 
-            i {
-                color: #b8bfce;
+            > span {
+                display: block;
             }
 
+            .user-role {
+                color: #818896;
+                font-size: 12px;
+            }
+
+            .user-status {
+                font-size: 11px;
+                margin-top: 4px;
+
+                i {
+                    font-size: 8px;
+                    margin-right: 4px;
+                    color: #5cb85c;
+                }
+
+            }
         }
     }
+
+    ul {
+        @apply p-0 m-0 list-none;
+    }
+
+    /* End Sidebar Menu */
+}
+
+.sidebar-footer {
+    background: #3a3f48;
+    box-shadow: 0px -1px 5px #282c33;
+    border-top: 1px solid #464a52;
+    position: absolute;
+    width: 96%;
+    bottom: 0;
+    right: 0;
+    display: flex;
+
+    > a {
+        color: #818896;
+        flex-grow: 1;
+        text-align: center;
+        height: 30px;
+        line-height: 30px;
+        position: relative;
+
+        :first-child {
+            border-left: none;
+        }
+
+        .notification {
+            position: absolute;
+            top: 0;
+        }
+
+    }
+
+    > a:hover {
+
+        i {
+            color: #b8bfce;
+        }
+
+    }
+}
 </style>

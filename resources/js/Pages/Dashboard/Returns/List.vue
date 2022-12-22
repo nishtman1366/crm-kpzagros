@@ -11,7 +11,7 @@
                     <jet-button @click.native="submitSearchForm" class="bg-blue-500 hover:bg-blue-400">جستجو
                     </jet-button>
                 </div>
-                <div class="flex-grow text-left">
+                <div class="flex-grow text-left" v-if="$page.user.level!=='ACCOUNTING'">
                     <inertia-link :href="route('dashboard.returns.create')">
                         <jet-button class="">ثبت درخواست جدید</jet-button>
                     </inertia-link>

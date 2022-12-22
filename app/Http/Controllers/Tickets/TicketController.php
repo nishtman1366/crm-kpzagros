@@ -11,6 +11,7 @@ use App\Models\Tickets\Type;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -52,7 +53,7 @@ class TicketController extends Controller
         $paginatedLinks = paginationLinks($tickets->appends($request->query->all()));
 
         $types = Type::where('status', true)->get();
-        $agents = Agent::orderBy('id', 'ASC')->get();
+        $agents = Agent::where('status', true)->orderBy('id', 'ASC')->get();
         $userTypes = [
             ['id' => 'ADMIN', 'name' => 'مدیر سیستم'],
             ['id' => 'AGENT', 'name' => 'نمایندگان'],
@@ -99,7 +100,12 @@ class TicketController extends Controller
 
         $user = Auth::user();
         if ($user->isSuperUser() || $user->isAdmin() || $user->isSupportAgent()) {
-            $request->merge(['status' => 2]);
+            $reception = User::where('id', $request->get('user_id'))->get()->first();
+            if($reception->isSuperUser() || $reception->isAdmin() || $reception->isSupportAgent()){
+                $request->merge(['status' => 0]);
+            }else{
+                $request->merge(['status' => 2]);
+            }
         } else {
             $request->merge(['user_id' => $user->id]);
         }
@@ -190,5 +196,19 @@ class TicketController extends Controller
         if ($codeExistence) return $this->createTicketCode();
 
         return $code;
+    }
+
+    public function authorizeForPassword(Ticket $ticket, Request $request)
+    {
+        $request->validateWithBag('passwordForm', [
+            'password' => 'required'
+        ]);
+        $password = $request->get('password');
+        if (Hash::check($password, $ticket->password)) {
+            $request->session()->flash('userAuthorizedForTicket', true);
+            return redirect()->route('dashboard.tickets.view', ['id' => $ticket]);
+        }
+
+        throw new UnauthorizedHttpException('', 'کلمه عبور وارد شده اشتباه است');
     }
 }

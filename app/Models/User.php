@@ -94,6 +94,8 @@ class User extends Authenticatable
                 return 'کارشناس فنی';
             case 'OFFICE':
                 return 'کارمند اداری';
+            case 'ACCOUNTING':
+                return 'حسابداری';
         }
     }
 

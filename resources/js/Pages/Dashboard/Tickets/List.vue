@@ -51,14 +51,13 @@
                                                 v-on:change="submitSearchForm"
                                                 class="w-full mt-1 inline py-2 px-6 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">>
                                             <option :value="null" v-text="'کاربر'"/>
-                                            <option v-for="user in agentUsers" :key="user.id" :value="user.id"
+                                            <option v-for="user in agentsList" :key="user.id" :value="user.id"
                                                     v-text="user.name"/>
                                         </select>
                                     </div>
                                 </div>
-                                <div>
+                                <div class="flex items-center">
                                     <jet-button
-                                        class="md:float-left"
                                         @click.native="newTicket">
                                         ثبت درخواست جدید
                                     </jet-button>
@@ -216,6 +215,12 @@
                                       class="w-full block form-input rounded-md shadow-sm"/>
                             <jet-input-error :message="ticketForm.error('body')"/>
                         </div>
+                        <div class="mt-3" v-if="$page.user.agent_id">
+                            <jet-label for="password" value="رمز پیام"/>
+                            <jet-input type="text" v-model="ticketForm.password" id="password"
+                                      class="w-full block form-input rounded-md shadow-sm"/>
+                            <jet-input-error message="در صورتی که میخواهید پیام شما بوسیله رمز حفاظت شود رمز مورد نظر خود را وارد نمایید. این رمز فقط هنگام مشاهده پیام توسط نمایندگان یا بازاریابان موثر خواهد بود."/>
+                        </div>
                         <div class="mt-3 text-left">
                             <jet-button @click.native="$refs.files.click()">انتخاب فایل پیوست</jet-button>
                             <input class="hidden" ref="files" type="file" multiple name="files" id="files"
@@ -289,6 +294,7 @@ export default {
                 ticket_type_id: this.$page.user.ticket_type_id,
                 agent_id: this.$page.user.agent_id,
                 body: null,
+                password: null,
                 files: []
             }, {
                 bag: 'ticketForm',
@@ -303,9 +309,9 @@ export default {
         }
     },
     mounted() {
-        if (this.ticketType) {
+        if (this.typeId) {
             this.agentsList = this.agents.filter(agent => {
-                return agent.ticket_type_id === this.ticketType;
+                return agent.ticket_type_id === this.typeId;
             });
         }
     },
