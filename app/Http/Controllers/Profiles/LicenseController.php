@@ -168,15 +168,16 @@ class LicenseController extends Controller
     public function downloadZipArchive(Profile $profile, Request $request)
     {
         $profile->load('customer');
-        $licenses = License::where('profile_id', $profile->id)->get();
+        $licenses = License::with('type')->where('profile_id', $profile->id)->get();
         $files = [];
 
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
-
+            $extension = pathinfo($license->file, PATHINFO_EXTENSION);
+            $fileName = $license->type->file_name ? $license->type->file_name . '.' . $extension : $license->file;
             $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
-            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
-            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $license->file), $stream);
+            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $fileName));
+            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
             $files[] = $fileItem;
         }
 
