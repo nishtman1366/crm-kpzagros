@@ -20,6 +20,7 @@ class AgentController extends Controller
         $users = User::where(function ($query) {
             $query->where('level', 'OFFICE')
                 ->orWhere('level', 'ADMIN')
+                ->orWhere('level', 'ACCOUNTING')
                 ->orWhere('level', 'TECHNICAL');
         })->get();
         return Inertia::render('Dashboard/Tickets/Agents', compact('agents', 'types', 'users'));
