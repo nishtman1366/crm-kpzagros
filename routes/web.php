@@ -122,9 +122,9 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
     });
 
     Route::prefix('payments')->name('payments.')->namespace('Payments')->group(function () {
-        Route::prefix('ipg')->name('ipg.')->group(function(){
-            Route::get('{type}/{id}/request', [\App\Http\Controllers\Payments\PaymentController::class,'ipgRequest'])->name('request');
-            Route::get('{trackingCode}/verify', [\App\Http\Controllers\Payments\PaymentController::class,'ipgVerify'])->name('verify');
+        Route::prefix('ipg')->name('ipg.')->group(function () {
+            Route::get('{type}/{id}/request', [\App\Http\Controllers\Payments\PaymentController::class, 'ipgRequest'])->name('request');
+            Route::get('{trackingCode}/verify', [\App\Http\Controllers\Payments\PaymentController::class, 'ipgVerify'])->name('verify');
         });
         Route::get('{paymentId}/confirm', 'PaymentController@confirm')->name('confirm');
     });
@@ -244,17 +244,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
     });
 
     Route::prefix('tickets')->name('tickets.')->namespace('Tickets')->group(function () {
-        Route::get('', 'TicketController@index')->name('list');
-        Route::get('new', 'TicketController@create')->name('create');
-        Route::post('', 'TicketController@store')->name('store');
-        Route::get('{id}', 'TicketController@view')->name('view');
-        Route::put('{id}', 'TicketController@update')->name('update');
-        Route::delete('{id}', 'TicketController@destroy')->name('destroy');
-
-        Route::post('{ticket}', [\App\Http\Controllers\Tickets\TicketController::class,'authorizeForPassword'])->name('authorizeForPassword');
-
-        Route::post('{id}/reply', 'ReplyController@store')->name('reply.store');
-
         Route::prefix('types')->name('types.')->group(function () {
             Route::get('', 'TypeController@index')->name('list');
             Route::post('', 'TypeController@store')->name('store');
@@ -264,12 +253,21 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
 
         Route::prefix('agents')->name('agents.')->group(function () {
             Route::get('', 'AgentController@index')->name('list');
-            Route::post('', 'AgentController@store')->name('store');
+            Route::post('', [\App\Http\Controllers\Tickets\AgentController::class, 'store'])->name('store');
             Route::put('{id}', 'AgentController@update')->name('update');
             Route::delete('{id}', 'AgentController@destroy')->name('destroy');
         });
 
+        Route::get('', 'TicketController@index')->name('list');
+        Route::get('new', 'TicketController@create')->name('create');
+        Route::post('', 'TicketController@store')->name('store');
+        Route::get('{id}', 'TicketController@view')->name('view');
+        Route::put('{id}', 'TicketController@update')->name('update');
+        Route::delete('{id}', 'TicketController@destroy')->name('destroy');
 
+        Route::post('{ticket}', [\App\Http\Controllers\Tickets\TicketController::class, 'authorizeForPassword'])->name('authorizeForPassword');
+
+        Route::post('{id}/reply', 'ReplyController@store')->name('reply.store');
     });
 
     Route::prefix('notifications')->name('notifications.')->namespace('Notifications')->group(function () {
