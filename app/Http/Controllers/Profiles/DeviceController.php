@@ -33,7 +33,7 @@ class DeviceController extends Controller
         $deviceTypes = DeviceType::where('status', 1)->get();
 
         $psps = Psp::where('id', '!=', 4)->orderBy('name', 'ASC')->get();
-
+//        $psps = Psp::orderBy('name', 'ASC')->get();
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/CreateDevice', [
             'profileId' => $profile->id,

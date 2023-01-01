@@ -189,7 +189,7 @@ class ProfileController extends Controller
             ['id' => 16, 'name' => 'رد درخواست جابجایی'],
         ];
 
-        $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
+        $psps = Psp::orderBy('name', 'ASC')->get();
 
         $agents = [];
         if ($user->isAdmin() || $user->isSuperuser() || $user->isOffice()) {
