@@ -32,7 +32,7 @@ class DeviceController extends Controller
 
         $deviceTypes = DeviceType::where('status', 1)->get();
 
-        $psps = Psp::where('id', '!=', 4)->orderBy('name', 'ASC')->get();
+        $psps = Psp::where('status', true)->orderBy('name', 'ASC')->get();
 //        $psps = Psp::orderBy('name', 'ASC')->get();
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/CreateDevice', [
@@ -88,7 +88,7 @@ class DeviceController extends Controller
         if (count($terminals) === 0) throw new NotFoundHttpException('اطلاعات دستگاه یافت نشد.');
         $connectionTypes = DeviceConnectionType::orderBy('id', 'ASC')->get();
         $deviceTypes = DeviceType::where('status', 1)->get();
-        $psps = Psp::where('id', '!=', 4)->where('id', '!=', 22)->orderBy('name', 'ASC')->get();
+        $psps = Psp::where('status', true)->orderBy('name', 'ASC')->get();
 //        $psps = Psp::orderBy('name', 'ASC')->get();
         $devicePsps = DevicePsp::all();
         return Inertia::render('Dashboard/Profiles/EditDevice', [

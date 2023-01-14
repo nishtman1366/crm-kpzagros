@@ -308,7 +308,7 @@ class ProfileController extends Controller
             ['id' => 15, 'name' => 'اختصاص سریال جدید'],
             ['id' => 16, 'name' => 'رد درخواست جابجایی'],
         ];
-        $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
+        $psps = Psp::where('status', true)->orderBy('name', 'ASC')->get();
 
         $deviceTypes = DeviceType::where(function ($query) use ($profile) {
 //            if (!is_null($profile->psp_id)) {
@@ -638,9 +638,9 @@ class ProfileController extends Controller
         $profilesQuery->orderBy('id', 'ASC')
             ->limit(100)
             ->chunk(999, function ($profiles) use (&$excelJobList, $jDate, &$i, $user) {
-            $excelJobList->push(new ExportProfiles($profiles, $user));
-            $i++;
-        });
+                $excelJobList->push(new ExportProfiles($profiles, $user));
+                $i++;
+            });
         Cache::put(sprintf('%s.profiles.export.total', $user->id), $i);
         $excelJobList->push(new CreateZipArchive($user));
         $excelJobList->push(new DeleteExportedFiles($user));
