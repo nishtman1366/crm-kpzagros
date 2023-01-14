@@ -11,9 +11,6 @@ class Psp extends Model
 
     protected $fillable = ['name', 'status'];
 
-    protected $casts = [
-        'status' => 'boolean'
-    ];
     protected $appends = ['statusText'];
 
     public function getStatusTextAttribute()

@@ -308,7 +308,7 @@ class ProfileController extends Controller
             ['id' => 15, 'name' => 'اختصاص سریال جدید'],
             ['id' => 16, 'name' => 'رد درخواست جابجایی'],
         ];
-        $psps = Psp::where('status', true)->orderBy('name', 'ASC')->get();
+        $psps = Psp::where('status', 1)->orderBy('name', 'ASC')->get();
 
         $deviceTypes = DeviceType::where(function ($query) use ($profile) {
 //            if (!is_null($profile->psp_id)) {
