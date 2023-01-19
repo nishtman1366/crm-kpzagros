@@ -1,6 +1,6 @@
 const port = 3032
 const secret = "Nil00f@r1869";
-const repo = "/home/nishtman/Projects/kpzagros";
+const repo = "/home/avr/www/crm-kpzagros";
 
 let http = require('http');
 let crypto = require('crypto');
@@ -25,7 +25,7 @@ const commands = [
 ];
 
 http.createServer(function (req, res) {
-    const writeStream = fs.createWriteStream("./storage/logs/webhooks/logs.txt", {flags: 'a'});
+    const writeStream = fs.createWriteStream(`${repo}/storage/logs/webhooks/logs.txt`, {flags: 'a'});
 
     req.on('data', function (chunk) {
         let now = new Date();
