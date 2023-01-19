@@ -37,7 +37,7 @@ http.createServer(function (req, res) {
                 writeStream.write(`${date} ${command} \n`)
                 const error = execSync(command).toString();
                 writeStream.write(`${date} ${error} \n \n`)
-            }catch (error){
+            } catch (error) {
                 console.log('############################################')
                 console.log(error)
                 console.log('############################################')
