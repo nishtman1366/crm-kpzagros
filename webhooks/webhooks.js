@@ -1,6 +1,6 @@
 const port = 3032
 const secret = "Nil00f@r1869";
-const repo = "/home/avr/www/crm-kpzagros";
+const repo = "/home/var/www/crm-kpzagros";
 
 let http = require('http');
 let crypto = require('crypto');
