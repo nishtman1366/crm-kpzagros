@@ -13,7 +13,6 @@ const {promisify} = require('util');
 
 const fs = require("fs");
 
-
 const commands = [
     'cd ' + repo,
     'git pull origin master',
