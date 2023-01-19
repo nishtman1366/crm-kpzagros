@@ -27,10 +27,10 @@ http.createServer(function (req, res) {
     const writeStream = fs.createWriteStream(`${repo}/storage/logs/webhooks/logs.txt`, {flags: 'a'});
 
     req.on('data', function (chunk) {
-        let now = new Date();
-        let date = `${now.getFullYear()}-${now.getMonth()}-${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
 
         commands.map(function (command) {
+            let now = new Date();
+            let date = `${now.getFullYear()}-${now.getMonth()}-${now.getDay()} ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
             try {
                 writeStream.write(`********** ${date} ********** \n`)
                 writeStream.write(`${date} ${command} \n`)
