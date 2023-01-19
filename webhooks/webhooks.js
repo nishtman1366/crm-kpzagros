@@ -1,6 +1,6 @@
 const port = 3032
 const secret = "Nil00f@r1869";
-const repo = "/home/var/www/crm-kpzagros";
+const repo = "/var/www/crm-kpzagros";
 
 let http = require('http');
 let crypto = require('crypto');
@@ -12,6 +12,7 @@ const {promisify} = require('util');
 // const exec = promisify(execWithCallback);
 
 const fs = require("fs");
+
 
 const commands = [
     'cd ' + repo,
