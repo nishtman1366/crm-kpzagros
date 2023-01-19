@@ -18,7 +18,6 @@ const commands = [
     'npm run prod'
 ];
 
-
 http.createServer(function (req, res) {
     req.on('data', function (chunk) {
         let sig = "sha1=" + crypto.createHmac('sha1', secret).update(chunk.toString()).digest('hex');
