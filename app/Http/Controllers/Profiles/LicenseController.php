@@ -185,6 +185,7 @@ class LicenseController extends Controller
                 $files[] = $fileName;
             } catch (FileExistsException $e) {
                 \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName2), $stream);
+                die($fileName2);
                 $files[] = $fileName2;
             }
         }
