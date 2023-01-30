@@ -7,6 +7,7 @@ use App\Models\Profiles\License;
 use App\Models\Profiles\LicenseType;
 use App\Models\Profiles\Profile;
 use Exception;
+use Illuminate\Contracts\Filesystem\FileExistsException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -170,15 +171,20 @@ class LicenseController extends Controller
         $profile->load('customer');
         $licenses = License::with('type')->where('profile_id', $profile->id)->get();
         $files = [];
+        \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profile->id));
 
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
             $extension = pathinfo($license->file, PATHINFO_EXTENSION);
             $fileName = $license->type->file_name ? $license->type->file_name . '.' . $extension : $license->file;
             $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
-            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $fileName));
-            \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
-            $files[] = $fileItem;
+            try{
+                \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
+                $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $fileName));
+            }catch (FileExistsException $e){
+                \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $license->file), $stream);
+                $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
+            }
         }
 
         if (count($files) > 0) {
