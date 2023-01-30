@@ -188,7 +188,7 @@ class LicenseController extends Controller
                 $files[] = $fileName2;
             }
         }
-die($files);
+        dd($files);
         if (count($files) > 0) {
             $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $profile->customer->national_code));
             $archive = new ZipArchive();
