@@ -188,7 +188,7 @@ class LicenseController extends Controller
                 $files[] = $fileName2;
             }
         }
-        dd($files);
+//        dd($files);
         if (count($files) > 0) {
             $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $profile->customer->national_code));
             $archive = new ZipArchive();
@@ -198,13 +198,10 @@ class LicenseController extends Controller
 
             foreach ($files as $file) {
                 try {
-                    if (!$archive->addFile($file, basename($file))) {
-                        throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
-                    }
+                    $archive->addFile($file, basename($file));
                 } catch (ErrorException $e) {
-                    die($e->getMessage());
+                    continue;
                 }
-
             }
 
             if (!$archive->close()) {
