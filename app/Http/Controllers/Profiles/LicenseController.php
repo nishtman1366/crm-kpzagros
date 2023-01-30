@@ -185,11 +185,10 @@ class LicenseController extends Controller
                 $files[] = $fileName;
             } catch (FileExistsException $e) {
                 \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName2), $stream);
-                die($fileName2);
                 $files[] = $fileName2;
             }
         }
-
+die($files);
         if (count($files) > 0) {
             $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $profile->customer->national_code));
             $archive = new ZipArchive();
