@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Profiles\License;
 use App\Models\Profiles\LicenseType;
 use App\Models\Profiles\Profile;
+use ErrorException;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileExistsException;
 use Illuminate\Http\Request;
@@ -196,9 +197,14 @@ class LicenseController extends Controller
             }
 
             foreach ($files as $file) {
-                if (!$archive->addFile($file, basename($file))) {
-                    throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
+                try {
+                    if (!$archive->addFile($file, basename($file))) {
+                        throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
+                    }
+                } catch (ErrorException $e) {
+                    die($file);
                 }
+
             }
 
             if (!$archive->close()) {
