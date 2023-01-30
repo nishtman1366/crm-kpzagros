@@ -172,7 +172,7 @@ class LicenseController extends Controller
         $profile->load('customer');
         $licenses = License::with('type')->where('profile_id', $profile->id)->get();
         $files = [];
-
+        \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profile->id));
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
             $extension = pathinfo($license->file, PATHINFO_EXTENSION);
