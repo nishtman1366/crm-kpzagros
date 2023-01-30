@@ -176,7 +176,7 @@ class LicenseController extends Controller
             $extension = pathinfo($license->file, PATHINFO_EXTENSION);
             $fileName = $license->type->file_name ? $license->type->file_name . '.' . $extension : $license->file;
             $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
-            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $fileName));
+            $fileItem = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, str_replace('-', '_', $fileName)));
             \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
             $files[] = $fileItem;
         }
