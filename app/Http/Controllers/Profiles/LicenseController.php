@@ -202,7 +202,7 @@ class LicenseController extends Controller
                         throw new Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
                     }
                 } catch (ErrorException $e) {
-                    die($file);
+                    die($e->getMessage());
                 }
 
             }
