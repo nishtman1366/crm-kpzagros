@@ -638,7 +638,7 @@ class ProfileController extends Controller
             $profilesQuery->where('updated_at', '<=', $toDate);
         }
         $jDate = Jalalian::forge(now())->format('Y.m.d');
-        dd($profilesQuery->get()->count());
+
         $i = 1;
         $excelJobList = collect();
         $profilesQuery->orderBy('id', 'ASC')

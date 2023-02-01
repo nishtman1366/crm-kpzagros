@@ -58,6 +58,7 @@ class ExportProfiles implements ShouldQueue
         Storage::copy('temp/excel/Template.xlsx', sprintf('temp/excel/profiles/%s/%s', $directoryName, $fileName));
         $writer = SimpleExcelWriter::create($fullPath);
         foreach ($this->collection() as $item) {
+            Log::channel('daily')->info($item->id);
             $writer->addRow($item);
         }
 
