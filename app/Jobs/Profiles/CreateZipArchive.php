@@ -38,13 +38,11 @@ class CreateZipArchive implements ShouldQueue
     public function handle()
     {
         $directory = Cache::get(sprintf('%s.profiles.export.directory', $this->user->id));
-        Log::channel('daily')->info('Done:' . $directory);
         if (!is_null($directory)) {
             $files = Storage::files('temp/excel/profiles/' . $directory);
             if (count($files) > 0) {
                 $archiveFile = storage_path(sprintf('app/public/archives/Profiles_%s_%s.zip', $this->user->id, time()));
                 Cache::put(sprintf('%s.profiles.export.zipFile', $this->user->id), sprintf('Profiles_%s_%s.zip', $this->user->id, time()));
-                Log::channel('daily')->info('ArchiveFile:' . $archiveFile);
                 $archive = new ZipArchive();
                 if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
                     Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');
@@ -53,12 +51,14 @@ class CreateZipArchive implements ShouldQueue
 
                 foreach ($files as $file) {
                     $f = storage_path('app/' . $file);
-                    if (!$archive->addFile($f, basename($file))) {
-                        Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');
-                        throw new \Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
+                    $ext = pathinfo($f, PATHINFO_EXTENSION);
+                    if ($ext === 'xslsx') {
+                        if (!$archive->addFile($f, basename($file))) {
+                            Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');
+                            throw new \Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
+                        }
                     }
                 }
-                Log::channel('daily')->info('2: ArchiveFile:' . $archiveFile);
 
                 if (!$archive->close()) {
                     Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');
@@ -67,7 +67,6 @@ class CreateZipArchive implements ShouldQueue
                 Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'done');
                 Cache::put(sprintf('%s.profiles.export.expiration', $this->user->id), now()->addHours(2)->format('Y/m/d H:i:s'));
                 Cache::put(sprintf('%s.profiles.export.zipFileUrl', $this->user->id), Storage::disk('public')->url(sprintf('archives/Profiles_%s_%s.zip', $this->user->id, time())));
-                Log::channel('daily')->info($directory);
                 Storage::deleteDirectory('temp/excel/profiles/' . $directory);
             } else {
                 Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');

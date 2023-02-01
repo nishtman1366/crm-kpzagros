@@ -538,13 +538,18 @@ class ProfileController extends Controller
     public function downloadExcel(Request $request)
     {
         $user = Auth::user();
+        $pspId = $request->query('pspId');
+
         $profilesQuery = Profile::with('customer')
             ->with('terminals')
             ->withCount('accounts')
             ->with('user')
             ->with('user.parent')
             ->whereHas('customer')
-            ->where(function ($query) use ($user) {
+            ->where(function ($query) use ($user, $pspId) {
+                if (!is_null($pspId)) {
+                    $query->where('psp_id', (int)$pspId);
+                }
                 if (!$user->isSuperUser()) {
                     $query->where('user_id', $user->id);
                     if ($user->isAgent() || $user->isAdmin()) {
@@ -633,10 +638,10 @@ class ProfileController extends Controller
             $profilesQuery->where('updated_at', '<=', $toDate);
         }
         $jDate = Jalalian::forge(now())->format('Y.m.d');
+
         $i = 1;
         $excelJobList = collect();
         $profilesQuery->orderBy('id', 'ASC')
-            ->limit(100)
             ->chunk(999, function ($profiles) use (&$excelJobList, $jDate, &$i, $user) {
                 $excelJobList->push(new ExportProfiles($profiles, $user));
                 $i++;
