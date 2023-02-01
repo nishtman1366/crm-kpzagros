@@ -45,6 +45,7 @@ class ExportProfiles implements ShouldQueue
     public function handle()
     {
         Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'processing');
+        Log::channel('daily')->info('###################################3');
         Log::channel('daily')->info('processing...');
         $jDate = Jalalian::forge(now())->format('Y.m.d');
         $directoryName = $jDate;
