@@ -636,7 +636,6 @@ class ProfileController extends Controller
         $i = 1;
         $excelJobList = collect();
         $profilesQuery->orderBy('id', 'ASC')
-            ->limit(100)
             ->chunk(999, function ($profiles) use (&$excelJobList, $jDate, &$i, $user) {
                 $excelJobList->push(new ExportProfiles($profiles, $user));
                 $i++;
