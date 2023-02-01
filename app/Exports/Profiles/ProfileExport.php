@@ -26,6 +26,7 @@ class ProfileExport implements FromCollection, WithHeadings
     {
         $this->collection = $collection;
         $this->maxAccountsCount = $collection->max('accounts_count');
+        Log::channel('daily')->info($this->maxAccountsCount);
     }
 
     /**
@@ -40,7 +41,9 @@ class ProfileExport implements FromCollection, WithHeadings
          */
         $j = 1;
         $start = $j;
+        Log::channel('daily')->info($this->maxAccountsCount);
         foreach ($this->collection as $profile) {
+            Log::channel('daily')->info($start);
             $profileData = [
                 $profile->id,
                 substr($profile->jCreatedAt, 0, 10),
