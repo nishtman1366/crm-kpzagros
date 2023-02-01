@@ -56,11 +56,13 @@ class ExportProfiles implements ShouldQueue
 //        Excel::store(new ProfileExport($this->profiles), 'temp/excel/profiles/' . $directoryName . '/' . $fileName);
         $fullPath = storage_path(sprintf('app/temp/excel/profiles/%s/%s', $directoryName, $fileName));
         Storage::copy('temp/excel/Template.xlsx', sprintf('temp/excel/profiles/%s/%s', $directoryName, $fileName));
+        Log::channel('daily')->info($fullPath);
         $writer = SimpleExcelWriter::create($fullPath);
         foreach ($this->collection() as $item) {
             Log::channel('daily')->info($item->id);
             $writer->addRow($item);
         }
+        Log::channel('daily')->info($fullPath);
 
         $done = Cache::get(sprintf('%s.profiles.export.done', $this->user->id));
         if (is_null($done)) {
