@@ -39,6 +39,7 @@ class CreateZipArchive implements ShouldQueue
     {
         $directory = Cache::get(sprintf('%s.profiles.export.directory', $this->user->id));
         if (!is_null($directory)) {
+            Log::channel('daily')->info('temp/excel/profiles/' . $directory);
             $files = Storage::files('temp/excel/profiles/' . $directory);
             if (count($files) > 0) {
                 $archiveFile = storage_path(sprintf('app/public/archives/Profiles_%s_%s.zip', $this->user->id, time()));
@@ -50,6 +51,7 @@ class CreateZipArchive implements ShouldQueue
                 }
 
                 foreach ($files as $file) {
+                    Log::channel('daily')->info($file);
                     $f = storage_path('app/' . $file);
                     $ext = pathinfo($f, PATHINFO_EXTENSION);
                     if ($ext === 'xslsx') {
