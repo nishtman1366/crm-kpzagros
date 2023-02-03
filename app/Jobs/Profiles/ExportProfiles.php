@@ -53,23 +53,23 @@ class ExportProfiles implements ShouldQueue
         $directoryName = $jDate;
         Cache::put(sprintf('%s.profiles.export.directory', $this->user->id), $directoryName);
         $fileName = 'profiles.' . $jDate . '_' . time() . '.xlsx';
-//        Excel::store(new ProfileExport($this->profiles), 'temp/excel/profiles/' . $directoryName . '/' . $fileName);
-        $fullPath = storage_path(sprintf('app/temp/excel/profiles/%s/%s', $directoryName, $fileName));
-        Storage::copy('temp/excel/Template.xlsx', sprintf('temp/excel/profiles/%s/%s', $directoryName, $fileName));
-        Log::channel('daily')->info($fullPath);
-        $writer = SimpleExcelWriter::create($fullPath);
-        foreach ($this->collection() as $item) {
-            Log::channel('daily')->info($item[0]);
-            $writer->addRow($item);
-        }
-        Log::channel('daily')->info($fullPath);
-
-        $done = Cache::get(sprintf('%s.profiles.export.done', $this->user->id));
-        if (is_null($done)) {
-            Cache::put(sprintf('%s.profiles.export.done', $this->user->id), 1);
-        } else {
-            Cache::increment(sprintf('%s.profiles.export.done', $this->user->id));
-        }
+        Excel::store(new ProfileExport($this->profiles), 'temp/excel/profiles/' . $directoryName . '/' . $fileName);
+//        $fullPath = storage_path(sprintf('app/temp/excel/profiles/%s/%s', $directoryName, $fileName));
+//        Storage::copy('temp/excel/Template.xlsx', sprintf('temp/excel/profiles/%s/%s', $directoryName, $fileName));
+//        Log::channel('daily')->info($fullPath);
+//        $writer = SimpleExcelWriter::create($fullPath);
+//        foreach ($this->collection() as $item) {
+//            Log::channel('daily')->info($item[0]);
+//            $writer->addRow($item);
+//        }
+//        Log::channel('daily')->info($fullPath);
+//
+//        $done = Cache::get(sprintf('%s.profiles.export.done', $this->user->id));
+//        if (is_null($done)) {
+//            Cache::put(sprintf('%s.profiles.export.done', $this->user->id), 1);
+//        } else {
+//            Cache::increment(sprintf('%s.profiles.export.done', $this->user->id));
+//        }
     }
 
     public function collection(): array
