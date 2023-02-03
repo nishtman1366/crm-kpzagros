@@ -59,7 +59,7 @@ class ExportProfiles implements ShouldQueue
         Log::channel('daily')->info($fullPath);
         $writer = SimpleExcelWriter::create($fullPath);
         foreach ($this->collection() as $item) {
-            Log::channel('daily')->info($item->id);
+            Log::channel('daily')->info($item['id']);
             $writer->addRow($item);
         }
         Log::channel('daily')->info($fullPath);
