@@ -2,6 +2,7 @@
 
 namespace App\Models\Profiles;
 
+use App\Models\Settings\PspRequiredLicense;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,5 +38,10 @@ class LicenseType extends Model
                 return 'ندارد';
                 break;
         }
+    }
+
+    public function psps()
+    {
+        return $this->hasMany(PspRequiredLicense::class);
     }
 }

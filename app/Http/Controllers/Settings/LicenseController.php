@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profiles\LicenseType;
+use App\Models\Settings\PspRequiredLicense;
+use App\Models\Variables\Psp;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -14,15 +16,18 @@ class LicenseController extends Controller
     public function index(Request $request)
     {
         $searchQuery = $request->query('query', null);
-        $licenses = LicenseType::where(function ($query) use ($searchQuery) {
+        $licenses = LicenseType::with('psps')->where(function ($query) use ($searchQuery) {
             if (!is_null($searchQuery)) {
                 $query->where('name', 'LIKE', '%' . $searchQuery . '%');
             }
         })->orderBy('name')->get();
 
+        $psps = Psp::orderBy('id', 'ASC')->get();
+
         return Inertia::render('Dashboard/Settings/LicenseTypes', [
             'searchQuery' => $searchQuery,
             'licenses' => $licenses,
+            'psps' => $psps,
         ]);
     }
 
@@ -35,6 +40,13 @@ class LicenseController extends Controller
         ]);
 
         $license = LicenseType::create($request->all());
+
+        foreach ($request->get('psps', []) as $psp) {
+            PspRequiredLicense::create([
+                'psp_id' => $psp,
+                'license_type_id' => $license->id
+            ]);
+        }
 
         return redirect()->route('dashboard.settings.licenses.list');
     }
@@ -51,6 +63,14 @@ class LicenseController extends Controller
         if (is_null($license)) throw new NotFoundHttpException('اطلاعات مدرک مورد نظر یافت نشد.');
         $license->fill($request->all());
         $license->save();
+
+        PspRequiredLicense::where('license_type_id', $license->id)->delete();
+        foreach ($request->get('psps', []) as $psp) {
+            PspRequiredLicense::create([
+                'psp_id' => $psp,
+                'license_type_id' => $license->id
+            ]);
+        }
 
         return redirect()->route('dashboard.settings.licenses.list');
     }
