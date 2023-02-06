@@ -39,10 +39,10 @@ class CreateZipArchive implements ShouldQueue
     {
         $directory = Cache::get(sprintf('%s.profiles.export.directory', $this->user->id));
         if (!is_null($directory)) {
-            Log::channel('daily')->info('temp/excel/profiles/' . $directory);
             $files = Storage::files('temp/excel/profiles/' . $directory);
+            $zipFileName = sprintf('Profiles_%s_%s.zip', $this->user->id, time());
             if (count($files) > 0) {
-                $archiveFile = storage_path(sprintf('app/public/archives/Profiles_%s_%s.zip', $this->user->id, time()));
+                $archiveFile = storage_path(sprintf('app/public/archives/%s', $zipFileName));
                 Cache::put(sprintf('%s.profiles.export.zipFile', $this->user->id), sprintf('Profiles_%s_%s.zip', $this->user->id, time()));
                 $archive = new ZipArchive();
                 if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
@@ -51,11 +51,11 @@ class CreateZipArchive implements ShouldQueue
                 }
 
                 foreach ($files as $file) {
-                    Log::channel('daily')->info($file);
                     $f = storage_path('app/' . $file);
                     $ext = pathinfo($f, PATHINFO_EXTENSION);
-                    if ($ext === 'xslsx') {
+                    if ($ext === 'xlsx') {
                         if (!$archive->addFile($f, basename($file))) {
+                            print(sprintf('File: %s/%s', $file, PHP_EOL));
                             Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');
                             throw new \Exception("File [`{$file}`] could not be added to the zip file: " . $archive->getStatusString());
                         }
@@ -68,7 +68,9 @@ class CreateZipArchive implements ShouldQueue
                 }
                 Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'done');
                 Cache::put(sprintf('%s.profiles.export.expiration', $this->user->id), now()->addHours(2)->format('Y/m/d H:i:s'));
-                Cache::put(sprintf('%s.profiles.export.zipFileUrl', $this->user->id), Storage::disk('public')->url(sprintf('archives/Profiles_%s_%s.zip', $this->user->id, time())));
+                Cache::put(sprintf('%s.profiles.export.zipFileUrl', $this->user->id), Storage::disk('public')->url(sprintf('archives/%s', $zipFileName)));
+                print(sprintf('app/public/archives/%s', $zipFileName));
+                print PHP_EOL;
                 Storage::deleteDirectory('temp/excel/profiles/' . $directory);
             } else {
                 Cache::put(sprintf('%s.profiles.export.status', $this->user->id), 'failed');
