@@ -176,7 +176,7 @@ class LicenseController extends Controller
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
             $extension = pathinfo($license->file, PATHINFO_EXTENSION);
-            $fileName = $license->type->file_name ? $license->type->file_name . '.' . $extension : $license->file;
+            $fileName = ($license->type && $license->type->file_name) ? $license->type->file_name . '.' . $extension : $license->file;
             $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
             try{
                 \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
