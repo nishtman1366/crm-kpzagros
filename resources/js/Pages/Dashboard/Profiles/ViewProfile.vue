@@ -709,7 +709,7 @@
                                         <div
                                             class="col-span-2 lg:col-span-6 flex items-center justify-center space-x-reverse space-x-2">
                                             <jet-button
-                                                v-if="(profile.status === 5 || profile.status === 13) && (terminal.status === 0 || terminal.status === 2)"
+                                                v-if="(profile.status !==0) && (terminal.status === 0 || terminal.status === 2)"
                                                 @click.native="selectSerial(terminal)"
                                                 class="terminal-actions border-green-600 text-green-600 hover:text-green-700"
                                                 title="انتخاب دستگاه">
@@ -792,7 +792,7 @@
                                              class="text-center text-indigo-600 relative">
                                             <a target="_blank" :href="license.url">
                                                 <img :src="license.url" class="w-full">
-                                                {{ license.type.name }}
+                                                {{ license.type && license.type.name }}
                                             </a>
                                             <InertiaLink
                                                 v-if="canEditLicenses"
