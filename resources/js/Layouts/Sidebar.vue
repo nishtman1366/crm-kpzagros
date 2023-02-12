@@ -64,6 +64,14 @@
                                             <!--                                        <span class="badge badge-pill badge-warning">New</span>-->
                                         </inertia-link>
                                     </li>
+                                    <li v-if="$page.user.level==='SUPERUSER' || $page.user.level==='administrator' || $page.user.level==='office'"
+                                        class="sidebar-dropdown">
+                                        <inertia-link :href="route('dashboard.profiles.userUploadedLicenses.list')">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">assignment_ind</i>
+                                            مدارک ارسال شده
+                                            <!--                                        <span class="badge badge-pill badge-warning">New</span>-->
+                                        </inertia-link>
+                                    </li>
                                 </ul>
                             </li>
                         </template>

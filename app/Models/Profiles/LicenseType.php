@@ -10,7 +10,7 @@ class LicenseType extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'key', 'file_name', 'required', 'status'];
+    protected $fillable = ['name', 'key', 'file_name', 'required', 'status','merchant_type'];
 
     protected $appends = ['statusText', 'requireText'];
 

@@ -12,9 +12,14 @@ class License extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['license_type_id', 'profile_id', 'account_id', 'name', 'file', 'disk'];
+    protected $fillable = ['license_type_id', 'profile_id', 'account_id', 'name', 'file', 'disk', 'status'];
 
-    protected $appends = ['url'];
+    protected $appends = ['url', 'statusText'];
+
+    public function getStatusTextAttribute(): string
+    {
+        return $this->status === 0 ? 'بارگذاری‌شده از طریق سامانه جامع' : 'بارگذاری‌شده از طریق اپلیکیشن';
+    }
 
     public function getUrlAttribute()
     {

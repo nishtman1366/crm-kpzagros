@@ -132,35 +132,64 @@
                                 :message="licenseForm.error('file_name')"
                                 class="mt-2"/>
                         </div>
-                        <div class="inline-block my-2">
-                            <button v-on:click="licenseForm.required=1"
-                                    :class="licenseForm.required===1 ? 'bg-green-700' : 'bg-green-400'"
-                                    class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                ضروری
-                            </button>
-                            <button v-on:click="licenseForm.required=0"
-                                    :class="licenseForm.required===0 ? 'bg-red-700' : 'bg-red-400'"
-                                    class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                اختیاری
-                            </button>
-                            <jet-input-error
-                                :message="licenseForm.error('status')"
-                                class="mt-2"/>
-                        </div>
-                        <div class="inline-block float-left my-2">
-                            <button v-on:click="licenseForm.status=1"
-                                    :class="licenseForm.status===1 ? 'bg-green-700' : 'bg-green-400'"
-                                    class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                فعال
-                            </button>
-                            <button v-on:click="licenseForm.status=0"
-                                    :class="licenseForm.status===0 ? 'bg-red-700' : 'bg-red-400'"
-                                    class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                غیرفعال
-                            </button>
-                            <jet-input-error
-                                :message="licenseForm.error('status')"
-                                class="mt-2"/>
+                       <div class="flex items-center justify-between py-2">
+                           <div class="">
+                               <jet-label value="نوع مدرک"/>
+                               <button v-on:click="licenseForm.required=1"
+                                       :class="licenseForm.required===1 ? 'bg-green-700' : 'bg-green-400'"
+                                       class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                   ضروری
+                               </button>
+                               <button v-on:click="licenseForm.required=0"
+                                       :class="licenseForm.required===0 ? 'bg-red-700' : 'bg-red-400'"
+                                       class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                   اختیاری
+                               </button>
+                               <jet-input-error
+                                   :message="licenseForm.error('status')"
+                                   class="mt-2"/>
+                           </div>
+                           <div class="">
+                               <jet-label value="وضعیت"/>
+
+                               <button v-on:click="licenseForm.status=1"
+                                       :class="licenseForm.status===1 ? 'bg-green-700' : 'bg-green-400'"
+                                       class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                   فعال
+                               </button>
+                               <button v-on:click="licenseForm.status=0"
+                                       :class="licenseForm.status===0 ? 'bg-red-700' : 'bg-red-400'"
+                                       class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                   غیرفعال
+                               </button>
+                               <jet-input-error
+                                   :message="licenseForm.error('status')"
+                                   class="mt-2"/>
+                           </div>
+                       </div>
+                        <div>
+                            <div class="">
+                                <jet-label value="نوع پذیرنده"/>
+                                <button v-on:click="licenseForm.merchant_type=0"
+                                        :class="licenseForm.merchant_type===0 ? 'bg-blue-700' : 'text-blue-400 border-blue-400'"
+                                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    همه
+                                </button>
+                                <button v-on:click="licenseForm.merchant_type=1"
+                                        :class="licenseForm.merchant_type===1 ? 'bg-blue-700' : 'text-blue-400 border-blue-400'"
+                                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    فقط پذیرندگان حقیقی
+                                </button>
+                                <button v-on:click="licenseForm.merchant_type=2"
+                                        :class="licenseForm.merchant_type===2 ? 'bg-blue-700' : 'text-blue-400 border-blue-400'"
+                                        class="inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                    فقط پذیرندگان حقوقی
+                                </button>
+                                <jet-input-error
+                                    :message="licenseForm.error('status')"
+                                    class="mt-2"/>
+                            </div>
+
                         </div>
                         <div class="col-span-2 pt-4">
                             <p>لطفا سرویس دهندگانی که نیاز به ارسال این مدارک دارند را انتخاب نمایید:</p>
@@ -220,6 +249,7 @@
 <script>
 import SettingsMain from "@/Pages/Dashboard/Settings/SettingsMain";
 import JetButton from '@/Jetstream/Button'
+import JetLabel from '@/Jetstream/Label'
 import JetInputError from '@/Jetstream/InputError';
 import {Inertia} from "@inertiajs/inertia";
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
@@ -228,7 +258,7 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
 export default {
     name: "LicenseTypes",
-    components: {SettingsMain, JetButton, JetInputError, JetConfirmationModal, JetDangerButton, JetSecondaryButton},
+    components: {SettingsMain, JetButton, JetInputError, JetConfirmationModal, JetDangerButton, JetSecondaryButton, JetLabel},
     props: {
         licenses: Array,
         psps: Array,
@@ -249,6 +279,7 @@ export default {
                 file_name: '',
                 required: 1,
                 status: 1,
+                merchant_type: 0,
                 psps: []
             }, {
                 bag: 'licenseForm',
@@ -282,6 +313,7 @@ export default {
             this.licenseForm.file_name = license.file_name;
             this.licenseForm.required = license.required;
             this.licenseForm.status = license.status;
+            this.licenseForm.merchant_type = license.merchant_type;
 
             this.selectedLicense.psps.forEach(psp => {
                 this.pspList.push(psp.psp_id);

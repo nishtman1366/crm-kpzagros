@@ -155,7 +155,8 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::get('excel', 'ProfileController@downloadExcel')->name('downloadExcel');
         Route::post('excel', 'ProfileController@uploadExcel')->name('uploadExcel');
         Route::post('batchJob', [\App\Http\Controllers\Profiles\ProfileController::class, 'batchJob'])->name('batchJob');
-
+        Route::get('uploads', [\App\Http\Controllers\Profiles\UserUploadedLicenseController::class, 'index'])->name('userUploadedLicenses.list');
+        Route::put('uploads/{license}/update', [\App\Http\Controllers\Profiles\UserUploadedLicenseController::class, 'update'])->name('userUploadedLicenses.update');
         Route::prefix('{profile}')->group(function () {
             Route::prefix('update')->name('update.')->group(function () {
                 Route::put('terminals/{terminal}/serial', [\App\Http\Controllers\Profiles\TerminalController::class, 'updateSerial'])->name('serial');

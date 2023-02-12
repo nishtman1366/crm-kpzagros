@@ -8,7 +8,6 @@
     <title>{{ systemConfig('PAGE_TITLE', 'سامانه جامع امور نمایندگان زاگرس پی') }}</title>
 
     <!-- Styles -->
-{{--    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{$version[1]}}">--}}
     <link rel="stylesheet" href="{{ mix('css/app.css') }}">
     <link rel="stylesheet" href="{{ mix('css/custom.css') }}">
 
