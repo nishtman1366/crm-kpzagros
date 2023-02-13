@@ -193,7 +193,7 @@ class LicenseController extends Controller
             if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
                 throw new Exception("Zip file could not be created: " . $archive->getStatusString());
             }
-            dd(2);
+            dd(120);
 
             foreach ($files as $file) {
                 try{
