@@ -170,7 +170,6 @@ class LicenseController extends Controller
     {
         $profile->load('customer');
         $licenses = License::with('type')->where('profile_id', $profile->id)->get();
-        dd($licenses);
         $files = [];
         \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profile->id));
 
@@ -187,6 +186,7 @@ class LicenseController extends Controller
                 $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
             }
         }
+        dd($files);
 
         if (count($files) > 0) {
             $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $profile->customer->national_code));
