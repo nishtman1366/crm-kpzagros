@@ -201,7 +201,6 @@ class LicenseController extends Controller
                     continue;
                 }
             }
-            dd(121);
 
             if (!$archive->close()) {
                 throw new Exception("Could not close zip file: " . $archive->getStatusString());
