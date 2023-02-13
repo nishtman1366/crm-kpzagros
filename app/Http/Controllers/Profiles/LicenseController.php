@@ -186,7 +186,6 @@ class LicenseController extends Controller
                 $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
             }
         }
-        dd($files);
 
         if (count($files) > 0) {
             $archiveFile = storage_path(sprintf('app/temp/archives/%s.zip', $profile->customer->national_code));
@@ -194,6 +193,7 @@ class LicenseController extends Controller
             if (!$archive->open($archiveFile, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
                 throw new Exception("Zip file could not be created: " . $archive->getStatusString());
             }
+            dd($archive);
 
             foreach ($files as $file) {
                 try{
