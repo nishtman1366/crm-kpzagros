@@ -169,22 +169,27 @@ class LicenseController extends Controller
     public function downloadZipArchive(Profile $profile, Request $request)
     {
         $profile->load('customer');
+//        system(sprintf('/usr/bin/python3 /home/nishtman/Projects/kpzagros/storage/app/temp/main.py %s',$profile->id));
+
+
         $licenses = License::with('type')->where('profile_id', $profile->id)->get();
         $files = [];
         \Illuminate\Support\Facades\Storage::deleteDirectory(sprintf('temp/archives/%s', $profile->id));
+        \Illuminate\Support\Facades\Storage::makeDirectory(sprintf('temp/archives/%s', $profile->id));
 
         foreach ($licenses as $license) {
 //            $files[] = storage_path(sprintf('app/public/profiles/%s/%s', $profileId, $license->file));
             $extension = pathinfo($license->file, PATHINFO_EXTENSION);
             $fileName = ($license->type && $license->type->file_name) ? $license->type->file_name . '.' . $extension : $license->file;
-            $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->readStream(sprintf('profiles/%s/%s', $profile->id, $license->file));
-            try{
-                \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
+            $stream = \Illuminate\Support\Facades\Storage::disk($license->disk)->url(sprintf('profiles/%s/%s', $profile->id, $license->file));
+            file_put_contents(storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $fileName)), file_get_contents($stream));
+//            try{
+//                \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $fileName), $stream);
                 $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $fileName));
-            }catch (FileExistsException $e){
-                \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $license->file), $stream);
-                $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
-            }
+//            }catch (FileExistsException $e){
+//                \Illuminate\Support\Facades\Storage::writeStream(sprintf('temp/archives/%s/%s', $profile->id, $license->file), $stream);
+//                $files[] = storage_path(sprintf('app/temp/archives/%s/%s', $profile->id, $license->file));
+//            }
         }
 
         if (count($files) > 0) {
@@ -212,7 +217,7 @@ class LicenseController extends Controller
                 ->deleteFileAfterSend(true);
         }
 
-        throw new Exception("هیچ فایلی جهت فضرده سازی موجود نیست.");
+        throw new Exception("هیچ فایلی جهت فشرده سازی موجود نیست.");
     }
 
     public function confirmLicenses(Request $request)
