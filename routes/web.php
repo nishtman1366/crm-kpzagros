@@ -30,15 +30,17 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
     Route::get('', [\App\Http\Controllers\DashboardController::class, 'index'])->name('main');
 
     Route::prefix('devices')->name('devices.')->group(function () {
+        Route::get('excel', [\App\Http\Controllers\DeviceController::class, 'downloadExcel'])->name('downloadExcel');
+        Route::post('excel', [\App\Http\Controllers\DeviceController::class, 'uploadExcel'])->name('uploadExcel');
+        Route::post('batchJob', [\App\Http\Controllers\DeviceController::class, 'batchJob'])->name('batchJob');
+
         Route::get('', [\App\Http\Controllers\DeviceController::class, 'index'])->name('list');
         Route::get('new', [\App\Http\Controllers\DeviceController::class, 'create'])->name('create');
         Route::post('', [\App\Http\Controllers\DeviceController::class, 'store'])->name('store');
         Route::get('{device}', [\App\Http\Controllers\DeviceController::class, 'view'])->name('view');
         Route::put('{device}', [\App\Http\Controllers\DeviceController::class, 'update'])->name('update');
         Route::delete('{device}', [\App\Http\Controllers\DeviceController::class, 'destroy'])->name('destroy');
-        Route::get('excel', [\App\Http\Controllers\DeviceController::class, 'downloadExcel'])->name('downloadExcel');
-        Route::post('excel', [\App\Http\Controllers\DeviceController::class, 'uploadExcel'])->name('uploadExcel');
-        Route::post('batchJob', [\App\Http\Controllers\DeviceController::class, 'batchJob'])->name('batchJob');
+
     });
 
     Route::prefix('users/{type}')->name('users.')->group(function () {

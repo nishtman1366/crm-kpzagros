@@ -289,6 +289,13 @@ class DeviceController extends Controller
             });
         }
 
+        $ownerId = $request->query('ownerId', '');
+        if (!is_null($ownerId) && $ownerId != '') {
+            $devicesQuery->where(function ($query) use ($ownerId) {
+                $query->where('user_id', $ownerId);
+            });
+        }
+
         $devices = $devicesQuery->orderBy('id', 'ASC')->get();
         $jDate = Jalalian::forge(now())->format('Y.m.d');
 
