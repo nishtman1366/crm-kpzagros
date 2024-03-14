@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Channels\IpPanel;
+use App\Channels\SmsIr;
 use App\Libraries\TemplateEngine;
 use App\Models\Notifications\Type;
 use Illuminate\Bus\Queueable;
@@ -42,7 +43,7 @@ class ProfileNotification extends Notification
      */
     public function via($notifiable)
     {
-        return [IpPanel::class, 'database'];
+        return [SmsIr::class, 'database'];
     }
 
     public function toIpPanel($notifiable)

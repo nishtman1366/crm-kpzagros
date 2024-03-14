@@ -1,15 +1,9 @@
 <?php
 
-use App\Exceptions\NotificationException;
-use App\Libraries\ProgressBar;
-use App\Libraries\TemplateEngine;
+use App\Http\Controllers\Notifications\NotificationController;
 use App\Models\User;
-use Illuminate\Database\ConnectionResolverInterface;
-use Illuminate\Foundation\Inspiring;
+use App\Notifications\ProfileNotification;
 use Illuminate\Support\Facades\Artisan;
-use IPPanel\Client;
-use IPPanel\Errors\Error;
-use IPPanel\Errors\HttpException;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +61,7 @@ Artisan::command('setProfileId', function () {
 
 Artisan::command('transfer', function () {
     $directories = \Illuminate\Support\Facades\Storage::disk('licenses')->directories('profiles');
+
     foreach ($directories as $directory) {
         \Illuminate\Support\Facades\Storage::disk('public')->makeDirectory($directory);
         print(sprintf('Directory %s created', $directory) . PHP_EOL);
@@ -111,43 +106,6 @@ Artisan::command('changeTerminals', function () {
         });
 });
 
-//function terminalStatusBaseOnProfileStatus($status)
-//{
-//    switch ($status) {
-//        case 0:
-//        case 1:
-//        case 2:
-//        case 3:
-//        case 4:
-//        case 5:
-//            return 0;
-//        case 6:
-//            return 1;
-//        case 7:
-//            return 3;
-//        case 8:
-//            return 6;
-//        case 9:
-//            return 5;
-//        case 10:
-//        case 11:
-//        case 255:
-//            return false;
-//        case 12:
-//            return 4;
-//        case 13:
-//            return 2;
-//        case 14:
-//            return 7;
-//        case 15:
-//            return 8;
-//        case 16:
-//            return 9;
-//        case 17:
-//            return 10;
-//    }
-//}
-
 Artisan::command('updateTerminalStatuses', function () {
     \App\Models\Profiles\Terminal::with('profile')
         ->chunk(1000, function ($terminals) {
@@ -183,4 +141,10 @@ Artisan::command('color', function () {
     print "\e[32mAll Customers Transferred Successfully\e[0m";
     print PHP_EOL;
     print "All Customers Transferred Successfully";
+});
+
+Artisan::command('sms', function () {
+    $user = User::find(2);
+    $repair=\App\Models\Repairs\Repair::find(1);
+    NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
 });

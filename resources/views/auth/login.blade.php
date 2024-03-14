@@ -43,7 +43,7 @@
                     {{--                        {{ __('Forgot your password?') }}--}}
                     {{--                    </a>--}}
                 @endif
-                @if(request()->getHttpHost()==='kpzagros-crm.com')
+                @if(request()->getHttpHost()==='kpzagros-crm.ir' || request()->getHttpHost()==='kpzagros-crm.com' || request()->getHttpHost()==='127.0.0.1:8000')
                     <div>
                         <a class="text-blue-500 hover:text-blue-400"
                            href="https://www.kpzagros.ir/agency-admission-form/" target="_blank">درخواست نمایندگی</a>
