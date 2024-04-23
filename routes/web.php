@@ -52,6 +52,13 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
         Route::delete('{user}', [\App\Http\Controllers\UserController::class, 'destroy'])->name('destroy');
     });
 
+    Route::prefix('emails')->name('emails.')->group(function () {
+        Route::get('', [\App\Http\Controllers\EmailController::class, 'index'])->name('list');
+        Route::post('', [\App\Http\Controllers\EmailController::class, 'store'])->name('store');
+        Route::put('{email}', [\App\Http\Controllers\EmailController::class, 'update'])->name('update');
+        Route::delete('{email}', [\App\Http\Controllers\EmailController::class, 'destroy'])->name('destroy');
+    });
+
     Route::prefix('settings')->middleware('settings')->name('settings.')->namespace('Settings')->group(function () {
         Route::get('', 'SettingController@index')->name('main');
         Route::put('', 'SettingController@update')->name('update');
@@ -180,7 +187,6 @@ Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dash
             Route::get('terminals/{terminal}/deliveryForm', [\App\Http\Controllers\Profiles\TerminalController::class, 'deliveryForm'])->name('terminal.delivery.form');
             Route::put('terminals/{terminal}', [\App\Http\Controllers\Profiles\TerminalController::class, 'update'])->name('terminals.update');
         });
-
 
         Route::prefix('{profile}')->group(function () {
             Route::get('view', [\App\Http\Controllers\Profiles\ProfileController::class, 'view'])->name('view');

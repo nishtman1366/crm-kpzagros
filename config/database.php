@@ -63,13 +63,13 @@ return [
             ]) : [],
         ],
 
-        'server' => [
+        'email' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => '193.141.64.189',
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-            'database' => 'zagros_crm',
-            'username' => 'zagros_crm',
+            'database' => 'EmailServer_db',
+            'username' => 'EmailServer',
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
