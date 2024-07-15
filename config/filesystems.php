@@ -55,7 +55,7 @@ return [
             'username' => 'zagros@storage.kpzagros-crm.com',
             'password' => 'Nil00f@r1869',
             'root' => 'public_html/licenses',
-            'url' => 'http://storage.kpzagros-crm.com/licenses',
+            'url' => 'https://storage.kpzagros-crm.com/licenses',
 //            'url' => 'http://storage.kpzagros-crm.ir/licenses',
             'passive' => true,
 //            'ignorePassiveAddress' => true,
