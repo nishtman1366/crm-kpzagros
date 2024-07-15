@@ -60,6 +60,7 @@ class TicketController extends Controller
             ['id' => 'MARKETER', 'name' => 'بازاریابان'],
             ['id' => 'OFFICE', 'name' => 'کاربران اداری'],
             ['id' => 'TECHNICAL', 'name' => 'کاربران فنی'],
+            ['id' => 'ACCOUNTING', 'name' => 'حسابداری'],
         ];
         $users = User::orderBy('name', 'ASC')->get();
         $statuses = [
