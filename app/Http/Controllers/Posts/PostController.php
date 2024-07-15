@@ -222,8 +222,9 @@ class PostController extends Controller
         }
         $posts = $postsQuery->where(function ($query) use ($user) {
             $query->where('status', 1);
-        })->orderBy('id', 'DESC')->paginate(12);
-        $paginatedLinks = paginationLinks($posts);
+        })->orderBy('id', 'DESC')
+            ->paginate(12);
+        $paginatedLinks = paginationLinks($posts->withQueryString());
 
         $posts->each(function ($post) {
             $post->body = mb_substr($post->body, 0, 250) . '...';
