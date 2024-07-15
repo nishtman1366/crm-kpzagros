@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckUserStatus;
 use App\Models\Profiles\Profile;
 use App\Models\Variables\Device;
 use Illuminate\Support\Facades\Route;
@@ -26,7 +27,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->prefix('dashboard')->name('dashboard.')->namespace('App\\Http\\Controllers')->group(function () {
+Route::middleware(['auth:sanctum', 'verified', CheckUserStatus::class])->prefix('dashboard')->name('dashboard.')->namespace('App\\Http\\Controllers')->group(function () {
     Route::get('', [\App\Http\Controllers\DashboardController::class, 'index'])->name('main');
 
     Route::prefix('devices')->name('devices.')->group(function () {
