@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Tickets;
 
 use App\Http\Controllers\Controller;
 use App\Models\Tickets\Agent;
-use App\Models\Tickets\File;
-use App\Models\Tickets\Reply;
 use App\Models\Tickets\Ticket;
 use App\Models\Tickets\Type;
 use App\Models\User;
@@ -62,7 +60,7 @@ class TicketController extends Controller
             ['id' => 'TECHNICAL', 'name' => 'کاربران فنی'],
             ['id' => 'ACCOUNTING', 'name' => 'حسابداری'],
         ];
-        $users = User::orderBy('name', 'ASC')->get();
+        $users = User::orderBy('name', 'ASC')->where('status', 1)->get();
         $statuses = [
             0 => 'ثبت شده',
             1 => 'در حال بررسی',
@@ -102,9 +100,9 @@ class TicketController extends Controller
         $user = Auth::user();
         if ($user->isSuperUser() || $user->isAdmin() || $user->isSupportAgent()) {
             $reception = User::where('id', $request->get('user_id'))->get()->first();
-            if($reception->isSuperUser() || $reception->isAdmin() || $reception->isSupportAgent()){
+            if ($reception->isSuperUser() || $reception->isAdmin() || $reception->isSupportAgent()) {
                 $request->merge(['status' => 0]);
-            }else{
+            } else {
                 $request->merge(['status' => 2]);
             }
         } else {
@@ -125,6 +123,15 @@ class TicketController extends Controller
         }
         EventController::store($ticket, $user);
         return redirect()->route('dashboard.tickets.list');
+    }
+
+    private function createTicketCode()
+    {
+        $code = rand(111111, 999999);
+        $codeExistence = Ticket::where('code', $code)->exists();
+        if ($codeExistence) return $this->createTicketCode();
+
+        return $code;
     }
 
     public function view(Request $request)
@@ -188,15 +195,6 @@ class TicketController extends Controller
         } else {
             throw new UnauthorizedHttpException('شما اجازه دسترسی به این بخش را ندارید.');
         }
-    }
-
-    private function createTicketCode()
-    {
-        $code = rand(111111, 999999);
-        $codeExistence = Ticket::where('code', $code)->exists();
-        if ($codeExistence) return $this->createTicketCode();
-
-        return $code;
     }
 
     public function authorizeForPassword(Ticket $ticket, Request $request)
