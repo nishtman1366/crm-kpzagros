@@ -97,7 +97,7 @@ class DeviceController extends Controller
             });
         }
 
-        $devices = $devicesQuery->orderBy('id', 'ASC')
+        $devices = $devicesQuery->orderBy('id', 'DESC')
             ->paginate();
         $paginatedLinks = paginationLinks($devices->appends($request->query->all()));
 
