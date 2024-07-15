@@ -149,7 +149,7 @@ class TicketController extends Controller
         if (is_null($ticket)) throw new NotFoundHttpException('درخواست مورد نظر یافت نشد.');
 
         $types = Type::where('status', true)->orderBy('id', 'ASC')->get();
-        $agents = Agent::orderBy('id', 'ASC')->get();
+        $agents = Agent::where('status', true)->orderBy('id', 'ASC')->get();
         return Inertia::render('Dashboard/Tickets/ViewTicket', compact('ticket', 'types', 'agents'));
     }
 

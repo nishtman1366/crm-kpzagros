@@ -5,13 +5,14 @@ namespace App\Models\Tickets;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Morilog\Jalali\Jalalian;
 
 class Ticket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'user_id', 'agent_id', 'ticket_type_id', 'title', 'body', 'status'];
+    protected $fillable = ['code', 'user_id', 'agent_id', 'password', 'ticket_type_id', 'title', 'body', 'status'];
 
     protected $appends = ['statusText', 'createDate', 'updateDate'];
 
@@ -46,6 +47,13 @@ class Ticket extends Model
         if (is_null($this->attributes['updated_at'])) return null;
 
         return Jalalian::forge($this->updated_at)->format('Y/m/d h:i:s');
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        if(!is_null($value)) {
+            $this->attributes['password'] = Hash::make($value);
+        }
     }
 
     public function agent()
