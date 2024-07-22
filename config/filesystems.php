@@ -42,12 +42,12 @@ return [
             'visibility' => 'public',
         ],
 
-//        'licenses' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app/public/licenses'),
-//            'url' => env('APP_URL') . '/licenses',
-//            'visibility' => 'public',
-//        ],
+        'public_licenses' => [
+            'driver' => 'local',
+            'root' => storage_path('app/licenses'),
+            'url' => env('APP_URL') . '/licenses',
+            'visibility' => 'public',
+        ],
 
         'licenses' => [
             'driver' => 'ftp',
