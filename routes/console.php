@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Models\User;
-use App\Notifications\ProfileNotification;
 use Illuminate\Support\Facades\Artisan;
 
 /*
@@ -145,6 +144,13 @@ Artisan::command('color', function () {
 
 Artisan::command('sms', function () {
     $user = User::find(2);
-    $repair=\App\Models\Repairs\Repair::find(1);
+    $repair = \App\Models\Repairs\Repair::find(1);
     NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
+});
+
+Artisan::command('trash', function () {
+    \App\Models\Tickets\Ticket::where(function ($query) {
+        $query->where('status', 0)->orWhere('status', 1);
+    })->where('created_at', '<', \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', '1403-01-01')->toCarbon())
+        ->delete();
 });
