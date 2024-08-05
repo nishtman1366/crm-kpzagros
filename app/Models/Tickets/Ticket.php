@@ -39,14 +39,14 @@ class Ticket extends Model
     {
         if (is_null($this->attributes['created_at'])) return null;
 
-        return Jalalian::forge($this->created_at)->format('Y/m/d h:i:s');
+        return Jalalian::forge($this->created_at)->format('Y/m/d H:i:s');
     }
 
     public function getUpdateDateAttribute()
     {
         if (is_null($this->attributes['updated_at'])) return null;
 
-        return Jalalian::forge($this->updated_at)->format('Y/m/d h:i:s');
+        return Jalalian::forge($this->updated_at)->format('Y/m/d H:i:s');
     }
 
     public function setPasswordAttribute($value)
