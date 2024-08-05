@@ -38,20 +38,27 @@ class Ticket extends Model
     public function getCreateDateAttribute()
     {
         if (is_null($this->attributes['created_at'])) return null;
-
-        return Jalalian::forge($this->created_at)->format('Y/m/d H:i:s');
+        if (now()->subHours(8)->lt($this->created_at)) {
+            return $this->created_at->diffForHumans();
+        } else {
+            return Jalalian::forge($this->created_at)->format('Y/m/d H:i:s');
+        }
     }
 
     public function getUpdateDateAttribute()
     {
         if (is_null($this->attributes['updated_at'])) return null;
 
-        return Jalalian::forge($this->updated_at)->format('Y/m/d H:i:s');
+        if (now()->subHours(8)->lt($this->updated_at)) {
+            return $this->updated_at->diffForHumans();
+        } else {
+            return Jalalian::forge($this->updated_at)->format('Y/m/d H:i:s');
+        }
     }
 
     public function setPasswordAttribute($value)
     {
-        if(!is_null($value)) {
+        if (!is_null($value)) {
             $this->attributes['password'] = Hash::make($value);
         }
     }
