@@ -21,8 +21,11 @@ class Reply extends Model
     public function getCreateDateAttribute()
     {
         if (is_null($this->attributes['created_at'])) return null;
-
-        return Jalalian::forge($this->created_at)->format('Y/m/d H:i:s');
+        if (now()->subHours(8)->lt($this->created_at)) {
+            return $this->created_at->diffForHumans();
+        } else {
+            return Jalalian::forge($this->created_at)->format('Y/m/d H:i:s');
+        }
     }
 
     public function user()
