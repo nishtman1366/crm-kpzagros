@@ -31,7 +31,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::post(RoutePath::for('logout', '/logout'), function (\Illuminate\Http\Request $request) {
+Route::post('/logout', function (\Illuminate\Http\Request $request) {
 //    [AuthenticatedSessionController::class, 'destroy']
     $isLoginByAdmin = $request->session()->get('loginByAdmin');
 
