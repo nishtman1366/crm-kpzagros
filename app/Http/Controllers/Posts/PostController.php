@@ -34,6 +34,7 @@ class PostController extends Controller
             ['id' => 'MARKETER', 'name' => 'بازاریابان'],
             ['id' => 'TECHNICAL', 'name' => 'کارشناسان فنی'],
             ['id' => 'OFFICE', 'name' => 'کارمندان دفتر'],
+            ['id' => 'ACCOUNTING', 'name' => 'کارمندان حسابداری'],
         ];
         return Inertia::render('Dashboard/Posts/CreatePost', compact('categories', 'levels'));
     }
@@ -111,6 +112,7 @@ class PostController extends Controller
             ['id' => 'MARKETER', 'name' => 'بازاریابان'],
             ['id' => 'TECHNICAL', 'name' => 'کارشناسان فنی'],
             ['id' => 'OFFICE', 'name' => 'کارمندان دفتر'],
+            ['id' => 'ACCOUNTING', 'name' => 'کارمندان حسابداری'],
         ];
         return Inertia::render('Dashboard/Posts/EditPost', compact('post', 'categories', 'levels'));
     }

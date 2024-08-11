@@ -123,7 +123,7 @@
                                                 <inertia-link
                                                     :href="route('dashboard.profiles.view',{id:event.profile_id})">
                                                     <p :class="'text-'+event.color+'-900'">{{event.title}}<span
-                                                        class="text-xs text-gray-600">{{event.jDate | persianDigit}} - {{event.profile ? event.profile.customer.fullName : ''}}</span>
+                                                        class="text-xs text-gray-600">{{event.jDate | persianDigit}} - {{event.profile && event.profile.customer ? event.profile.customer.fullName : ''}}</span>
                                                     </p>
                                                 </inertia-link>
                                             </div>
