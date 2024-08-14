@@ -496,16 +496,20 @@
                         <div class="flex items-center justify-between mt-8">
                             <jet-button
                                 :class="{ 'bg-green-500 hover:bg-green-400': submitPaymentForm.type==1 }"
-                                class="border-green-500 bg-green-200 hover:bg-green-400 active:bg-green-600 text-gray-900" @click.native="requestOnlinePayment">پرداخت آنلاین
+                                class="border-green-500 bg-green-200 hover:bg-green-400 active:bg-green-600 text-gray-900"
+                                @click.native="requestOnlinePayment">پرداخت آنلاین
                             </jet-button>
-                            <jet-button v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL'"
+                            <jet-button
+                                v-if="$page.user.level==='SUPERUSER' || $page.user.level==='ADMIN'  || $page.user.level==='TECHNICAL'"
                                 @click.native="submitPaymentForm.type=2;requestOnlinePaymentLoading=false"
                                 :class="{ 'bg-blue-500 hover:bg-blue-400': submitPaymentForm.type==2 }"
-                                class="border-blue-500 bg-blue-200 hover:bg-blue-400 active:bg-blue-600 text-gray-900">واریز به حساب
+                                class="border-blue-500 bg-blue-200 hover:bg-blue-400 active:bg-blue-600 text-gray-900">
+                                واریز به حساب
                             </jet-button>
                         </div>
                         <div class="mt-3" v-if="requestOnlinePaymentLoading">
-                            <div class="text-center text-lg">
+                            <div v-if="onlinePaymentError" class="text-center text-lg">{{ onlinePaymentError }}</div>
+                            <div v-else class="text-center text-lg">
                                 در حال ارسال به درگاه پرداخت
                             </div>
                         </div>
@@ -566,7 +570,6 @@ import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 import JetSectionBorder from '@/Jetstream/SectionBorder'
 import JetConfirmationModal from '@/Jetstream/ConfirmationModal';
 import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
-import {Inertia} from "@inertiajs/inertia";
 
 export default {
     name: "View",
@@ -644,7 +647,7 @@ export default {
                 bag: 'submitPaymentForm',
             }),
 
-
+            onlinePaymentError: '',
             updateStatusByAdminForm: this.$inertia.form({
                 '_method': 'PUT',
                 status: this.repair.status,
@@ -655,21 +658,25 @@ export default {
     },
     methods: {
         requestOnlinePayment() {
-            this.submitPaymentForm.type=1;
+            this.submitPaymentForm.type = 1;
             this.requestOnlinePaymentLoading = true;
-            Inertia.visit(route('dashboard.payments.ipg.request', {type: 'repairs', id: this.repair.id}), {
-                onSuccess: () => {
+            this.onlinePaymentError = '';
+            axios.get(route('dashboard.payments.ipg.request', {type: 'repairs', id: this.repair.id}))
+                .then(response => {
                     this.viewPaymentModal = true;
-                    if (this.$page.paymentRequest && this.$page.paymentRequest.status === 'success') {
-                        window.location.href = this.$page.paymentRequest.redirectUrl;
-                    } else {
-                        console.log('error');
+                    if (response.data.paymentRequest && response.data.paymentRequest.status === 'success') {
+                        // console.log(response.data.paymentRequest.redirectUrl);
+                        window.location.href = response.data.paymentRequest.redirectUrl;
                     }
-                    this.requestOnlinePaymentLoading = false;
-                }
-            },{
-                preserveState: true,
-            });
+                    // this.requestOnlinePaymentLoading = false;
+                })
+                .catch(error => {
+                    this.onlinePaymentError = error.response.data.message;
+
+                })
+                .finally(() => {
+
+                })
         },
         showPaymentModal() {
             this.viewPaymentModal = true;

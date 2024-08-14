@@ -14,7 +14,12 @@ class Payment extends Model
 
     protected $fillable = ['type_id', 'user_id', 'repair_id', 'return_device_id', 'profile_id', 'amount', 'reg_code', 'ref_code', 'status', 'tracking_code', 'date', 'description'];
 
-    protected $appends = ['jDate', 'statusText'];
+    protected $appends = ['jDate', 'statusText', 'priceText'];
+
+    public function getPriceTextAttribute()
+    {
+        if ($this->amount !== 0) return sprintf('%s ریال', toPersianNumbers(number_format($this->amount)));
+    }
 
     public function getStatusTextAttribute()
     {
@@ -34,7 +39,7 @@ class Payment extends Model
     public function getJDateAttribute()
     {
         $date = is_null($this->attributes['date']) ? $this->attributes['created_at'] : $this->attributes['date'];
-        return Jalalian::forge($date)->format('Y-m-d H:i:s');
+        return toPersianNumbers(Jalalian::forge($date)->format('Y-m-d H:i:s'));
     }
 
     public function user()

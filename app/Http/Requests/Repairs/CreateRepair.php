@@ -25,13 +25,18 @@ class CreateRepair extends FormRequest
      */
     public function rules()
     {
+//        return [];
         return [
             'device_type_id' => 'required|exists:device_types,id',
             'psp_id' => 'required|exists:psps,id',
             'serial' => 'required',
             'name' => 'required',
-            'mobile' => 'required',
-            'national_code' => 'required',
+            'mobile' => 'required|starts_with:09',
+            'national_code' => ['required', function ($attribute, $value, $fail) {
+                if (!checkNationalCode($value)) {
+                    $fail('شماره‌ملی وارد شده اشتباه است.');
+                }
+            },],
             'repairTypeList' => 'required|array',
         ];
     }

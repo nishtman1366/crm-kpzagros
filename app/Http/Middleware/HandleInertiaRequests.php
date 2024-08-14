@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\Form;
 use App\Models\Setting;
 use App\Models\Tickets\Ticket;
-use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +40,7 @@ class HandleInertiaRequests
             ->each(function ($item) use (&$configs) {
                 $configs[Str::camel(strtolower($item->key))] = $item->value;
             });
+
         Inertia::share('configs', $configs);
 
         $user = Auth::user();

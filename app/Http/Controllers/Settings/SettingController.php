@@ -19,9 +19,8 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        foreach ($request->except(['deleteLogo', 'COMPANY_LOGO']) as $item => $value) {
-            $setting = Setting::where('key', $item)->get()->first();
-            if (!is_null($setting)) $setting->update(['value' => $value]);
+        foreach ($request->except(['deleteLogo', 'COMPANY_LOGO', '_method']) as $item => $value) {
+            Setting::updateOrCreate(['key' => $item], ['value' => $value]);
         }
 
         if ($request->hasFile('COMPANY_LOGO')) {

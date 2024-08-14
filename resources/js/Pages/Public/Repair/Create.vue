@@ -1,14 +1,15 @@
 <template>
-    <Dashboard>
-        <template #breadcrumb> / لیست درخواست ها / ثبت درخواست جدید</template>
-        <template #dashboardContent>
-            <div>
+    <guest>
+        <template #header>
+            <!--            <div class="text-2xl">سامانه جامع نمایندگان</div>-->
+        </template>
+        <template #contents>
+            <div class="w-full lg:w-4/5 xl:w-2/3 mx-auto">
                 <div class="p-3 bg-gray-300">
                     <jet-form-section @submitted="submitNewRepairForm">
                         <template #title>
                             ثبت درخواست تعمیرات
                         </template>
-
                         <template #description>
                             <p class="mt-1 text-sm text-gray-600">
                                 در این بخش اطلاعات درخواست تعمیرات را ثبت نمایید.
@@ -204,25 +205,25 @@
                 </div>
             </div>
         </template>
-    </Dashboard>
+    </guest>
 </template>
 
 <script>
-import Dashboard from "@/Pages/Dashboard";
-import JetActionMessage from '@/Jetstream/ActionMessage'
-import JetButton from '@/Jetstream/Button'
-import JetFormSection from '@/Jetstream/FormSection'
-import JetInput from '@/Jetstream/Input'
-import JetInputError from '@/Jetstream/InputError'
-import JetLabel from '@/Jetstream/Label'
-import JetSecondaryButton from '@/Jetstream/SecondaryButton'
-import JetSectionBorder from '@/Jetstream/SectionBorder'
-import VuePersianDatetimePicker from 'vue-persian-datetime-picker';
+import Guest from "@/Layouts/Guest";
+import JetActionMessage from "@/Jetstream/ActionMessage";
+import JetButton from "@/Jetstream/Button";
+import JetFormSection from "@/Jetstream/FormSection";
+import JetInput from "@/Jetstream/Input";
+import JetInputError from "@/Jetstream/InputError";
+import JetLabel from "@/Jetstream/Label";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton";
+import JetSectionBorder from "@/Jetstream/SectionBorder";
+import VuePersianDatetimePicker from "vue-persian-datetime-picker";
 
 export default {
     name: "Create",
     components: {
-        Dashboard,
+        Guest,
         JetActionMessage,
         JetButton,
         JetFormSection,
@@ -266,7 +267,7 @@ export default {
     },
     methods: {
         submitNewRepairForm() {
-            this.newRepairForm.post(route('dashboard.repairs.store')).then(response => {
+            this.newRepairForm.post(route('public.repairs.store')).then(response => {
                 if (!this.newRepairForm.hasErrors()) {
 
                 }

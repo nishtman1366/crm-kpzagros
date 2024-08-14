@@ -1,6 +1,6 @@
 <template>
     <Dashboard>
-        <template #breadcrumb> / تنظیمات{{title}}</template>
+        <template #breadcrumb> / تنظیمات{{ title }}</template>
         <template #dashboardContent>
             <div class="p-3 bg-gray-300">
                 <div>
@@ -93,30 +93,88 @@
                                            autocomplete="MAXIMUM_UPLOAD_SIZE"/>
                                 <jet-input-error :message="updateSettings.error('MAXIMUM_UPLOAD_SIZE')" class="mt-2"/>
                             </div>
-                            <div class="col-span-6 sm:col-span-4">
-                                <jet-label for="SMS_API_TOKEN"
-                                           value="توکن پنل پیامک"/>
-                                <jet-input id="SMS_API_TOKEN"
+                            <div class="border-b col-span-6"/>
+                            <div class="col-span-6 text-lg gont-bold">اطلاعات حساب بانکی (تعمیرات)</div>
+                            <div class="col-span-6 sm:col-span-3">
+                                <jet-label for="REPAIR_BANK_NAME"
+                                           value="نام بانک"/>
+                                <jet-input id="REPAIR_BANK_NAME"
                                            type="text"
-                                           class="mt-1 block w-full text-sm"
-                                           style="direction: ltr"
-                                           v-model="updateSettings.SMS_API_TOKEN"
-                                           ref="SMS_API_TOKEN"
-                                           autocomplete="SMS_API_TOKEN"/>
-                                <jet-input-error :message="updateSettings.error('SMS_API_TOKEN')" class="mt-2"/>
+                                           class="mt-1 block w-full"
+                                           v-model="updateSettings.REPAIR_BANK_NAME"
+                                           ref="REPAIR_BANK_NAME"
+                                           autocomplete="REPAIR_BANK_NAME"/>
+                                <jet-input-error :message="updateSettings.error('REPAIR_BANK_NAME')" class="mt-2"/>
                             </div>
-                            <div class="col-span-6 sm:col-span-4">
-                                <jet-label for="SMS_ORIGINATOR"
-                                           value="شماره خط ارسال پیامک"/>
-                                <jet-input id="SMS_ORIGINATOR"
+                            <div class="col-span-6 sm:col-span-3">
+                                <jet-label for="REPAIR_BANK_OWNER"
+                                           value="نام صاحب حساب"/>
+                                <jet-input id="REPAIR_BANK_OWNER"
                                            type="text"
-                                           class="mt-1 block"
-                                           style="direction: ltr"
-                                           v-model="updateSettings.SMS_ORIGINATOR"
-                                           ref="SMS_ORIGINATOR"
-                                           autocomplete="SMS_ORIGINATOR"/>
-                                <jet-input-error :message="updateSettings.error('SMS_ORIGINATOR')" class="mt-2"/>
+                                           class="mt-1 block w-full"
+                                           v-model="updateSettings.REPAIR_BANK_OWNER"
+                                           ref="REPAIR_BANK_OWNER"
+                                           autocomplete="REPAIR_BANK_OWNER"/>
+                                <jet-input-error :message="updateSettings.error('REPAIR_BANK_OWNER')" class="mt-2"/>
                             </div>
+                            <div class="col-span-6 sm:col-span-3">
+                                <jet-label for="REPAIR_BANK_ACCOUNT"
+                                           value="شماره حساب"/>
+                                <jet-input id="REPAIR_BANK_ACCOUNT"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="updateSettings.REPAIR_BANK_ACCOUNT"
+                                           ref="MAXIMUM_UPLOAD_SIZE"
+                                           autocomplete="MAXIMUM_UPLOAD_SIZE"/>
+                                <jet-input-error :message="updateSettings.error('REPAIR_BANK_ACCOUNT')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6 sm:col-span-3">
+                                <jet-label for="REPAIR_BANK_CART"
+                                           value="شماره کارت"/>
+                                <jet-input id="REPAIR_BANK_CART"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="updateSettings.REPAIR_BANK_CART"
+                                           ref="REPAIR_BANK_CART"
+                                           autocomplete="REPAIR_BANK_CART"/>
+                                <jet-input-error :message="updateSettings.error('REPAIR_BANK_CART')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6">
+                                <jet-label for="REPAIR_BANK_SHEBA"
+                                           value="شماره شبا"/>
+                                <jet-input id="REPAIR_BANK_SHEBA"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="updateSettings.REPAIR_BANK_SHEBA"
+                                           ref="MAXIMUM_UPLOAD_SIZE"
+                                           autocomplete="REPAIR_BANK_SHEBA"/>
+                                <jet-input-error :message="updateSettings.error('REPAIR_BANK_SHEBA')" class="mt-2"/>
+                            </div>
+
+                            <!--                            <div class="col-span-6 sm:col-span-4">-->
+                            <!--                                <jet-label for="SMS_API_TOKEN"-->
+                            <!--                                           value="توکن پنل پیامک"/>-->
+                            <!--                                <jet-input id="SMS_API_TOKEN"-->
+                            <!--                                           type="text"-->
+                            <!--                                           class="mt-1 block w-full text-sm"-->
+                            <!--                                           style="direction: ltr"-->
+                            <!--                                           v-model="updateSettings.SMS_API_TOKEN"-->
+                            <!--                                           ref="SMS_API_TOKEN"-->
+                            <!--                                           autocomplete="SMS_API_TOKEN"/>-->
+                            <!--                                <jet-input-error :message="updateSettings.error('SMS_API_TOKEN')" class="mt-2"/>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="col-span-6 sm:col-span-4">-->
+                            <!--                                <jet-label for="SMS_ORIGINATOR"-->
+                            <!--                                           value="شماره خط ارسال پیامک"/>-->
+                            <!--                                <jet-input id="SMS_ORIGINATOR"-->
+                            <!--                                           type="text"-->
+                            <!--                                           class="mt-1 block"-->
+                            <!--                                           style="direction: ltr"-->
+                            <!--                                           v-model="updateSettings.SMS_ORIGINATOR"-->
+                            <!--                                           ref="SMS_ORIGINATOR"-->
+                            <!--                                           autocomplete="SMS_ORIGINATOR"/>-->
+                            <!--                                <jet-input-error :message="updateSettings.error('SMS_ORIGINATOR')" class="mt-2"/>-->
+                            <!--                            </div>-->
                         </template>
                         <template #actions>
                             <jet-action-message :on="updateSettings.recentlySuccessful" class="mr-3">
@@ -136,95 +194,97 @@
 </template>
 
 <script>
-    import Dashboard from "@/Pages/Dashboard";
-    import JetActionMessage from '@/Jetstream/ActionMessage'
-    import JetButton from '@/Jetstream/Button'
-    import JetFormSection from '@/Jetstream/FormSection'
-    import JetInput from '@/Jetstream/Input'
-    import JetInputError from '@/Jetstream/InputError'
-    import JetLabel from '@/Jetstream/Label'
-    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import Dashboard from "@/Pages/Dashboard";
+import JetActionMessage from '@/Jetstream/ActionMessage'
+import JetButton from '@/Jetstream/Button'
+import JetFormSection from '@/Jetstream/FormSection'
+import JetInput from '@/Jetstream/Input'
+import JetInputError from '@/Jetstream/InputError'
+import JetLabel from '@/Jetstream/Label'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 
-    export default {
-        name: "SettingsMain",
-        components: {
-            Dashboard,
-            JetActionMessage,
-            JetButton,
-            JetFormSection,
-            JetInput,
-            JetInputError,
-            JetLabel,
-            JetSecondaryButton
+export default {
+    name: "SettingsMain",
+    components: {
+        Dashboard,
+        JetActionMessage,
+        JetButton,
+        JetFormSection,
+        JetInput,
+        JetInputError,
+        JetLabel,
+        JetSecondaryButton
+    },
+    props: {
+        active: {
+            type: String,
+            default: 'main'
         },
-        props: {
-            active: {
-                type: String,
-                default: 'main'
-            },
-            title: {
-                type: String,
-                default: ' / تنظیمات سیستم'
-            },
+        title: {
+            type: String,
+            default: ' / تنظیمات سیستم'
         },
-        data() {
-            return {
-                updateSettings: this.$inertia.form({
-                    '_method': 'PUT',
-                    PAGE_TITLE: this.$page.configs.pageTitle,
-                    COMPANY_NAME: this.$page.configs.companyName,
-                    COMPANY_LOGO: this.$page.configs.companyLogo,
-                    STATUS: this.$page.configs.status,
-                    MAXIMUM_UPLOAD_SIZE: this.$page.configs.maximumUploadSize,
-                    SMS_API_TOKEN: this.$page.configs.smsApiToken,
-                    SMS_ORIGINATOR: this.$page.configs.smsOriginator,
-                    deleteLogo: false,
-                }, {
-                    bag: 'updateSettings',
-                }),
-                photoPreview: null,
+    },
+    data() {
+        return {
+            updateSettings: this.$inertia.form({
+                '_method': 'PUT',
+                PAGE_TITLE: this.$page.configs.pageTitle,
+                COMPANY_NAME: this.$page.configs.companyName,
+                COMPANY_LOGO: this.$page.configs.companyLogo,
+                STATUS: this.$page.configs.status,
+                MAXIMUM_UPLOAD_SIZE: this.$page.configs.maximumUploadSize,
+                SMS_API_TOKEN: this.$page.configs.smsApiToken,
+                SMS_ORIGINATOR: this.$page.configs.smsOriginator,
+                REPAIR_BANK_NAME: this.$page.configs.repairBankName,
+                REPAIR_BANK_OWNER: this.$page.configs.repairBankOwner,
+                REPAIR_BANK_ACCOUNT: this.$page.configs.repairBankAccount,
+                REPAIR_BANK_SHEBA: this.$page.configs.repairBankSheba,
+                REPAIR_BANK_CART: this.$page.configs.repairBankCart,
+                deleteLogo: false,
+            }, {
+                bag: 'updateSettings',
+            }),
+            photoPreview: null,
+        }
+    },
+    methods: {
+        submitUpdateSettingsForm() {
+            if (this.$refs.photo) {
+                this.updateSettings.COMPANY_LOGO = this.$refs.photo.files[0]
             }
+
+            this.updateSettings.post(route('dashboard.settings.update'), {
+                onSuccess: () => window.location.reload(),
+                onError: (error) => console.log('error', error)
+            });
         },
-        methods: {
-            submitUpdateSettingsForm() {
-                if (this.$refs.photo) {
-                    this.updateSettings.COMPANY_LOGO = this.$refs.photo.files[0]
-                }
 
-                this.updateSettings.post(route('dashboard.settings.update'), {
-
-                }).then(() => {
-                    if (!this.updateSettings.hasErrors()) {
-                        window.location.reload();
-                    }
-                });
-            },
-
-            selectNewPhoto() {
-                this.$refs.photo.click();
-            },
-
-            updateLogoPreview() {
-                const reader = new FileReader();
-
-                reader.onload = (e) => {
-                    this.photoPreview = e.target.result;
-                };
-
-                reader.readAsDataURL(this.$refs.photo.files[0]);
-            },
-
-            deletePhoto() {
-                this.updateSettings.COMPANY_LOGO = ''
-                this.updateSettings.deleteLogo = true
-            },
+        selectNewPhoto() {
+            this.$refs.photo.click();
         },
-        computed: {
-            slotIsLoaded() {
-                return this.$slots.settings;
-            }
+
+        updateLogoPreview() {
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                this.photoPreview = e.target.result;
+            };
+
+            reader.readAsDataURL(this.$refs.photo.files[0]);
+        },
+
+        deletePhoto() {
+            this.updateSettings.COMPANY_LOGO = ''
+            this.updateSettings.deleteLogo = true
+        },
+    },
+    computed: {
+        slotIsLoaded() {
+            return this.$slots.settings;
         }
     }
+}
 </script>
 
 <style scoped>
