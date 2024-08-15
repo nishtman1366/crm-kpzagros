@@ -99,8 +99,8 @@ export default {
         return {
             repairTrackingForm: this.$inertia.form({
                 '_method': 'POST',
-                national_code: this.national_code ?? '2122732768',
-                tracking_code: this.tracking_code ?? '407428',
+                national_code: this.national_code ?? '',
+                tracking_code: this.tracking_code ?? '',
             }, {
                 bag: 'repairTrackingForm',
                 resetOnSuccess: false
