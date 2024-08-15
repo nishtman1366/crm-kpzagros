@@ -160,7 +160,7 @@ class RepairController extends Controller
             'national_code' => 'required',
             'tracking_code' => 'required'
         ], [
-            'tracking_code.required' => 'کد رگیری الزامیست'
+            'tracking_code.required' => 'کد رهگیری الزامیست'
         ]);
         $nationalCode = toEnglishNumbers($request->get('national_code'));
         $trackingCode = toEnglishNumbers($request->get('tracking_code'));
