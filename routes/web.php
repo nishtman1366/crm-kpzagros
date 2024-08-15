@@ -7,7 +7,6 @@ use App\Models\Variables\Device;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
-use Laravel\Fortify\RoutePath;
 
 /*
 |--------------------------------------------------------------------------
@@ -331,6 +330,29 @@ Route::prefix('registration')->name('registration.')->group(function () {
     Route::get('search/{type}/{query}', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('search');
     Route::post('{device}', [\App\Http\Controllers\RegistrationController::class, 'store'])->name('store');
     Route::post('create/{type}/{query}', [\App\Http\Controllers\RegistrationController::class, 'create'])->name('create');
+});
+
+Route::prefix('public')->name('public.')->group(function () {
+    Route::get('', function () {
+        return redirect()->route('public.repairs.index');
+    })->name('index');
+    Route::prefix('repairs')->name('repairs.')->group(function () {
+        Route::get('', [\App\Http\Controllers\Public\RepairController::class, 'index'])->name('index');
+        Route::get('new', [\App\Http\Controllers\Public\RepairController::class, 'create'])->name('create');
+        Route::post('', [\App\Http\Controllers\Public\RepairController::class, 'store'])->name('store');
+        Route::post('view', [\App\Http\Controllers\Public\RepairController::class, 'checkRepair'])->name('checkRepair');
+        Route::put('{repair}', [\App\Http\Controllers\Public\RepairController::class, 'update'])->name('update');
+        Route::get('view/{trackingCode}/{nationalCode}', [\App\Http\Controllers\Public\RepairController::class, 'view'])->name('view');
+    });
+
+    Route::prefix('payments')->name('payments.')->namespace('Payments')->group(function () {
+        Route::prefix('ipg')->name('ipg.')->group(function () {
+            Route::get('{type}/{id}/request', [\App\Http\Controllers\Payments\PaymentController::class, 'ipgRequest'])->name('request');
+            Route::get('{trackingCode}/verify', [\App\Http\Controllers\Payments\PaymentController::class, 'ipgVerify'])->name('verify');
+        });
+        Route::get('{paymentId}/confirm', 'PaymentController@confirm')->name('confirm');
+        Route::get('{trackingCode}/view', [\App\Http\Controllers\Payments\PaymentController::class, 'view'])->name('view');
+    });
 });
 
 Route::get('listSerials', function () {

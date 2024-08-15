@@ -33,15 +33,23 @@ class RepairController extends Controller
         $repairTypes = Type::where('status', 1)->orderBy('name', 'ASC')->get();
         $banks = Bank::where('status', 1)->orderBy('name', 'ASC')->get();
         $accessories = Accessory::where('status', 1)->get();
+        $transportTypes = [
+            ['key' => 'POST', 'title' => 'ارسال به‌وسیله باربری'],
+            ['key' => 'OFFICE', 'title' => 'تحویل حضوری']
+        ];
 
-
-        return Inertia::render('Public/Repair/Create', compact('deviceTypes', 'psps', 'banks', 'repairTypes', 'accessories'));
+        return Inertia::render('Public/Repair/Create', compact('deviceTypes', 'psps', 'banks', 'repairTypes', 'accessories', 'transportTypes'));
     }
 
     public function store(CreateRepair $request)
     {
         $user = User::find(2);
-
+        $request->validateWithBag('newRepairForm', [
+            'transport_type' => 'required|in:POST,OFFICE',
+            'transport_description' => 'required'
+        ], [
+            'transport_description.required' => sprintf('%s را وارد نمایید', $request->get('transport_type') === 'POST' ? 'کد رهگیری پست یا باربری' : 'نام دفتر یا شخص تحویل‌گیرنده')
+        ]);
         $request->merge([
             'user_id' => $user->id,
             'tracking_code' => $this->createTrackingCode()
@@ -54,7 +62,14 @@ class RepairController extends Controller
         }
         $this->saveEvent($user, $repair, 1, null, null);
 
-        return redirect()->route('public.repairs.view', ['trackingCode' => $repair->tracking_code]);
+        $request->session()->flash('repair_message', [
+            'ثبت اطلاعات با موفقیت انجام‌شد.',
+            'کد رهگیری درخواست شما',
+            $repair->tracking_code,
+            'شما می‌توانید جهت پیگیری درخواست خود در هر زمان از طریق همین صفحه اقدام نمایید.'
+        ]);
+
+        return redirect()->route('public.repairs.index');
     }
 
     private function createTrackingCode()
@@ -169,7 +184,6 @@ class RepairController extends Controller
             ->with('deviceType')
             ->with('events.user')
             ->with('payments')
-            ->with('payments.user')
             ->with('payments.type')
             ->where('tracking_code', $trackingCode)
             ->where('national_code', $nationalCode)

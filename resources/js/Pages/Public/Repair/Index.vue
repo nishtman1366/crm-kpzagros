@@ -5,20 +5,27 @@
         </template>
         <template #contents>
             <div class="w-full lg:w-4/5 xl:w-2/3 mx-auto">
-                <div class="grid md:grid-cols-2 gap-3">
-                    <InertiaLink class="h-full" :href="route('public.repairs.create')">
-                        <div class="h-full p-3 bg-gray-300 transform transition-all hover:scale-90 duration-300">
-                            <div class="h-full text-center text-lg flex items-center justify-center">
-                                ثبت درخواست جدید
-                            </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div v-if="repair_message" class="col-span-2">
+                        <div class="bg-green-200 p-1 rounded-md">
+                            <div class="text-green-900 text-center text-lg my-4">{{repair_message[0]}}</div>
+                            <div class="text-center text-base">{{repair_message[1]}}</div>
+                            <div class="text-green-900 text-center text-2xl">{{repair_message[2]}}</div>
+                            <div class="mty-4 text-center">{{repair_message[3]}}</div>
                         </div>
-                    </InertiaLink>
-                    <div class="p-3 bg-gray-300">
+                    </div>
+                    <div class="col-span-2 md:col-span-1">
+                        <InertiaLink class="h-full" :href="route('public.repairs.create')">
+                            <div class="h-full p-3 bg-gray-300 transform transition-all hover:scale-90 duration-300">
+                                <div class="h-full text-center text-lg flex items-center justify-center">
+                                    ثبت درخواست جدید
+                                </div>
+                            </div>
+                        </InertiaLink>
+                    </div>
+                    <div class="col-span-2 md:col-span-1 p-3 bg-gray-300">
                         <div class="text-center text-lg">
                             پیگیری درخواست
-                        </div>
-                        <div v-if="nationalCode">
-                            اطلاعات درخواست یافت نشد.
                         </div>
                         <div class="w-full">
                             <div v-show="repairTrackingForm.error('report')">
@@ -84,6 +91,7 @@ export default {
         datePicker: VuePersianDatetimePicker
     },
     props: {
+        repair_message: Array,
         national_code: Number,
         tracking_code: Number
     },

@@ -71,6 +71,7 @@ class HandleInertiaRequests
         }
 
         Inertia::share('userAuthorizedForTicket', $request->session()->get('userAuthorizedForTicket', false));
+        Inertia::share('repair_message', $request->session()->get('repair_message', false));
 
         return $next($request);
     }

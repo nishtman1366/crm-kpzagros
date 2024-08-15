@@ -180,7 +180,7 @@
                             <div class="col-span-6">
                                 <jet-section-border></jet-section-border>
                             </div>
-                            <div class="col-span-6 sm:col-span-4">
+                            <div class="col-span-6">
                                 <jet-label for="description" value="توضیحات تکمیلی"/>
                                 <textarea id="description"
                                           type="description"
@@ -189,6 +189,36 @@
                                           ref="description"
                                           autocomplete="description" rows="3" cols="60"></textarea>
                                 <jet-input-error :message="newRepairForm.error('description')" class="mt-2"/>
+                            </div>
+                            <div class="col-span-6">
+                                <jet-label value="شیوه تحویل دستگاه"/>
+                                <jet-button type="button" v-for="type in transportTypes" :key="type.key"
+                                            @click.native="newRepairForm.transport_type=type.key"
+                                            class="m-1"
+                                            :class="{'bg-red-500':newRepairForm.transport_type===type.key}">
+                                    {{ type.title }}
+                                </jet-button>
+                                <jet-input-error :message="newRepairForm.error('transport_type')" class="mt-2"/>
+                            </div>
+                            <div v-if="newRepairForm.transport_type==='POST'" class="col-span-6 sm:col-span-2">
+                                <jet-label for="transport_description" value="کد رهگیری پست یا باربری"/>
+                                <jet-input id="transport_description"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="newRepairForm.transport_description"
+                                           ref="transport_description"
+                                           autocomplete="transport_description"/>
+                                <jet-input-error :message="newRepairForm.error('transport_description')" class="mt-2"/>
+                            </div>
+                            <div v-else-if="newRepairForm.transport_type==='OFFICE'" class="col-span-6 sm:col-span-2">
+                                <jet-label for="transport_description" value="نام دفتر یا شخص تحویل‌گیرنده"/>
+                                <jet-input id="transport_description"
+                                           type="text"
+                                           class="mt-1 block w-full"
+                                           v-model="newRepairForm.transport_description"
+                                           ref="transport_description"
+                                           autocomplete="transport_description"/>
+                                <jet-input-error :message="newRepairForm.error('transport_description')" class="mt-2"/>
                             </div>
                         </template>
                         <template #actions>
@@ -236,6 +266,7 @@ export default {
     },
     props: {
         deviceTypes: Array,
+        transportTypes: Array,
         psps: Array,
         banks: Array,
         repairTypes: Array,
@@ -258,6 +289,8 @@ export default {
                 repairTypeList: [],
                 description: '',
                 status: 1,
+                transport_type: '',
+                transport_description: '',
                 accessories: []
             }, {
                 bag: 'newRepairForm',

@@ -26,6 +26,7 @@ class ZarinPal
             'Amount' => $Amount,
             'Description' => $Description,
         ];
+
         if (!is_null($Email)) {
             $inputs['Email'] = $Email;
         }
@@ -46,10 +47,11 @@ class ZarinPal
             }
         } else {
             $result = $this->call('PaymentRequest.json', $inputs);
+
             if ($result['Status'] == 100) {
                 $results = ['Authority' => $result['Authority']];
             } else {
-                $results = ['error' => $result['Status']];
+                $results = ['error' => $this->getStatusMessage($result['Status'])];
             }
         }
 
@@ -128,6 +130,7 @@ class ZarinPal
     public function enableSandbox()
     {
         $this->baseUrl = 'https://sandbox.zarinpal.com/pg/rest/WebGate/';
+        $this->redirectUrl = 'https://sandbox.zarinpal.com/pg/StartPay/%s';
     }
 
     /**

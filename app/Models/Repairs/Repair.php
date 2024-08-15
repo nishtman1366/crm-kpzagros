@@ -17,14 +17,17 @@ class Repair extends Model
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = ['user_id', 'device_type_id', 'psp_id', 'bank_id', 'location_id', 'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
-        'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit', 'business_name', 'accessories'];
+    protected $fillable = [
+        'user_id', 'device_type_id', 'psp_id', 'bank_id', 'location_id',
+        'serial', 'name', 'mobile', 'national_code', 'description', 'technical_description', 'status', 'tracking_code',
+        'guarantee_end', 'price', 'new_serial', 'new_device_type_id', 'loan_device_type_id', 'loan_serial', 'deposit',
+        'business_name', 'accessories', 'transport_type', 'transport_description'];
 
     protected $appends = ['statusText', 'accessoryList', 'jCreatedAt', 'jUpdatedAt', 'jGuaranteeEnd', 'priceText'];
 
     public function getPriceTextAttribute()
     {
-        if ($this->price !== 0) return sprintf('%s ریال',toPersianNumbers(number_format($this->price)));
+        if ($this->price !== 0) return sprintf('%s تومان', toPersianNumbers(number_format($this->price)));
     }
 
     public function getAccessoryListAttribute()

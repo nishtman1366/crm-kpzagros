@@ -56,6 +56,62 @@
                     </div>
                 </section>
                 <section v-if="repair.price && repair.price!==0" class="p-3 my-2 mx-3 bg-gray-100">
+                    <div>
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead>
+                            <tr>
+                                <th scope="col"
+                                    class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    شیوه پرداخت
+                                </th>
+                                <th scope="col"
+                                    class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    تاریخ
+                                </th>
+                                <th scope="col"
+                                    class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    کد پیگیری بانک
+                                </th>
+                                <th scope="col"
+                                    class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    کد پیگیری سیستم
+                                </th>
+                                <th scope="col"
+                                    class="py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    وضعیت
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tr v-for="payment in repair.payments" :key="payment.id">
+                                <td class="py-4 text-center text-gray-900">
+                                    {{ payment.type && payment.type.name }}
+                                </td>
+                                <td class="py-4 text-center text-gray-900">{{ payment.jDate }}</td>
+                                <td class="py-4 text-center text-gray-900">{{ payment.ref_code }}</td>
+                                <td class="py-4 text-center text-gray-900">{{ payment.tracking_code }}</td>
+                                <td :colspan="payment.status==2 ? 2 : ''"
+                                    class="py-4 text-center text-gray-900">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                                  :class="paymentStatusColors(payment.status)">
+                                                    {{ payment.statusText }}
+                                            </span>
+                                </td>
+                                <td class="py-4 text-center text-gray-900">
+<!--                                    <InertiaLink-->
+<!--                                        v-if="payment.status==1 && $page.user.level==='ADMIN'  || $page.user.level==='SUPERUSER'"-->
+<!--                                        :href="route('dashboard.payments.confirm',{paymentId: payment.id})"-->
+<!--                                        class="tooltip-box text-indigo-600 hover:text-indigo-900">-->
+<!--                                        <button title="تایید پرداخت"-->
+<!--                                                v-b-tooltip.hover>-->
+<!--                                            <i id="test" class="material-icons">check</i>-->
+<!--                                        </button>-->
+<!--                                    </InertiaLink>-->
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <div class="my-4">
                         <p class="mb-3 text-lg font-bold">هزینه تعمیرات: {{ repair.priceText }}</p>
                         <div class="">
@@ -287,6 +343,16 @@ export default {
                     return 'bg-green-100 text-green-800';
                 case 8:
                     return 'bg-red-100 text-red-800';
+            }
+        },
+        paymentStatusColors(status) {
+            switch (status) {
+                case 0:
+                    return 'bg-blue-100 text-blue-800';
+                case 1:
+                    return 'bg-yellow-100 text-yellow-800';
+                case 2:
+                    return 'bg-green-100 text-green-800';
             }
         },
     }

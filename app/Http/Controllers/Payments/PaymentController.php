@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class PaymentController extends Controller
 {
@@ -63,8 +62,17 @@ class PaymentController extends Controller
     {
         $payment = Payment::where('tracking_code', $trackingCode)->get()->first();
         if (is_null($payment)) throw new NotFoundHttpException('اطلاعات پرداخت یافت نشد.');
-
-        return Inertia::render('Public/Payments/ViewPayment', compact('payment'));
+        $route = '/';
+        $user = Auth::user();
+        if ($payment->repair_id) {
+            if ($user) {
+                $route = route('dashboard.repairs.view', ['repairId' => $payment->repair_id]);
+            } else {
+                $payment->load('repair');
+                $route = route('public.repairs.view', ['trackingCode' => $payment->repair->tracking_code, 'nationalCode' => $payment->repair->national_code]);
+            }
+        }
+        return Inertia::render('Public/Payments/ViewPayment', compact('payment', 'route'));
     }
 
     public function ipgRequest(Request $request)
@@ -111,7 +119,7 @@ class PaymentController extends Controller
         } else {
             return response()->json([
                 'message' => $results['error']
-            ],422);
+            ], 422);
         }
     }
 

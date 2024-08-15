@@ -195,7 +195,7 @@
                                         </p>
                                     </td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.tracking_code }}</td>
-                                    <td class="py-4 text-center text-gray-900">{{ repair.price }}</td>
+                                    <td class="py-4 text-center text-gray-900">{{ repair.priceText }}</td>
                                     <td class="py-4 text-center text-gray-900">{{ repair.location && repair.location.name }}</td>
                                     <td class="py-4 text-center text-gray-900">
                                         <span
