@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Notifications\NotificationController;
 use App\Http\Controllers\Payments\PaymentController;
 use App\Http\Requests\Repairs\CreateRepair;
 use App\Models\Repairs\Event;
@@ -15,7 +14,9 @@ use App\Models\Variables\Accessory;
 use App\Models\Variables\Bank;
 use App\Models\Variables\DeviceType;
 use App\Models\Variables\Psp;
+use App\Notifications\ProfileNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -61,6 +62,13 @@ class RepairController extends Controller
             RepairTypesList::create(['repair_id' => $repair->id, 'type_id' => $item]);
         }
         $this->saveEvent($user, $repair, 1, null, null);
+        $user = new User();
+        $user->mobile = $repair->mobile;
+        $type = new \App\Models\Notifications\Type();
+        $type->pattern = 680770;
+        $type->body = 'پذیرنده ارجمند، درخواست تعمیر برای دستگاه کارتخوان شما با شماره سریال #SERIAL# و کد رهگیری #TRACKING_CODE# در وب سایت شرکت زاگرس پی به نشانی zagrospay.com ثبت شده است. بدیهی است تا زمانیکه پیامک دریافت دستگاه توسط شرکت را دریافت نکرده باشید، مسئولیت پیگیری ارسال و تحویل مرسوله به شرکت بر عهده پذیرنده است. در صورت نیاز به راهنمایی بیشتر می توانید با شماره 08331420000 واحد خدمات پس از فروش زاگرس پی تماس بگیرید.';
+//        $user->notify(new ProfileNotification($type, ['SERIAL' => $repair->serial, 'TRACKING_CODE' => $repair->tracking_code], false));
+        Notification::send([$user], new ProfileNotification($type, ['SERIAL' => $repair->serial, 'TRACKING_CODE' => $repair->tracking_code], false));
 
         $request->session()->flash('repair_message', [
             'ثبت اطلاعات با موفقیت انجام‌شد.',
@@ -68,7 +76,7 @@ class RepairController extends Controller
             $repair->tracking_code,
             'شما می‌توانید جهت پیگیری درخواست خود در هر زمان از طریق همین صفحه اقدام نمایید.'
         ]);
-
+        return [];
         return redirect()->route('public.repairs.index');
     }
 
@@ -120,9 +128,9 @@ class RepairController extends Controller
             'title' => $title,
             'description' => $message
         ]);
-        if ($notification) {
-            NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
-        }
+//        if ($notification) {
+//            NotificationController::handleProfileNotifications('REPAIRS', $repair, $user);
+//        }
     }
 
     public function update(Repair $repair, Request $request)

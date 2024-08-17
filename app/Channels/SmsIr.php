@@ -31,12 +31,17 @@ class SmsIr
 
         if (empty($data)) return false;
 
-        try {
-            $this->sendByPattern($data['patternCode'], $data['patternValues'], $id);
+        if (app()->isProduction()) {
+            try {
+                $this->sendByPattern($data['patternCode'], $data['patternValues'], $id);
+                return true;
+            } catch (NotificationException $e) {
+                Log::channel('daily')->error($e->getMessage());
+                return false;
+            }
+        } else {
+            Log::channel('daily')->error(json_encode([$data['patternCode'], $data['patternValues'], $id]));
             return true;
-        } catch (NotificationException $e) {
-            Log::channel('daily')->error($e->getMessage());
-            return false;
         }
     }
 
