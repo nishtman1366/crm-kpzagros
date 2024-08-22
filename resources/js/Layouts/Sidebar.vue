@@ -45,7 +45,7 @@
                                 داشبورد
                             </inertia-link>
                         </li>
-                        <template v-if="$page.user.level!='TECHNICAL' && $page.user.level!='ACCOUNTING'">
+                        <template v-if="$page.user.level!='TECHNICAL' && $page.user.level!='ACCOUNTING' && $page.user.level!=='EMPLOYEES'">
                             <li class="header-menu" data-child="#menu-profiles">
                                 پذیرندگان
                             </li>
@@ -75,7 +75,7 @@
                                 </ul>
                             </li>
                         </template>
-                        <template v-if="$page.user.level!='MARKETER'">
+                        <template v-if="$page.user.level!='MARKETER' && $page.user.level!=='EMPLOYEES'">
                             <li class="header-menu" data-child="#menu-devices">
                                 دستگاه ها
                             </li>
@@ -148,31 +148,37 @@
                                             مدیران سیستم
                                         </inertia-link>
                                     </li>
-                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='EMPLOYEES'">
                                         <inertia-link :href="route('dashboard.users.list',{type:'office'})">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
                                             کارمندان دفتر
                                         </inertia-link>
                                     </li>
                                     <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                        <inertia-link :href="route('dashboard.users.list',{type:'employees'})">
+                                            <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
+                                            منابع انسانی
+                                        </inertia-link>
+                                    </li>
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='EMPLOYEES'">
                                         <inertia-link :href="route('dashboard.users.list',{type:'agent'})">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">reduce_capacity</i>
                                             نمایندگان
                                         </inertia-link>
                                     </li>
-                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT'">
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='AGENT' || $page.user.level=='EMPLOYEES'">
                                         <inertia-link :href="route('dashboard.users.list',{type:'marketer'})">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">person</i>
                                             بازاریابان
                                         </inertia-link>
                                     </li>
-                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='EMPLOYEES'">
                                         <inertia-link :href="route('dashboard.users.list',{type:'technical'})">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
                                             کارشناسان فنی
                                         </inertia-link>
                                     </li>
-                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN'">
+                                    <li v-if="$page.user.level=='SUPERUSER' || $page.user.level=='ADMIN' || $page.user.level=='EMPLOYEES'">
                                         <inertia-link :href="route('dashboard.users.list',{type:'accounting'})">
                                             <i class="material-icons h-5 w-5 text-center text-xl leading-5 align-middle">engineering</i>
                                             کاربران حسابداری
@@ -181,7 +187,7 @@
                                 </ul>
                             </li>
                         </template>
-                        <template>
+                        <template v-if="$page.user.level!=='EMPLOYEES'">
                             <li class="header-menu" data-child="#menu-tickets">
                                 پشتیبانی
                             </li>
