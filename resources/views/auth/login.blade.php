@@ -46,10 +46,10 @@
                 @if(request()->getHttpHost()==='kpzagros-crm.ir' || request()->getHttpHost()==='kpzagros-crm.com' || request()->getHttpHost()==='127.0.0.1:8000')
                     <div>
                         <a class="text-blue-500 hover:text-blue-400"
-                           href="https://www.kpzagros.ir/agency-admission-form/" target="_blank">درخواست نمایندگی</a>
+                           href="https://zagrospay.com/%d9%81%d8%b1%d9%85-%d8%af%d8%b1%d8%ae%d9%88%d8%a7%d8%b3%d8%aa-%d9%86%d9%85%d8%a7%db%8c%d9%86%d8%af%da%af%db%8c/" target="_blank">درخواست نمایندگی</a>
                     </div>
                     <div>
-                        <a class="text-blue-500 hover:text-blue-400" href="https://www.kpzagros.ir/about-us/"
+                        <a class="text-blue-500 hover:text-blue-400" href="https://zagrospay.com/%d8%af%d8%b1%d8%a8%d8%a7%d8%b1%d9%87-%d9%85%d8%a7/"
                            target="_blank">
                             درباره ما
                         </a>
