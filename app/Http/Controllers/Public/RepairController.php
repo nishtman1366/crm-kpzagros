@@ -76,7 +76,6 @@ class RepairController extends Controller
             $repair->tracking_code,
             'شما می‌توانید جهت پیگیری درخواست خود در هر زمان از طریق همین صفحه اقدام نمایید.'
         ]);
-        return [];
         return redirect()->route('public.repairs.index');
     }
 
