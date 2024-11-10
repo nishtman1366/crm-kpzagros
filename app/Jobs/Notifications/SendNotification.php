@@ -80,8 +80,10 @@ class SendNotification implements ShouldQueue
                     $reception->save();
                 }
             }
-        } catch (\Exception $exception) {
-            Log::channel('notifications')->error($exception->getMessage());
+        } catch (Error $e) {
+            Log::channel('notifications')->error('Error: ' . json_encode($e->unwrap()));
+        } catch (HttpException $e) {
+            Log::channel('notifications')->error('Exception: ' . $e->getMessage());
         }
     }
 
