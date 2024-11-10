@@ -71,13 +71,17 @@ class SendNotification implements ShouldQueue
         /**
          * @var  VerifyResponse $response
          */
-        $response = $client->Verify($this->reception, $this->notification->pattern, $parameters);
-        if ($response && $response->getStatus() == 1) {
-            $reception = Reception::where('batch_notification_id', $this->notification->id)->where('reception', $this->reception)->get()->first();
-            if (!is_null($reception)) {
-                $reception->status = $response->getStatus();
-                $reception->save();
+        try {
+            $response = $client->Verify($this->reception, $this->notification->pattern, $parameters);
+            if ($response && $response->getStatus() == 1) {
+                $reception = Reception::where('batch_notification_id', $this->notification->id)->where('reception', $this->reception)->get()->first();
+                if (!is_null($reception)) {
+                    $reception->status = $response->getStatus();
+                    $reception->save();
+                }
             }
+        } catch (\Exception $exception) {
+            Log::channel('notifications')->error($exception->getMessage());
         }
     }
 
