@@ -1,8 +1,11 @@
 <?php
 
+use App\Exports\Devices\DeviceExport;
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Maatwebsite\Excel\Facades\Excel;
+use Morilog\Jalali\Jalalian;
 
 /*
 |--------------------------------------------------------------------------
@@ -153,4 +156,15 @@ Artisan::command('trash', function () {
         $query->where('status', 0)->orWhere('status', 1);
     })->where('created_at', '<', \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', '1403-01-01')->toCarbon())
         ->delete();
+});
+
+Artisan::command('checkQueue', function () {
+    \App\Jobs\NewProfilesJob::dispatch(['a' => 1, 'b' => 2])->onQueue('crm_clients_queue');
+});
+
+Artisan::command('devices', function () {
+    $devices = \App\Models\Variables\Device::orderBy('id', 'ASC')->get();
+    $jDate = Jalalian::forge(now())->format('Y.m.d');
+
+    Excel::store(new DeviceExport($devices), 'devices.' . $jDate . '.xlsx');
 });
