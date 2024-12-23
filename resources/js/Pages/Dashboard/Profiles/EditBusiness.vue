@@ -520,26 +520,64 @@
                         <div>
                             <div>
                                 <jet-input type="text" placeholder="جستجو در نام اصناف"
+                                           class="w-full"
                                            v-model="searchCategoriesValue"/>
                             </div>
-                            <div class="mt-3 h-96 overflow-y-auto">
-                                <div class="mt-1 hover:underline hover:text-gray-500 cursor-pointer"
-                                     @click="selectedCategory=category.id"
-                                     :class="{'font-bold':selectedCategory===category.id}"
-                                     v-for="category in categoryList" :key="category.id">
-                                    <span>{{ category.code }} - </span>
-                                    <span>{{ category.name }}</span>
-                                </div>
+                            <div class="my-2 text-lg">
+                                <div class="">صنف انتخاب‌شده:</div>
+                                <div>{{ senfText }}</div>
                             </div>
-                        </div>
-                        <div class="mt-3 h-96 overflow-y-auto">
-                            <div v-if="selectedCategory"
-                                 class="mt-1 hover:underline hover:text-gray-500 cursor-pointer"
-                                 :class="{'font-bold':businessForm.business_subCategory_code===subCategory.id}"
-                                 v-for="subCategory in subCategoryList" :key="subCategory.id"
-                                 @click="selectCategory(subCategory.id)">
-                                <span>{{ subCategory.code }} - </span>
-                                <span>{{ subCategory.name }}</span>
+                            <div class="mt-3 h-96 overflow-y-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            صنف
+                                        </th>
+                                        <th scope="col"
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            کد صنف
+                                        </th>
+                                        <th scope="col"
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            سرگروه
+                                        </th>
+                                        <th scope="col"
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            کد سرگروه
+                                        </th>
+                                        <th scope="col"
+                                            class="px-2 py-3 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                    <tr v-for="category in subCategoryList" :key="category.id">
+                                        <td class="px-2 py-4 text-gray-900">
+                                            {{ category.name }}
+                                        </td>
+                                        <td class="px-2 py-4 text-center text-gray-900">
+                                            {{ category.code }}
+                                        </td>
+                                        <td class="px-2 py-4 text-gray-900">
+                                            {{ category.parent?.name }}
+                                        </td>
+                                        <td class="px-2 py-4 text-center text-gray-900">
+                                            {{ category.parent?.code }}
+                                        </td>
+                                        <td class="px-2 py-4 text-center text-gray-900">
+                                            <button type="button"
+                                                    :disabled="businessForm.business_subCategory_code===category.id"
+                                                    :class="businessForm.business_subCategory_code===category.id ? 'bg-gray-100 text-gray-500' : 'bg-red-600 hover:bg-red-700 focus:ring-red-500 text-white'"
+                                                    class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                                                    v-on:click="selectCategory(category)">
+                                                انتخاب
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -669,16 +707,25 @@ export default {
         searchCategoriesValue: function ($val) {
             if ($val) {
                 let condition = new RegExp($val);
-                this.categoryList = this.categories.filter(function (category) {
+
+                this.subCategoryList = this.subCategories.filter(function (category) {
                     return condition.test(category.name);
                 });
+
+                //
+                //
+                //
+                //
+                //
+                // this.categoryList = this.categories.filter(function (category) {
+                //     return condition.test(category.name);
+                // });
             } else {
-                this.categoryList = this.categories
+                this.subCategoryList = []
             }
         },
         selectedCategory: function ($val) {
             if ($val) {
-                this.businessForm.ca
                 this.subCategoryList = this.subCategories.filter(c => c.category_id === $val);
             } else {
                 this.subCategoryList = this.subCategories
@@ -781,15 +828,17 @@ export default {
 
             })
         },
+
         viewCategories() {
             this.viewCategoriesModal = true;
         },
+
         closeCategoriesModal() {
             this.viewCategoriesModal = false;
         },
-        selectCategory(id) {
-            this.businessForm.business_category_code = this.selectedCategory;
-            this.businessForm.business_subCategory_code = id;
+        selectCategory(category) {
+            this.businessForm.business_category_code = category.category_id;
+            this.businessForm.business_subCategory_code = category.id;
             this.closeCategoriesModal();
         }
     }

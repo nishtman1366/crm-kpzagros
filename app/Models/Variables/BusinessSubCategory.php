@@ -10,4 +10,9 @@ class BusinessSubCategory extends Model
     use HasFactory;
 
     protected $fillable = ['category_id', 'name', 'code'];
+
+    public function parent()
+    {
+        return $this->belongsTo(BusinessCategory::class,'category_id');
+    }
 }

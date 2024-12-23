@@ -80,7 +80,7 @@ Artisan::command('transfer', function () {
 });
 
 Artisan::command('categories', function () {
-    \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\Businesses\CategoryImport, public_path('files/business_categories.xlsx'));
+    \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\Businesses\CategoryImport, public_path('files/categories.xlsx'));
 });
 Artisan::command('cities', function () {
     \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\Cities\PasargadCities, public_path('files/pasargad_cities.xlsx'));

@@ -35,7 +35,7 @@ class BusinessController extends Controller
         $bakhshs = DB::table('bakhsh')->select()->get(['id', 'name']);
         $shahrs = DB::table('shahr')->select()->get(['id', 'name']);
         $categories = BusinessCategory::orderBy('name', 'ASC')->get();
-        $subCategories = BusinessSubCategory::orderBy('name', 'ASC')->get();
+        $subCategories = BusinessSubCategory::with('parent')->orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/CreateBusiness', [
             'profileId' => $profile->id,
             'profile' => $profile,
@@ -76,7 +76,7 @@ class BusinessController extends Controller
         $bakhshs = DB::table('bakhsh')->select()->get(['id', 'name']);
         $shahrs = DB::table('shahr')->select()->get(['id', 'name']);
         $categories = BusinessCategory::orderBy('name', 'ASC')->get();
-        $subCategories = BusinessSubCategory::orderBy('name', 'ASC')->get();
+        $subCategories = BusinessSubCategory::with('parent')->orderBy('name', 'ASC')->get();
         return Inertia::render('Dashboard/Profiles/EditBusiness', [
             'profileId' => $profile->id,
             'profile' => $profile,
