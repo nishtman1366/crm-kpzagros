@@ -201,10 +201,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 
     Route::get('users', function () {
         $user = \App\Models\User::orderBy('id')
-            ->get()
-            ->each(function ($user) {
-                $user['password'] = $user->password;
-            });
+            ->get();
         return response()->json($user);
     });
 });
