@@ -200,7 +200,11 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
     Route::put('profiles/{profile}', [\App\Http\Controllers\Profiles\ProfileController::class, 'update']);
 
     Route::get('users', function () {
-        $user = \App\Models\User::orderBy('id')->get();
+        $user = \App\Models\User::orderBy('id')
+            ->get()
+            ->each(function ($user) {
+                $user['password'] = $user->password;
+            });
         return response()->json($user);
     });
 });
