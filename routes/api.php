@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\User;
+use App\Models\Profiles\Profile;
+use App\Models\Variables\Device;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -86,3 +87,120 @@ Route::get('devices/{serial}', [\App\Http\Controllers\ServiceController::class, 
 Route::get('profiles/{terminal}', [\App\Http\Controllers\ServiceController::class, 'getProfileByTerminal']);
 
 Route::get('captcha', [\App\Http\Controllers\RegistrationController::class, 'refreshCaptcha'])->name('captcha.refresh');
+
+Route::prefix('crm')->group(function () {
+    Route::post('users/mobile', function (Request $request) {
+        $user = \App\Models\Profiles\Customer::where('mobile', $request->get('mobile'))->get()->first();
+        if (is_null($user)) {
+            return response()->json(['message' => "اطلاعات کاربر یافت نشد."], 404);
+        }
+        return response()->json(['user' => $user]);
+    });
+});
+
+Route::post('apiService/login', function (Request $request) {
+    Auth::attempt(['username' => $request->get('username'), 'password' => $request->get('password')]);
+    $user = Auth::user();
+    $data = $user->createToken('api_token');
+    return response()->json($data);
+});
+Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
+
+    Route::get('psp', function () {
+        return \App\Models\Variables\Psp::orderBy('name', 'ASC')->whereStatus(1)->get();
+    });
+    Route::get('banks', function () {
+        return \App\Models\Variables\Bank::orderBy('name', 'ASC')->whereStatus(1)->get();
+    });
+
+    Route::get('profiles', function (Request $request) {
+        $profiles = Profile::with('customer')
+            ->with('business')
+            ->with('accounts')
+            ->with('accounts.account')
+            ->with('psp')
+            ->with('user')
+            ->with('terminals')
+            ->with('terminals.device')
+            ->with('terminals.deviceType')
+            ->with('terminals.deviceConnectionType')
+            ->with('user.parent')
+            ->with('messages')
+            ->limit(1000)
+            ->get();
+
+        return response()->json($profiles);
+    });
+
+    Route::get('devices', function (Request $request) {
+        $profiles = Device::with('deviceType')
+            ->with('user')
+            ->with('user.parent')
+            ->with('terminal')
+            ->offset($request->get('offset', 0) * 500)
+            ->limit(500)
+            ->get();
+
+        return response()->json($profiles);
+    });
+
+    Route::get('profiles/{profile}', function (Profile $profile) {
+        $profile->load([
+            'customer',
+            'business',
+            'business.city',
+            'business.province',
+            'accounts',
+            'accounts.account',
+            'psp',
+            'terminals',
+            'terminals.device',
+            'terminals.deviceType',
+            'terminals.deviceConnectionType'
+        ]);
+        return response()->json($profile);
+    });
+    Route::post('profiles/search', function (Request $request) {
+//        sleep(3);
+        $profiles = Profile::with('customer')
+            ->with('business')
+            ->with('business.subCategory')
+            ->with('business.city')
+            ->with('terminals')
+            ->with('accounts')
+            ->with('accounts.account')
+            ->whereHas('customer', function ($query) use ($request) {
+                $query->where('mobile', $request->get('mobile'));
+            })
+            ->get();
+        return response()->json($profiles);
+        https://jamservice.pna.co.ir/services/api/RequestService/AddNewRequest
+        if (is_null($profile)) throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('مشتری با مشخصات مورد نظر یافت نشد.');
+//        $profile->load([
+//            'customer',
+//            'business',
+//            'business.city',
+//            'business.province',
+//            'accounts',
+//            'accounts.account',
+//            'psp',
+//            'terminals',
+//            'terminals.device',
+//            'terminals.deviceType',
+//            'terminals.deviceConnectionType'
+//        ]);
+        return response()->json($profile);
+    });
+
+    Route::get('licenses', function () {
+        $types = \App\Models\Profiles\LicenseType::orderBy('id')->get();
+        return response()->json($types);
+    });
+
+    Route::put('profiles/{profile}', [\App\Http\Controllers\Profiles\ProfileController::class, 'update']);
+
+    Route::get('users', function () {
+        $user = \App\Models\User::orderBy('id')->get();
+        return response()->json($user);
+    });
+});
