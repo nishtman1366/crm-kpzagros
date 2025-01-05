@@ -118,6 +118,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('business')
             ->with('accounts')
             ->with('accounts.account')
+            ->with('accounts.account.bank')
             ->with('psp')
             ->with('user')
             ->with('terminals')
@@ -126,8 +127,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('terminals.deviceConnectionType')
             ->with('user.parent')
             ->with('messages')
-            ->limit(1000)
-            ->get();
+            ->paginate();
 
         return response()->json($profiles);
     });
@@ -137,9 +137,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('user')
             ->with('user.parent')
             ->with('terminal')
-            ->offset($request->get('offset', 0) * 500)
-            ->limit(500)
-            ->get();
+            ->paginate(100);
 
         return response()->json($profiles);
     });
