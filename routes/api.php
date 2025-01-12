@@ -127,7 +127,9 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('terminals.deviceConnectionType')
             ->with('user.parent')
             ->with('messages')
-            ->paginate(100);
+            ->with('licenses')
+            ->with('licenses.type')
+            ->paginate(500);
 
         return response()->json($profiles);
     });
