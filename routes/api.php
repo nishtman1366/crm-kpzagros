@@ -129,7 +129,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('messages')
             ->with('licenses')
             ->with('licenses.type')
-            ->paginate(500);
+            ->paginate(100);
 
         return response()->json($profiles);
     });
