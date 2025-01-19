@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Posts\Post;
 use App\Models\Profiles\Profile;
 use App\Models\Variables\Device;
 use Illuminate\Http\Request;
@@ -129,7 +130,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('messages')
             ->with('licenses')
             ->with('licenses.type')
-            ->paginate(100);
+            ->paginate(500);
 
         return response()->json($profiles);
     });
@@ -203,5 +204,11 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
         $user = \App\Models\User::orderBy('id')
             ->get();
         return response()->json($user);
+    });
+
+    Route::get('posts', function () {
+        $posts = Post::with('files', 'category', 'levels', 'videos')->orderBy('id')->get();
+
+        return response()->json($posts);
     });
 });
