@@ -207,7 +207,9 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('posts', function () {
-        $posts = Post::with('files', 'category', 'levels', 'videos')->orderBy('id')->get();
+        $posts = Post::with('files', 'category', 'levels', 'videos')
+            ->orderBy('id', 'DESC')
+            ->get();
 
         return response()->json($posts);
     });
