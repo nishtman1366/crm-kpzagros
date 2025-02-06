@@ -124,13 +124,19 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             ->with('user')
             ->with('terminals')
             ->with('terminals.device')
+            ->with('terminals.device.user')
             ->with('terminals.deviceType')
             ->with('terminals.deviceConnectionType')
             ->with('user.parent')
             ->with('messages')
             ->with('licenses')
             ->with('licenses.type')
-            ->paginate(500);
+            ->where(function ($query) use ($request) {
+                if ($request->query->has('psp_id')) {
+                    $query->where('psp_id', $request->query('psp_id'));
+                }
+            })
+            ->paginate(100);
 
         return response()->json($profiles);
     });
@@ -175,7 +181,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
             })
             ->get();
         return response()->json($profiles);
-        https://jamservice.pna.co.ir/services/api/RequestService/AddNewRequest
+//        https://jamservice.pna.co.ir/services/api/RequestService/AddNewRequest
         if (is_null($profile)) throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('مشتری با مشخصات مورد نظر یافت نشد.');
 //        $profile->load([
 //            'customer',
@@ -208,6 +214,12 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 
     Route::get('posts', function () {
         $posts = Post::with('files', 'category', 'levels', 'videos')->orderBy('id')->get();
+
+        return response()->json($posts);
+    });
+
+    Route::get('tickets', function () {
+        $posts = \App\Models\Tickets\Ticket::with('files', 'category', 'levels', 'videos')->orderBy('id')->get();
 
         return response()->json($posts);
     });
