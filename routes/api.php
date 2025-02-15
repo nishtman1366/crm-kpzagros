@@ -223,4 +223,45 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 
         return response()->json($posts);
     });
+
+    Route::post('customers', function (Request $request) {
+        $list = collect([]);
+        \App\Models\Profiles\Customer::with('profile')
+            ->with('profile.user')
+            ->with('profile.terminals')
+            ->limit(100)
+            ->get()
+            ->each(function ($crmCustomer) use (&$list) {
+                foreach ($crmCustomer->profile->terminals as $terminal) {
+                    $list->push([
+                        'agent_id' => $crmCustomer->profile->user->username,
+                        'national_code' => $crmCustomer['national_code'],
+                        'terminal' => $terminal['terminal_number'],
+                    ]);
+                }
+            });
+
+
+//        $request->collect('customers')->each(function ($customer) use ($list) {
+//            \App\Models\Profiles\Customer::with('profile')
+//                ->with('profile.user')
+//                ->with('profile.terminals')
+//                ->where('national_code', $customer['national_code'])
+//                ->get()
+//                ->each(function ($crmCustomer) use (&$list, $customer) {
+//                    if ($customer['terminal']) {
+//                        $terminal = $crmCustomer->profile->terminals->where('terminal', $customer['terminal'])->first();
+//                        if (!is_null($terminal)) {
+//                            $list->push([
+//                                'agent_id' => $crmCustomer->profile->user->username,
+//                                'national_code' => $customer['national_code'],
+//                                'terminal' => $customer['terminal'],
+//                            ]);
+//                        }
+//                    }
+//                });
+//        });
+
+        return response()->json($list);
+    });
 });
