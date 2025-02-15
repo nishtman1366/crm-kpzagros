@@ -229,8 +229,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
         \App\Models\Profiles\Customer::with('profile')
             ->with('profile.user')
             ->with('profile.terminals')
-            ->limit(100)
-            ->get()
+            ->paginate(500)
             ->each(function ($crmCustomer) use (&$list) {
                 foreach ($crmCustomer->profile->terminals as $terminal) {
                     $list->push([
