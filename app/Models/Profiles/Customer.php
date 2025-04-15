@@ -3,6 +3,7 @@
 namespace App\Models\Profiles;
 
 use App\Http\Controllers\Profiles\LicenseController;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -57,7 +58,8 @@ class Customer extends Model
 
     protected $appends = ['fullName', 'genderText', 'typeText', 'jBirthday', 'jRegDate',
         'nationalCard1Url', 'nationalCard2Url', 'idCardUrl',
-        'asasnamehUrl', 'agahi1Url', 'agahi2Url', 'vitalText', 'residencyText', 'jPassportExpireDate', 'country'];
+        'asasnamehUrl', 'agahi1Url', 'agahi2Url',
+        'vitalText', 'residencyText', 'jPassportExpireDate', 'country'];
 
     public function getFullNameAttribute()
     {
@@ -72,6 +74,11 @@ class Customer extends Model
     {
         if ($this->attributes['gender'] == 'male') return 'مرد';
         else return 'زن';
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function getTypeTextAttribute()
