@@ -226,19 +226,40 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 
     Route::post('customers', function (Request $request) {
         $list = collect([]);
-        \App\Models\Profiles\Customer::with('profile')
+        \App\Models\Profiles\Terminal::with('profile')
             ->with('profile.user')
-            ->with('profile.terminals')
-            ->paginate(500)
-            ->each(function ($crmCustomer) use (&$list) {
-                foreach ($crmCustomer->profile->terminals as $terminal) {
+            ->with('profile.customer')
+            ->with('profile.customer.user')
+            ->paginate(1000)
+            ->each(function ($terminal) use (&$list) {
+                if ($terminal->profile->user) {
                     $list->push([
-                        'agent_id' => $crmCustomer->profile->user->username,
-                        'national_code' => $crmCustomer['national_code'],
+                        'agent_id' => $terminal->profile->user->username,
                         'terminal' => $terminal['terminal_number'],
                     ]);
+                } else {
+                    if ($terminal->profile->customer && $terminal->profile->customer->user) {
+                        $list->push([
+                            'agent_id' => $terminal->profile->customer->user->username,
+                            'terminal' => $terminal['terminal_number'],
+                        ]);
+                    }
                 }
+
             });
+//        \App\Models\Profiles\Customer::with('profile')
+//            ->with('profile.user')
+//            ->with('profile.terminals')
+//            ->paginate(500)
+//            ->each(function ($crmCustomer) use (&$list) {
+//                foreach ($crmCustomer->profile->terminals as $terminal) {
+//                    $list->push([
+//                        'agent_id' => $crmCustomer->profile->user->username,
+//                        'national_code' => $crmCustomer['national_code'],
+//                        'terminal' => $terminal['terminal_number'],
+//                    ]);
+//                }
+//            });
 
 
 //        $request->collect('customers')->each(function ($customer) use ($list) {
