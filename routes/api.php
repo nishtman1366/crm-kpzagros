@@ -226,27 +226,51 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 
     Route::post('customers', function (Request $request) {
         $list = collect([]);
-        \App\Models\Profiles\Terminal::with('profile')
-            ->with('profile.user')
-            ->with('profile.customer')
-            ->with('profile.customer.user')
-            ->paginate(1000)
-            ->each(function ($terminal) use (&$list) {
-                if ($terminal->profile->user) {
-                    $list->push([
-                        'agent_id' => $terminal->profile->user->username,
-                        'terminal' => $terminal['terminal_number'],
-                    ]);
-                } else {
-                    if ($terminal->profile->customer && $terminal->profile->customer->user) {
-                        $list->push([
-                            'agent_id' => $terminal->profile->customer->user->username,
-                            'terminal' => $terminal['terminal_number'],
-                        ]);
-                    }
-                }
+        $username = $request->get('username');
+        $agent = \App\Models\User::withCount('profiles')->where('username', $username)->first();
 
-            });
+        if ($agent) {
+            $agent_id = $agent->id;
+            $agent_name = $agent->name;
+            Profile::with('terminals')
+                ->where('user_id', $agent->id)
+                ->offset($request->get('page') * 500)
+                ->limit(10000)
+                ->get()
+                ->each(function ($profile) use (&$list) {
+                    $profile->terminals->each(function ($terminal) use (&$list) {
+                        if(!is_null($terminal['terminal_number'])) {
+                            $list->push([
+                                'profile_id' => $terminal['profile_id'],
+                                'terminal' => $terminal['terminal_number'],
+                            ]);
+                        }
+                    });
+                });
+        }
+//
+//
+//        \App\Models\Profiles\Terminal::with('profile')
+//            ->with('profile.user')
+//            ->with('profile.customer')
+//            ->with('profile.customer.user')
+//            ->paginate(1000)
+//            ->each(function ($terminal) use (&$list) {
+//                if ($terminal->profile->user) {
+//                    $list->push([
+//                        'agent_id' => $terminal->profile->user->username,
+//                        'terminal' => $terminal['terminal_number'],
+//                    ]);
+//                } else {
+//                    if ($terminal->profile->customer && $terminal->profile->customer->user) {
+//                        $list->push([
+//                            'agent_id' => $terminal->profile->customer->user->username,
+//                            'terminal' => $terminal['terminal_number'],
+//                        ]);
+//                    }
+//                }
+//
+//            });
 //        \App\Models\Profiles\Customer::with('profile')
 //            ->with('profile.user')
 //            ->with('profile.terminals')

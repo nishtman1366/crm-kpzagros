@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Profiles\Profile;
 use App\Models\Tickets\Agent;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -179,5 +180,10 @@ class User extends Authenticatable
     public function marketers()
     {
         return $this->hasMany($this, 'parent_id', 'id');
+    }
+
+    public function profiles()
+    {
+        return $this->hasMany(Profile::class);
     }
 }
