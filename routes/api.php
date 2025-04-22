@@ -289,12 +289,13 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 
         Profile::with('customer')
             ->where('user_id', $request->get('agent_id'))
-            ->whereStatus(8)
             ->get()
             ->each(function ($profile) use (&$list) {
                 if ($profile->customer) {
                     $list->push([
                         'national_code' => $profile->customer?->national_code,
+                        'name' => $profile->customer?->full_name,
+                        'status' => $profile->status_text,
                     ]);
                 }
             });
