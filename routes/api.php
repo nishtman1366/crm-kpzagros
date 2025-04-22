@@ -225,29 +225,31 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('customers', function (Request $request) {
-        $list = collect([]);
-        $username = $request->get('username');
-        $agent = \App\Models\User::withCount('profiles')->where('username', $username)->first();
 
-        if ($agent) {
-            $agent_id = $agent->id;
-            $agent_name = $agent->name;
-            Profile::with('terminals')
-                ->where('user_id', $agent->id)
-                ->offset($request->get('page') * 500)
-                ->limit(10000)
-                ->get()
-                ->each(function ($profile) use (&$list) {
-                    $profile->terminals->each(function ($terminal) use (&$list) {
-                        if(!is_null($terminal['terminal_number'])) {
-                            $list->push([
-                                'profile_id' => $terminal['profile_id'],
-                                'terminal' => $terminal['terminal_number'],
-                            ]);
-                        }
-                    });
-                });
-        }
+
+        $list = collect([]);
+//        $username = $request->get('username');
+//        $agent = \App\Models\User::withCount('profiles')->where('username', $username)->first();
+//
+//        if ($agent) {
+//            $agent_id = $agent->id;
+//            $agent_name = $agent->name;
+//            Profile::with('terminals')
+//                ->where('user_id', $agent->id)
+//                ->offset($request->get('page') * 500)
+//                ->limit(10000)
+//                ->get()
+//                ->each(function ($profile) use (&$list) {
+//                    $profile->terminals->each(function ($terminal) use (&$list) {
+//                        if(!is_null($terminal['terminal_number'])) {
+//                            $list->push([
+//                                'profile_id' => $terminal['profile_id'],
+//                                'terminal' => $terminal['terminal_number'],
+//                            ]);
+//                        }
+//                    });
+//                });
+//        }
 //
 //
 //        \App\Models\Profiles\Terminal::with('profile')
@@ -285,26 +287,33 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 //                }
 //            });
 
+        Profile::with('customer')
+            ->where('user_id', $request->get('agent_id'))
+            ->whereStatus(8)
+            ->get()
+            ->each(function ($profile) use (&$list) {
+                if ($profile->customer) {
+                    $list->push([
+                        'national_code' => $profile->customer?->national_code,
+                    ]);
+                }
+            });
 
-//        $request->collect('customers')->each(function ($customer) use ($list) {
-//            \App\Models\Profiles\Customer::with('profile')
-//                ->with('profile.user')
-//                ->with('profile.terminals')
-//                ->where('national_code', $customer['national_code'])
-//                ->get()
-//                ->each(function ($crmCustomer) use (&$list, $customer) {
-//                    if ($customer['terminal']) {
-//                        $terminal = $crmCustomer->profile->terminals->where('terminal', $customer['terminal'])->first();
-//                        if (!is_null($terminal)) {
-//                            $list->push([
-//                                'agent_id' => $crmCustomer->profile->user->username,
-//                                'national_code' => $customer['national_code'],
-//                                'terminal' => $customer['terminal'],
-//                            ]);
-//                        }
-//                    }
+//        \App\Models\Profiles\Customer::with('profile')
+//            ->with('profile.user')
+//            ->with('profile.terminals')
+//            ->offset($request->get('page') * 500)
+//            ->limit(500)
+//            ->get()
+//            ->each(function ($crmCustomer) use (&$list) {
+//                $crmCustomer->profile->terminals->each(function ($terminal) use ($crmCustomer, &$list) {
+//                    $list->push([
+//                        'username' => $crmCustomer->profile->user->username,
+//                        'national_code' => $crmCustomer->national_code,
+//                        'terminal' => $terminal->terminal_number,
+//                    ]);
 //                });
-//        });
+//            });
 
         return response()->json($list);
     });
