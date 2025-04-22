@@ -288,6 +288,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
 //            });
 
         Profile::with('customer')
+            ->with('psp')
             ->where('user_id', $request->get('agent_id'))
             ->get()
             ->each(function ($profile) use (&$list) {
@@ -296,6 +297,7 @@ Route::prefix('apiService')->middleware('auth:sanctum')->group(function () {
                         'national_code' => $profile->customer?->national_code,
                         'name' => $profile->customer?->full_name,
                         'status' => $profile->status_text,
+                        'psp' => $profile->psp?->name,
                     ]);
                 }
             });
