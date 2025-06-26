@@ -2,7 +2,7 @@
     <div class="flex items-center justify-center">
         <div class="w-1/3 text-3xl text-center">
             <div class="border border-grey-700 bg-gray-300 hover:bg-gray-400 transition-all">
-                <a href="/crm" target="_blank">
+                <a href="https://crm.zagrospay.com" target="_blank">
                     ورود به سامانه جامع<br/>(نسخه جدید)
                 </a>
             </div>
