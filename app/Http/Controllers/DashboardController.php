@@ -140,7 +140,7 @@ class DashboardController extends Controller
         foreach ($topMarketers as $item) {
             $user = User::where('id', $item->user_id)->get()->first();
             $topMarketersChartData[] = $item->count;
-            $topMarketersChartLabels[] = $user->name;
+            $topMarketersChartLabels[] = is_null($user) ? 'نامشخص' : $user->name;
             $topMarketersChartBackgrounds[] = generateRandomColor();
         }
         return [
