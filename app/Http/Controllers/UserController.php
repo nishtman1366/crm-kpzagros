@@ -47,6 +47,26 @@ class UserController extends Controller
         ]);
     }
 
+    function returnUsersType($type)
+    {
+        switch ($type) {
+            case 'ADMIN':
+                return 'مدیر سیستم';
+            case 'AGENT':
+                return 'نماینده';
+            case 'MARKETER':
+                return 'بازاریاب';
+            case 'TECHNICAL':
+                return 'کارشناسان فنی';
+            case 'OFFICE':
+                return 'کارمندان دفتر';
+            case 'ACCOUNTING':
+                return 'حسابداری';
+            case 'EMPLOYEES':
+                return 'منابع انسانی';
+        }
+    }
+
     public function create(Request $request)
     {
         $type = $request->route('type', null);
@@ -116,7 +136,7 @@ class UserController extends Controller
     public function update(string $type, User $user, Request $request)
     {
         $request->validateWithBag('userForm', [
-            'parent_id' => 'required',
+//            'parent_id' => 'required',
             'name' => 'required',
             'username' => 'required|unique:users,id,' . $user->id,
             'password' => 'nullable|min:6',
@@ -135,23 +155,5 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('dashboard.users.list', ['type' => $type]);
-    }
-
-    function returnUsersType($type)
-    {
-        switch ($type) {
-            case 'ADMIN':
-                return 'مدیر سیستم';
-            case 'AGENT':
-                return 'نماینده';
-            case 'MARKETER':
-                return 'بازاریاب';
-            case 'TECHNICAL':
-                return 'کارشناسان فنی';
-            case 'OFFICE':
-                return 'کارمندان دفتر';
-            case 'ACCOUNTING':
-                return 'حسابداری';
-        }
     }
 }
