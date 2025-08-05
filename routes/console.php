@@ -1,8 +1,10 @@
 <?php
 
 use App\Exports\Devices\DeviceExport;
+use App\Exports\Devices\DevicesWithImei;
 use App\Http\Controllers\Notifications\NotificationController;
 use App\Models\User;
+use App\Models\Variables\Device;
 use Illuminate\Support\Facades\Artisan;
 use Maatwebsite\Excel\Facades\Excel;
 use Morilog\Jalali\Jalalian;
@@ -163,14 +165,28 @@ Artisan::command('checkQueue', function () {
 });
 
 Artisan::command('devices', function () {
-    $collection = \App\Models\Variables\Device::with('terminal')
-        ->with('deviceType')
-        ->with('deviceType.type')
-        ->with('terminal.profile')
-        ->with('terminal.profile.customer')
-        ->whereNotNull('imei')
-        ->get();
+    $chunkSize = 1000;
+    $currentChunk = 1;
 
-    dd($collection->count());
-    Excel::store(new \App\Exports\Devices\DevicesWithImei($collection), sprintf('devices/%s.xlsx', Jalalian::now()->format('%Y-%m-%d-%H-%M-%S')), 'public');
+    Device::with([
+        'terminal',
+        'deviceType',
+        'deviceType.type',
+        'terminal.profile',
+        'terminal.profile.customer'
+    ])
+        ->whereNotNull('imei')
+        ->chunk($chunkSize, function ($devices) use (&$currentChunk) {
+            $timestamp = Jalalian::now()->format('Y-m-d-H-i-s');
+            $filename = sprintf('devices/devices_part_%d_%s.xlsx', $currentChunk, $timestamp);
+
+            Excel::store(
+                new DevicesWithImei($devices),
+                $filename,
+                'public'
+            );
+
+            $this->info("Exported chunk {$currentChunk} to {$filename}");
+            $currentChunk++;
+        });
 });
