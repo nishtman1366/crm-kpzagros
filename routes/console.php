@@ -163,10 +163,14 @@ Artisan::command('checkQueue', function () {
 });
 
 Artisan::command('devices', function () {
-//    $devices = \App\Models\Variables\Device::orderBy('id', 'ASC')->get();
-//    $jDate = Jalalian::forge(now())->format('Y.m.d');
-//    print(PHP_EOL);
-//    print('Count:' . $devices->count());
-//    print(PHP_EOL);
-//    Excel::store(new DeviceExport($devices), 'devices.' . $jDate . '.xlsx','public');
+    $collection = \App\Models\Variables\Device::with('terminal')
+        ->with('deviceType')
+        ->with('deviceType.type')
+        ->with('terminal.profile')
+        ->with('terminal.profile.customer')
+        ->whereNotNull('imei')
+        ->limit(100)
+        ->get();
+
+    Excel::store(new \App\Exports\Devices\DevicesWithImei($collection), sprintf('devices/%s.xlsx', Jalalian::now()->format('%Y-%m-%d-%H-%M-%S')), 'public');
 });
