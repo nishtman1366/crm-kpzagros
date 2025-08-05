@@ -171,5 +171,6 @@ Artisan::command('devices', function () {
         ->whereNotNull('imei')
         ->get();
 
+    dd($collection->count());
     Excel::store(new \App\Exports\Devices\DevicesWithImei($collection), sprintf('devices/%s.xlsx', Jalalian::now()->format('%Y-%m-%d-%H-%M-%S')), 'public');
 });
