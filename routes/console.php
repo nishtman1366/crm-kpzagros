@@ -169,7 +169,6 @@ Artisan::command('devices', function () {
         ->with('terminal.profile')
         ->with('terminal.profile.customer')
         ->whereNotNull('imei')
-        ->limit(100)
         ->get();
 
     Excel::store(new \App\Exports\Devices\DevicesWithImei($collection), sprintf('devices/%s.xlsx', Jalalian::now()->format('%Y-%m-%d-%H-%M-%S')), 'public');
